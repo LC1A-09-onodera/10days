@@ -5,6 +5,7 @@
 
 #LibliryFile
 lib/
+*Debug/
 
 # User-specific files
 *.rsuser
