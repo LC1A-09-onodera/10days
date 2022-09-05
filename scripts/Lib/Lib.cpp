@@ -6,9 +6,8 @@ using namespace std;
 float Collision::Lenght(const FLOAT2& p1, const FLOAT2& p2)
 {
 	FLOAT2 lenght = { p1.u - p2.u , p1.v - p2.v };
-	lenght.u = pow(lenght.u, 2);
-	lenght.v = pow(lenght.v, 2);
-	sqrtf(lenght.u + lenght.v);
+	lenght.u = static_cast<float>(pow(lenght.u, 2));
+	lenght.v = static_cast<float>(pow(lenght.v, 2));
 	return sqrtf(lenght.u + lenght.v);
 }
 
