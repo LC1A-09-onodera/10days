@@ -26,5 +26,8 @@
     <ClInclude Include="scripts\Lib\Lib.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="scripts\Player\player.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
