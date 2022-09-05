@@ -2,6 +2,7 @@
 #include "scripts/Lib/Lib.h"
 #include "scripts/Player/player.h"
 #include "scripts/Input/Input.h"
+#include "scripts/Particle/Particle.h"
 
 // ウィンドウのタイトルに表示する文字列
 const char TITLE[] = "10days";
@@ -40,14 +41,20 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	SetDrawScreen(DX_SCREEN_BACK);
 
 	// 画像などのリソースデータの変数宣言と読み込み
-	int Particle = LoadGraph("Resources/particle.png");
+	int Particle1 = LoadGraph("Resources/particle.png");
 
 	// ゲームループで使う変数の宣言
 	int mouse_x;
 	int mouse_y;
 	Player player;
 	player.LoadFile();
-
+	Particle par;
+	par.LoadFile("Resources/particle.png");
+	FLOAT2 po = { 0, WIN_HEIGHT / 2 };
+	FLOAT2 ve = { 0.3f, 0 };
+	FLOAT2 si = { 100, 100};
+	FLOAT2 sie = {0, 0};
+	par.AddParitcle(po, ve, ve, si, sie, 60);
 	// ゲームループ
 	while (1)
 	{
@@ -60,10 +67,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		
 		// 更新処理
 		player.Update();
-
+		par.Update();
 		// 描画処理
-		player.Draw();
-
+		//player.Draw();
+		par.Draw();
 		//---------  ここまでにプログラムを記述  ---------//
 		// (ダブルバッファ)裏面
 		ScreenFlip();	
