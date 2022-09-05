@@ -13,7 +13,15 @@ float Collision::Lenght(const FLOAT2& p1, const FLOAT2& p2)
 
 bool Collision::SquareCollision(const FLOAT2& f_LTop1, const FLOAT2& f_WidHi1, const FLOAT2& f_LTop2, const FLOAT2& f_WidHi2)
 {
-	
+	// xŽ²‚É‘Î‚µ‚Ä‚Ì“–‚½‚è”»’è
+	if (f_LTop1.u + f_WidHi1.u >= f_LTop2.u && f_LTop1.u <= f_LTop2.u + f_WidHi2.u)
+	{
+		// yŽ²
+		if (f_LTop1.v + f_WidHi1.v >= f_LTop2.v && f_LTop1.v <= f_LTop2.v + f_WidHi2.v)
+		{
+			return true;
+		}
+	}
 	return false;
 }
 
