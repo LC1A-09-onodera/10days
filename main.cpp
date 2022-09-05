@@ -1,4 +1,5 @@
 #include "DxLib.h"
+#include "scripts/Lib/Lib.h"
 
 // ウィンドウのタイトルに表示する文字列
 const char TITLE[] = "10days";
@@ -65,7 +66,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		GetMousePoint(&mouse_x, &mouse_y);
 		
 		// 更新処理
-
+		
 
 		// 描画処理
 		
