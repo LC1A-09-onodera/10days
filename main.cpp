@@ -48,13 +48,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	int mouse_y;
 	Player player;
 	player.LoadFile();
-	Particle par;
-	par.LoadFile("Resources/particle.png");
-	FLOAT2 po = { 0, WIN_HEIGHT / 2 };
-	FLOAT2 ve = { 0.3f, 0 };
-	FLOAT2 si = { 100, 100};
-	FLOAT2 sie = {0, 0};
-	par.AddParitcle(po, ve, ve, si, sie, 60);
+
 	// ゲームループ
 	while (1)
 	{
@@ -62,15 +56,16 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 		// 画面クリア
 		ClearDrawScreen();
+
 		//---------  ここからプログラムを記述  ----------//
 		GetMousePoint(&mouse_x, &mouse_y);
 		
 		// 更新処理
 		player.Update();
-		par.Update();
+
 		// 描画処理
 		player.Draw();
-		par.Draw();
+
 		//---------  ここまでにプログラムを記述  ---------//
 		// (ダブルバッファ)裏面
 		ScreenFlip();	

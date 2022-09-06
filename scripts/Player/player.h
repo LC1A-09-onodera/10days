@@ -25,8 +25,6 @@ private:
 	const FLOAT2 m_winSize = { 1280, 720 };
 	//スクロール開始位置
 	FLOAT2 m_scrollStartLine = {m_winSize.u / 2, 0};
-
-	Particle runParticle;
 public:
 	void Init();
 	void Update();
