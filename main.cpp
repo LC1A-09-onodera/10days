@@ -3,6 +3,7 @@
 #include "scripts/Player/player.h"
 #include "scripts/Input/Input.h"
 #include "scripts/Particle/Particle.h"
+#include "scripts/Object/BaseObject.h"
 
 // ウィンドウのタイトルに表示する文字列
 const char TITLE[] = "10days";
@@ -11,7 +12,7 @@ const char TITLE[] = "10days";
 const int WIN_WIDTH = 1280;
 
 // ウィンドウ縦幅
-const int WIN_HEIGHT = 720;	
+const int WIN_HEIGHT = 720;
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
 {
@@ -32,7 +33,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	SetWindowSizeExtendRate(1.0);
 
 	// 画面の背景色を設定する
-	SetBackgroundColor(0x40, 0x40, 0x40);			
+	SetBackgroundColor(0x20, 0x49, 0x60);
 
 	// DXlibの初期化
 	if (DxLib_Init() == -1) { return -1; }
@@ -48,6 +49,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	int mouse_y;
 	Player player;
 	player.LoadFile();
+	ObjectManager::LoadFile();
+	ParticleManager::LoadFile();
+
 
 	// ゲームループ
 	while (1)
@@ -59,16 +63,38 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 		//---------  ここからプログラムを記述  ----------//
 		GetMousePoint(&mouse_x, &mouse_y);
-		
+
 		// 更新処理
 		player.Update();
+		static float angle = 0.0f;
+		static int time = 0;
+		time++;
+		if (time > 6)
+		{
+			time = 0;
+			angle = rand() % 360;
+			if (angle >= 360.0f)
+			{
+				angle = 0.0f;
+			}
+			FLOAT2 winSizeHalf = { mouse_x,  mouse_y };
+			FLOAT2 spriteSize = { 10.0f, 10.0f };
+			ObjectManager::smp.Shot(winSizeHalf, spriteSize, angle, 7.0f);
+		}
+
+		ObjectManager::Update();
+
+		ParticleManager::Update();
 
 		// 描画処理
-		player.Draw();
+		//player.Draw();
+		ObjectManager::Draw();
+
+		ParticleManager::Draw();
 
 		//---------  ここまでにプログラムを記述  ---------//
 		// (ダブルバッファ)裏面
-		ScreenFlip();	
+		ScreenFlip();
 
 		// 20ミリ秒待機(疑似60FPS)
 		WaitTimer(20);

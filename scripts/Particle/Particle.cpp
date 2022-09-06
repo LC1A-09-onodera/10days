@@ -3,6 +3,8 @@
 
 #include <thread>
 
+Particle ParticleManager::smpParticle;
+
 void Particle::AddParitcle(FLOAT2& f_pos, FLOAT2& f_vec, FLOAT2& f_acc, FLOAT2& f_startSize, FLOAT2& f_endSize, int f_life)
 {
 	ParticleEach *each = new ParticleEach();
@@ -72,4 +74,33 @@ void Particle::FlyParticle(FLOAT2 &f_emitPos, FLOAT2& f_startSize, FLOAT2& f_end
 		acc.v = vel.v / f_life;
 		AddParitcle(f_emitPos, vel, acc, f_startSize, f_endSize, f_life);
 	}
+}
+
+void Particle::ExprotionParticle(FLOAT2& f_emitPos, FLOAT2& f_startSize, FLOAT2& f_endSize, int f_count, int f_life)
+{
+	for (int i = 0; i < f_count; i++)
+	{
+		FLOAT2 vel = { 0 };
+		vel.u = rand() % 21 - 10;
+		vel.v = rand() % 21 - 10;
+		FLOAT2 acc = { 0 };
+		acc.u = -vel.u / f_life;
+		acc.v = -vel.v / f_life;
+		AddParitcle(f_emitPos, vel, acc, f_startSize, f_endSize, f_life);
+	}
+}
+
+void ParticleManager::LoadFile()
+{
+	smpParticle.LoadFile("Resources/particle.png");
+}
+
+void ParticleManager::Update()
+{
+	smpParticle.Update();
+}
+
+void ParticleManager::Draw()
+{
+	smpParticle.Draw();
 }

@@ -8,6 +8,7 @@ private:
 	//スプライト
 	int m_sprite;
 	FLOAT2 m_position = { 0.0f, 0.0f };
+
 	FLOAT2 m_size = {256.0f, 256.0f};
 	//絵の向き
 	FLOAT2 m_rotation = { 0.0f, 0.0f };

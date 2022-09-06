@@ -11,6 +11,23 @@ float Collision::Lenght(const FLOAT2& p1, const FLOAT2& p2)
 	return sqrtf(lenght.u + lenght.v);
 }
 
+float Collision::Lenght(const FLOAT2& p1)
+{
+	FLOAT2 lenght = p1;
+	lenght.u = static_cast<float>(pow(lenght.u, 2));
+	lenght.v = static_cast<float>(pow(lenght.v, 2));
+	return sqrtf(lenght.u + lenght.v);
+}
+
+FLOAT2 Collision::Normalize(const FLOAT2& p1)
+{
+	float leng = Lenght(p1);
+	FLOAT2 result;
+	result.u = p1.u / leng;
+	result.v = p1.v / leng;
+	return result;
+}
+
 bool Collision::SquareCollision(const FLOAT2& f_LTop1, const FLOAT2& f_WidHi1, const FLOAT2& f_LTop2, const FLOAT2& f_WidHi2)
 {
 	// xŽ²‚É‘Î‚µ‚Ä‚Ì“–‚½‚è”»’è
