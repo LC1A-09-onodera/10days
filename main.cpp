@@ -1,5 +1,8 @@
 #include "DxLib.h"
 #include "scripts/Lib/Lib.h"
+#include "scripts/Player/player.h"
+#include "scripts/Input/Input.h"
+#include "scripts/Particle/Particle.h"
 
 // ウィンドウのタイトルに表示する文字列
 const char TITLE[] = "10days";
@@ -38,38 +41,31 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	SetDrawScreen(DX_SCREEN_BACK);
 
 	// 画像などのリソースデータの変数宣言と読み込み
-	int Particle = LoadGraph("Resources/particle.png");
+	int Particle1 = LoadGraph("Resources/particle.png");
 
 	// ゲームループで使う変数の宣言
 	int mouse_x;
 	int mouse_y;
-	// 最新のキーボード情報用
-	char keys[256] = { 0 };
-
-	// 1ループ(フレーム)前のキーボード情報
-	char oldkeys[256] = { 0 };
+	Player player;
+	player.LoadFile();
 
 	// ゲームループ
 	while (1)
 	{
-		// 最新のキーボード情報だったものは1フレーム前のキーボード情報として保存
-		for (int i = 0; i < 256; i++)
-		{
-			oldkeys[i] = keys[i];
-		}
-		// 最新のキーボード情報を取得
-		GetHitKeyStateAll(keys);
+		Input::Update();
 
 		// 画面クリア
 		ClearDrawScreen();
+
 		//---------  ここからプログラムを記述  ----------//
 		GetMousePoint(&mouse_x, &mouse_y);
 		
 		// 更新処理
-		
+		player.Update();
 
 		// 描画処理
-		
+		player.Draw();
+
 		//---------  ここまでにプログラムを記述  ---------//
 		// (ダブルバッファ)裏面
 		ScreenFlip();	
