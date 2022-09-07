@@ -96,7 +96,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 				}
 			}
 		}
-		ObjectManager::Update(false);
+		FLOAT2 hogehoge = { 0, 0 };
+		ObjectManager::Update(hogehoge, false);
 
 		ParticleManager::Update();
 
