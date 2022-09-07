@@ -96,8 +96,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 				}
 			}
 		}
-		FLOAT2 hogehoge = { 0, 0 };
-		ObjectManager::Update(hogehoge, false);
+		FLOAT2 pos = player.GetPos();
+		ObjectManager::Update(pos, player.GetIsSide());
 
 		ParticleManager::Update();
 

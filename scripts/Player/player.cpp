@@ -114,6 +114,11 @@ bool Player::GetIsMove()
 	return m_isMove;
 }
 
+bool Player::GetIsSide()
+{
+	return m_side;
+}
+
 void Player::AddForce()
 {
 	
