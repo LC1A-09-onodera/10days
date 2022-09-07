@@ -49,10 +49,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	int mouse_y;
 	Player player;
 	player.LoadFile();
+	Particle par;
+	par.LoadFile("Resources/particle.png");
 	ObjectManager::LoadFile();
 	ParticleManager::LoadFile();
-
-
 	// ÉQÅ[ÉÄÉãÅ[Év
 	while (1)
 	{
@@ -66,28 +66,42 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 		// çXêVèàóù
 		player.Update();
+		par.Update();
+		// ï`âÊèàóù
+		//player.Draw();
+		par.Draw();
 		static float angle = 0.0f;
 		static int time = 0;
-		time++;
-		if (time > 6)
+		if (player.GetIsMove())
 		{
-			time = 0;
-			angle = rand() % 360;
-			if (angle >= 360.0f)
+			time++;
+			if (time > 15)
 			{
-				angle = 0.0f;
+				time = 0;
+				angle = rand() % 360;
+				if (angle >= 360.0f)
+				{
+					angle = 0.0f;
+				}
+				//FLOAT2 winSizeHalf = { mouse_x,  mouse_y };
+				FLOAT2 winSizeHalf = { player.GetPos().u,  player.GetPos().v };
+				FLOAT2 spriteSize = { 30.0f, 30.0f };
+				if (rand() % 2 == 0)
+				{
+					ObjectManager::object1.Shot(winSizeHalf, spriteSize, angle, 18.0f);
+				}
+				else
+				{
+					ObjectManager::object2.Shot(winSizeHalf, spriteSize, angle, 18.0f);
+				}
 			}
-			FLOAT2 winSizeHalf = { mouse_x,  mouse_y };
-			FLOAT2 spriteSize = { 10.0f, 10.0f };
-			ObjectManager::smp.Shot(winSizeHalf, spriteSize, angle, 7.0f);
 		}
-
-		ObjectManager::Update();
+		ObjectManager::Update(false);
 
 		ParticleManager::Update();
 
 		// ï`âÊèàóù
-		//player.Draw();
+		player.Draw();
 		ObjectManager::Draw();
 
 		ParticleManager::Draw();

@@ -32,9 +32,10 @@ struct BaseObject
 	float angle = 0.0f;
 	FLOAT2 angleSub = {0 , 0};
 
-	static const int InsideR = 300;
+	static const int InsideR = 290;
 	static const int OutshideR = 320;
 	const float MoveSpeed = 0.05f;
+	const float CiycleSpeed = 1.0f;
 
 	FLOAT2 centerPos = { 1280 / 2 , 720 / 2 };
 
@@ -52,7 +53,7 @@ class ObjectSample
 	int m_sprite;
 public:
 	void LoadFile(const char* path);
-	void Update();
+	void Update(FLOAT2& f_playerPos, bool f_playerIsOutside);
 	void Shot(FLOAT2 f_position, FLOAT2 m_sprite, FLOAT2 f_direction, float R);
 	void Shot(FLOAT2 f_position, FLOAT2 m_sprite, float f_direction, float R);
 	void Draw();
@@ -62,9 +63,10 @@ class ObjectManager
 {
 public:
 	static ObjectSample smp;
-
+	static ObjectSample object1;
+	static ObjectSample object2;
 	static void LoadFile();
-	static void Update();
+	static void Update(FLOAT2 &f_playerPos, bool f_playerIsOutside);
 	static void Draw();
 };
 

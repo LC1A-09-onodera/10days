@@ -2,15 +2,17 @@
 #include "../Lib/Lib.h"
 #include "../Math/Math.h"
 #include "../Particle/Particle.h"
+#include <cmath>
 
 ObjectSample ObjectManager::smp;
-
+ObjectSample ObjectManager::object1;
+ObjectSample ObjectManager::object2;
 void ObjectSample::LoadFile(const char* path)
 {
 	m_sprite = LoadGraph(path);
 }
 
-void ObjectSample::Update()
+void ObjectSample::Update(FLOAT2& f_playerPos, bool f_playerIsOutside)
 {
 	//‘S•”‚Ì“–‚½‚è”»’è‚ðŽæ‚é
 	int index = 0;
@@ -117,6 +119,10 @@ void BaseObject::Update()
 	//‰~Žü‚É“–‚½‚Á‚Ä‚¢‚é‚Æ‚«
 	if (m_isShotMove)
 	{
+		angle += CiycleSpeed;
+		float R = BaseObject::InsideR;
+		m_position.u = centerPos.u + R * DxLibMath::Cos(angle);
+		m_position.v = centerPos.v + R * DxLibMath::Sin(angle);
 		return;
 	}
 
@@ -135,6 +141,7 @@ void BaseObject::Update()
 		vec = Collision::Normalize(vec);
 		m_position.u = centerPos.u + R * vec.u;
 		m_position.v = centerPos.v + R * vec.v;
+		angle = std::atan2(vec.v, vec.u) * 180.0f / 3.141592f;
 		m_isShotMove = true;
 	}
 }
@@ -149,14 +156,20 @@ void BaseObject::Init(FLOAT2 position, FLOAT2 spriteSize, float R)
 void ObjectManager::LoadFile()
 {
 	smp.LoadFile("Resources/particle.png");
+	object1.LoadFile("Resources/object1.png");
+	object2.LoadFile("Resources/object2.png");
 }
 
-void ObjectManager::Update()
+void ObjectManager::Update(FLOAT2& f_playerPos, bool f_playerIsOutside)
 {
-	smp.Update();
+	smp.Update(f_playerPos, f_playerIsOutside);
+	object1.Update(f_playerPos, f_playerIsOutside);
+	object2.Update(f_playerPos, f_playerIsOutside);
 }
 
 void ObjectManager::Draw()
 {
 	smp.Draw();
+	object1.Draw();
+	object2.Draw();
 }

@@ -25,7 +25,7 @@ class Particle
 	std::list<std::list<ParticleEach *>::iterator> m_deleteParticles;
 	Emitter m_emitter;
 	int m_sprite;
-	
+public:
 	void AddParitcle(FLOAT2 &f_pos, FLOAT2 & f_vec, FLOAT2 & f_acc, FLOAT2 & f_startSize, FLOAT2 & f_endSize, int f_life);
 public:
 	void Start();
@@ -44,5 +44,4 @@ public:
 	static void LoadFile();
 	static void Update();
 	static void Draw();
-
 };

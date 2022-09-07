@@ -1,7 +1,7 @@
 #include "Particle.h"
+#include <thread>
 #include "../Scroll/Scroll.h"
 
-#include <thread>
 
 Particle ParticleManager::smpParticle;
 
@@ -55,7 +55,9 @@ void Particle::Draw()
 {
 	for (auto itr = m_particles.begin(); itr != m_particles.end(); ++itr)
 	{
-		DrawExtendGraph((*itr)->position.u - ((*itr)->size.u / 2) - Scroll::GetScrollX(), (*itr)->position.v - ((*itr)->size.v / 2), (*itr)->position.u + ((*itr)->size.u / 2) - Scroll::GetScrollX(), (*itr)->position.v + ((*itr)->size.v / 2), m_sprite, true);
+		DrawExtendGraph((*itr)->position.u - ((*itr)->size.u / 2), (*itr)->position.v - ((*itr)->size.v / 2), 
+						(*itr)->position.u + ((*itr)->size.u / 2), (*itr)->position.v + ((*itr)->size.v / 2), m_sprite, true);
+		//DrawExtendGraph((*itr)->position.u - ((*itr)->size.u / 2) - Scroll::GetScrollX(), (*itr)->position.v - ((*itr)->size.v / 2), (*itr)->position.u + ((*itr)->size.u / 2) - Scroll::GetScrollX(), (*itr)->position.v + ((*itr)->size.v / 2), m_sprite, true);
 	}
 }
 
