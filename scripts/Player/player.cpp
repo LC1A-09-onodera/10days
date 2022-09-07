@@ -132,23 +132,29 @@ void Player::Draw()
 	DrawFormatString(0, 20, GetColor(255, 255, 255), "RIGHT:%2f", right);
 
 	//仮自機
-	DrawCircleAA(
-		m_position.u + Shake::GetShake().u,
-		m_position.v + Shake::GetShake().v,
-		C_PLAYER_RAD - m_outside_rad,
-		100,
-		GetColor(13, 13, 13),
-		true
-	);
+	if (m_outside_rad < C_PLAYER_RAD)
+	{
+		DrawCircleAA(
+			m_position.u + Shake::GetShake().u,
+			m_position.v + Shake::GetShake().v,
+			C_PLAYER_RAD - m_outside_rad,
+			100,
+			GetColor(13, 13, 13),
+			true
+		);
+	}
 	//外側用
-	DrawCircleAA(
-		m_outside_pos.u + Shake::GetShake().u,
-		m_outside_pos.v + Shake::GetShake().v,
-		m_outside_rad,
-		100,
-		GetColor(13, 13, 13),
-		true
-	);
+	if (m_outside_rad > 0)
+	{
+		DrawCircleAA(
+			m_outside_pos.u + Shake::GetShake().u,
+			m_outside_pos.v + Shake::GetShake().v,
+			m_outside_rad,
+			100,
+			GetColor(13, 13, 13),
+			true
+		);
+	}
 
 	//仮ステージ
 	float hoge = Shake::GetPowerX();
