@@ -96,8 +96,13 @@ void Player::Draw()
 {
 	//DrawGraph(static_cast<int>(m_position.u) - Scroll::GetScrollX(), static_cast<int>(m_position.v), m_sprite, true);
 
+	float left = Input::GetJoyLeftTrigger();
+	float right = Input::GetJoyRightTrigger();
+	DrawFormatString(0, 0, GetColor(255, 255, 255), "LEFT:%2f", left);
+	DrawFormatString(0, 20, GetColor(255, 255, 255), "RIGHT:%2f", right);
+
 	//仮自機
-	DrawCircleAA(m_position.u, m_position.v, C_PLAYER_RAD, 100, GetColor(255, 255, 0), true);
+	DrawCircleAA(m_position.u, m_position.v, C_PLAYER_RAD, 100, GetColor(13, 13, 13), true);
 
 	//仮ステージ
 	DrawCircle(640, 360, C_STAGE_RAD, GetColor(255, 255, 255), false);

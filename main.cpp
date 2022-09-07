@@ -4,6 +4,7 @@
 #include "scripts/Input/Input.h"
 #include "scripts/Particle/Particle.h"
 #include "scripts/Object/BaseObject.h"
+#include "scripts/Scene/Scene.h"
 
 // ウィンドウのタイトルに表示する文字列
 const char TITLE[] = "10days";
@@ -55,6 +56,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	par.LoadFile("Resources/particle.png");
 	ObjectManager::LoadFile();
 	ParticleManager::LoadFile();
+	GameScene::LoadFile();
+	GameScene::Init();
 	// ゲームループ
 	while (1)
 	{
@@ -110,6 +113,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		ObjectManager::Draw();
 
 		ParticleManager::Draw();
+		GameScene::Update();
+		GameScene::Draw();
 
 		//---------  ここまでにプログラムを記述  ---------//
 		// (ダブルバッファ)裏面
