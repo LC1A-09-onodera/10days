@@ -17,7 +17,7 @@ void Player::Init()
 	m_side = OUTSIDE;
 	m_loc = LOWER;
 	m_isMove = false;
-	m_stageSize = {504, 504};
+	m_stageSize = { 504, 504 };
 	m_isChange = false;
 }
 
@@ -49,28 +49,20 @@ void Player::Update()
 					//下で内から外の場合
 					if (m_loc == LOWER)
 					{
-						//m_position.v += C_PLAYER_RAD * 2;
-
 						//LOWERの座標指定
-						m_outside_pos.v = m_position.v + C_PLAYER_RAD * 2;
+						m_outside_pos.v = m_position.v + C_PLAYER_RAD * 2 + C_LINE_WID;
 
 					}
 					//上で内から外の場合
 					else
 					{
-						//m_position.v -= C_PLAYER_RAD * 2;
-
 						//UPPERの座標指定
-						m_outside_pos.v = m_position.v - C_PLAYER_RAD * 2;
+						m_outside_pos.v = m_position.v - C_PLAYER_RAD * 2 - C_LINE_WID;
 					}
 					m_side = INSIDE;
 				}
 				else
 				{
-					//下で外から内の場合
-					//if (m_loc == LOWER) { m_position.v -= C_PLAYER_RAD * 0; }
-					//上で外から内の場合
-					//else { m_position.v += C_PLAYER_RAD * 0; }
 					m_side = OUTSIDE;
 				}
 				m_spaceCount++;
@@ -161,8 +153,8 @@ void Player::Draw()
 	//仮ステージ
 	float hoge = Shake::GetPowerX();
 	DrawExtendGraph(640 + Shake::GetShake().u - m_stageSize.u / 2.0f, 360 + Shake::GetShake().v - m_stageSize.v / 2.0f,
-					640 + Shake::GetShake().u + m_stageSize.u / 2.0f, 360 + Shake::GetShake().v + m_stageSize.v / 2.0f,
-					m_s_stage, true);
+		640 + Shake::GetShake().u + m_stageSize.u / 2.0f, 360 + Shake::GetShake().v + m_stageSize.v / 2.0f,
+		m_s_stage, true);
 	DrawFormatString(0, 40, GetColor(255, 255, 255), "ShakeX:%f", hoge);
 	/*DrawCircle(
 		640 + Shake::GetShake().u,
