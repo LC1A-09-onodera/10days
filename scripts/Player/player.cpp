@@ -97,6 +97,11 @@ void Player::Draw()
 	//DrawGraph(static_cast<int>(m_position.u) - Scroll::GetScrollX(), static_cast<int>(m_position.v), m_sprite, true);
 	//DrawFormatString(0, 0, GetColor(255, 255, 255), "posX:%2f, posY:%2f", m_position.u, m_position.v);
 
+	float left = Input::GetJoyLeftTrigger();
+	float right = Input::GetJoyRightTrigger();
+	DrawFormatString(0, 0, GetColor(255, 255, 255), "LEFT:%2f", left);
+	DrawFormatString(0, 20, GetColor(255, 255, 255), "RIGHT:%2f", right);
+
 	//‰¼Ž©‹@
 	DrawCircleAA(m_position.u, m_position.v, C_PLAYER_RAD, 100, GetColor(255, 255, 0), true);
 
