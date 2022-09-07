@@ -124,7 +124,7 @@ void Particle::SampleParticle(FLOAT2& f_startSize, FLOAT2& f_endSize, int f_coun
 
 void ParticleManager::LoadFile()
 {
-	smpParticle.LoadFile("Resources/particle.png");
+	smpParticle.LoadFile("Resources/particle_b.png");
 	pinkParticle.LoadFile("Resources/ParticlePink.png");
 	orangeParticle.LoadFile("Resources/ParticleOrange.png");
 }

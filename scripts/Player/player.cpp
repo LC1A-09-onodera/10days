@@ -15,6 +15,7 @@ void Player::Init()
 	m_side = OUTSIDE;
 	m_loc = LOWER;
 	m_isMove = false;
+	m_stageSize = {504, 504};
 }
 
 void Player::Update()
@@ -25,7 +26,7 @@ void Player::Update()
 
 	if (!m_isMove)
 	{
-		if (Input::GetKeyTrigger(KEY_INPUT_SPACE))
+		if (Input::GetKeyTrigger(KEY_INPUT_SPACE) || Input::isJoyBottomTrigger(XINPUT_BUTTON_A))
 		{
 			//縦移動
 			if (m_spaceCount >= 2)
@@ -102,15 +103,34 @@ void Player::Draw()
 	DrawFormatString(0, 20, GetColor(255, 255, 255), "RIGHT:%2f", right);
 
 	//仮自機
-	DrawCircleAA(m_position.u, m_position.v, C_PLAYER_RAD, 100, GetColor(13, 13, 13), true);
+	DrawCircleAA(
+		m_position.u + Shake::GetShake().u,
+		m_position.v + Shake::GetShake().v,
+		C_PLAYER_RAD,
+		100,
+		GetColor(13, 13, 13),
+		true
+	);
 
 	//仮ステージ
-	DrawCircle(640, 360, C_STAGE_RAD, GetColor(255, 255, 255), false);
+	float hoge = Shake::GetPowerX();
+	DrawExtendGraph(640 + Shake::GetShake().u - m_stageSize.u / 2.0f, 360 + Shake::GetShake().v - m_stageSize.v / 2.0f,
+					640 + Shake::GetShake().u + m_stageSize.u / 2.0f, 360 + Shake::GetShake().v + m_stageSize.v / 2.0f,
+					m_s_stage, true);
+	DrawFormatString(0, 40, GetColor(255, 255, 255), "ShakeX:%f", hoge);
+	/*DrawCircle(
+		640 + Shake::GetShake().u,
+		360 + Shake::GetShake().v,
+		C_STAGE_RAD,
+		GetColor(255, 255, 255),
+		false
+	);*/
 }
 
 void Player::LoadFile()
 {
 	m_sprite = LoadGraph("Resources/particle.png");
+	m_s_stage = LoadGraph("Resources/circle.png");
 	Init();
 }
 
@@ -126,7 +146,7 @@ bool Player::GetIsSide()
 
 void Player::AddForce()
 {
-	
+
 }
 
 void Player::AttachForce()

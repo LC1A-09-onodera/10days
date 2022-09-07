@@ -40,7 +40,7 @@ struct BaseObject
 	float angle = 0.0f;
 	FLOAT2 angleSub = {0 , 0};
 
-	static const int InsideR = 290;
+	static const int InsideR = 222;
 	static const int OutshideR = 320;
 	const float MoveSpeed = 0.05f;
 	const float CiycleSpeed = 1.0f;

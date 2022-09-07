@@ -38,7 +38,7 @@ private:
 	};
 
 private:
-	const int C_STAGE_RAD = 300;
+	const int C_STAGE_RAD = 240;
 	const float C_PLAYER_RAD = 20.0f;
 	const float C_TOTAL_RAD = C_STAGE_RAD + C_PLAYER_RAD;
 
@@ -53,6 +53,10 @@ private:
 	bool m_side;
 	bool m_loc;
 	bool m_isMove;
+
+	int m_s_player;
+	int m_s_stage;
+	FLOAT2 m_stageSize;
 
 public:
 	void Init();

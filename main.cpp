@@ -47,6 +47,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	FLOAT2 particlePos = { 0 };
 	float easeTime = 0;
 
+	int BackGraund = LoadGraph("Resources/back.png");
+
 	// ゲームループで使う変数の宣言
 	int mouse_x;
 	int mouse_y;
@@ -109,6 +111,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 
 		// 描画処理
+		DrawGraph(0, 0, BackGraund, true);
+
 		player.Draw();
 		ObjectManager::Draw();
 
