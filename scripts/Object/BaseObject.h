@@ -40,6 +40,7 @@ struct BaseObject
 	FLOAT2 centerPos = { 1280 / 2 , 720 / 2 };
 
 	void Collition(BaseObject& object);
+	void Collition(FLOAT2& f_playerPos);
 	void Shot(FLOAT2& direction);
 	void Shot(float direction);
 	void Update();

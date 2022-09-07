@@ -60,6 +60,7 @@ public:
 	void Draw();
 	void LoadFile();
 	bool GetIsMove();
+	bool GetIsSide();
 
 private:
 	void AddForce();
