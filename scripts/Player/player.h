@@ -38,7 +38,7 @@ private:
 	};
 
 private:
-	const int C_STAGE_RAD = 240;
+	const int C_STAGE_RAD = 243;
 	const float C_PLAYER_RAD = 20.0f;
 	const float C_TOTAL_RAD = C_STAGE_RAD + C_PLAYER_RAD;
 
@@ -47,12 +47,17 @@ private:
 
 	const float C_ADD_TIMER = 0.02f;
 
+	const float C_SUB_RAD = 2.0f;
+
 private:
+	FLOAT2 m_outside_pos;
 	int m_spaceCount;
 	float m_easeTimer;
+	float m_outside_rad;
 	bool m_side;
 	bool m_loc;
 	bool m_isMove;
+	bool m_isChange;
 
 	int m_s_player;
 	int m_s_stage;

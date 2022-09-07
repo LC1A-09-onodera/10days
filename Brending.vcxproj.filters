@@ -1,69 +1,25 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="ソース ファイル">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="ヘッダー ファイル">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="リソース ファイル">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="scripts\Input\Input.cpp" />
+    <ClCompile Include="scripts\Lib\Lib.cpp" />
+    <ClCompile Include="scripts\Object\BaseObject.cpp" />
+    <ClCompile Include="scripts\Particle\Particle.cpp" />
+    <ClCompile Include="scripts\Player\player.cpp" />
+    <ClCompile Include="scripts\Scroll\Scroll.cpp" />
+    <ClCompile Include="scripts\WindowFrame\WindowFrame.cpp" />
+    <ClCompile Include="scripts\Scene\Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="scripts\Lib\Lib.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="scripts\Player\player.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="scripts\Input\Input.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="scripts\Particle\Particle.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-<<<<<<< HEAD
-=======
-    <ClCompile Include="scripts\Scroll\Scroll.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="scripts\Object\BaseObject.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
->>>>>>> 0e5b718552f08937160dd4838e3dadd6127f4659
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="scripts\Lib\Lib.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="scripts\Player\player.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="scripts\Input\Input.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="scripts\Particle\Particle.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-<<<<<<< HEAD
-=======
-    <ClInclude Include="scripts\Scroll\Scroll.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="scripts\Object\BaseObject.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="scripts\Math\Math.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
->>>>>>> 0e5b718552f08937160dd4838e3dadd6127f4659
+    <ClInclude Include="scripts\Input\Input.h" />
+    <ClInclude Include="scripts\Lib\Lib.h" />
+    <ClInclude Include="scripts\Math\Math.h" />
+    <ClInclude Include="scripts\Object\BaseObject.h" />
+    <ClInclude Include="scripts\Particle\Particle.h" />
+    <ClInclude Include="scripts\Player\player.h" />
+    <ClInclude Include="scripts\Scroll\Scroll.h" />
+    <ClInclude Include="scripts\WindowFrame\WindowFrame.h" />
+    <ClInclude Include="scripts\Scene\Scene.h" />
   </ItemGroup>
 </Project>
