@@ -163,6 +163,9 @@ void BaseObject::Update()
 		float R = BaseObject::InsideR;
 		m_position.u = centerPos.u + R * DxLibMath::Cos(angle);
 		m_position.v = centerPos.v + R * DxLibMath::Sin(angle);
+		FLOAT2 startSize = { 10.0f, 10.0f };
+		FLOAT2 endSize = { 1.0f, 1.0f };
+		ParticleManager::smpParticle.StayParticle(m_position, startSize, endSize, 1, 60);
 		return;
 	}
 

@@ -43,6 +43,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 	// 画像などのリソースデータの変数宣言と読み込み
 	int Particle1 = LoadGraph("Resources/particle.png");
+	FLOAT2 particlePos = { 0 };
+	float easeTime = 0;
 
 	// ゲームループで使う変数の宣言
 	int mouse_x;
@@ -100,6 +102,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		ObjectManager::Update(pos, player.GetIsSide());
 
 		ParticleManager::Update();
+
+
 
 		// 描画処理
 		player.Draw();

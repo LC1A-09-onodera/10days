@@ -107,6 +107,21 @@ void Particle::StayParticle(FLOAT2& f_emitPos, FLOAT2& f_startSize, FLOAT2& f_en
 	}
 }
 
+void Particle::SampleParticle(FLOAT2& f_startSize, FLOAT2& f_endSize, int f_count, int f_life)
+{
+	for (int i = 0; i < f_count; i++)
+	{
+		FLOAT2 emitPos = { 0 };
+		FLOAT2 vel = { 0 };
+		vel.u = rand() % 3 - 1;
+		vel.v = rand() % 3 - 1;
+		FLOAT2 acc = { 0 };
+		acc.u = -vel.u / f_life;
+		acc.v = -vel.v / f_life;
+		AddParitcle(emitPos, vel, acc, f_startSize, f_endSize, f_life);
+	}
+}
+
 void ParticleManager::LoadFile()
 {
 	smpParticle.LoadFile("Resources/particle.png");

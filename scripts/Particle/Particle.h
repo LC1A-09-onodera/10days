@@ -36,6 +36,8 @@ public:
 	void FlyParticle(FLOAT2 &f_emitPos, FLOAT2& f_startSize, FLOAT2& f_endSize, int f_count, int f_life);
 	void ExprotionParticle(FLOAT2& f_emitPos, FLOAT2& f_startSize, FLOAT2& f_endSize, int f_count, int f_life);
 	void StayParticle(FLOAT2& f_emitPos, FLOAT2& f_startSize, FLOAT2& f_endSize, int f_count, int f_life);
+
+	void SampleParticle(FLOAT2& f_startSize, FLOAT2& f_endSize, int f_count, int f_life);
 };
 
 class ParticleManager

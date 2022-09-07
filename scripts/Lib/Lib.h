@@ -12,5 +12,10 @@ namespace Collision
 
 namespace Easeing
 {
-	float EaseOutBounce();
+	float OutBounce(float time);
+	float EaseOutBounce(float startPos, float endPos, float time);
+	FLOAT2 EaseOutBounce(FLOAT2 startPos, FLOAT2 endPos, float time);
+	float EaseInOutBounce(float startPos, float endPos, float time);
+	FLOAT2 EaseInOutBounce(FLOAT2 startPos, FLOAT2 endPos, float time);
+	float EaseOutElastic(float startPos, float endPos, float time);
 }

@@ -74,6 +74,7 @@ public:
 	static ObjectSample smp;
 	static ObjectSample object1;
 	static ObjectSample object2;
+
 	static void LoadFile();
 	static void Update(FLOAT2 &f_playerPos, bool f_playerIsOutside);
 	static void Draw();
