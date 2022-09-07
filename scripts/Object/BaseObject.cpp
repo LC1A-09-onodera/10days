@@ -12,7 +12,7 @@ void ObjectSample::LoadFile(const char* path)
 	m_sprite = LoadGraph(path);
 }
 
-void ObjectSample::Update()
+void ObjectSample::Update(FLOAT2& f_playerPos, bool f_playerIsOutside)
 {
 	//‘S•”‚Ì“–‚½‚è”»’è‚ðŽæ‚é
 	int index = 0;
@@ -160,11 +160,11 @@ void ObjectManager::LoadFile()
 	object2.LoadFile("Resources/object2.png");
 }
 
-void ObjectManager::Update()
+void ObjectManager::Update(FLOAT2& f_playerPos, bool f_playerIsOutside)
 {
-	smp.Update();
-	object1.Update();
-	object2.Update();
+	smp.Update(f_playerPos, f_playerIsOutside);
+	object1.Update(f_playerPos, f_playerIsOutside);
+	object2.Update(f_playerPos, f_playerIsOutside);
 }
 
 void ObjectManager::Draw()
