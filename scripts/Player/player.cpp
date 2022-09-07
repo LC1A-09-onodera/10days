@@ -25,7 +25,7 @@ void Player::Update()
 
 	if (!m_isMove)
 	{
-		if (Input::GetKeyTrigger(KEY_INPUT_SPACE))
+		if (Input::GetKeyTrigger(KEY_INPUT_SPACE) || Input::isJoyBottomTrigger(XINPUT_BUTTON_A))
 		{
 			//縦移動
 			if (m_spaceCount >= 2)
@@ -102,10 +102,25 @@ void Player::Draw()
 	DrawFormatString(0, 20, GetColor(255, 255, 255), "RIGHT:%2f", right);
 
 	//仮自機
-	DrawCircleAA(m_position.u, m_position.v, C_PLAYER_RAD, 100, GetColor(255, 255, 0), true);
+	DrawCircleAA(
+		m_position.u + Shake::GetShake().u,
+		m_position.v + Shake::GetShake().v,
+		C_PLAYER_RAD,
+		100,
+		GetColor(255, 255, 0),
+		true
+	);
 
 	//仮ステージ
-	DrawCircle(640, 360, C_STAGE_RAD, GetColor(255, 255, 255), false);
+	float hoge = Shake::GetPowerX();
+	DrawFormatString(0, 40, GetColor(255, 255, 255), "ShakeX:%f", hoge);
+	DrawCircle(
+		640 + Shake::GetShake().u,
+		360 + Shake::GetShake().v,
+		C_STAGE_RAD,
+		GetColor(255, 255, 255),
+		false
+	);
 }
 
 void Player::LoadFile()
@@ -126,7 +141,7 @@ bool Player::GetIsSide()
 
 void Player::AddForce()
 {
-	
+
 }
 
 void Player::AttachForce()

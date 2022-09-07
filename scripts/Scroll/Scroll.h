@@ -16,9 +16,14 @@ class Shake
 {
 private:
 	static FLOAT2 m_shakeValue;
+	static FLOAT2 m_randPower;
+	static float m_maxPower;
+	static bool m_isAddPowerTrigger;
 public:
 	static void AddShakePower(FLOAT2 f_shakePower);
+	static FLOAT2 GetShake();
+	static FLOAT2 GetPower();
 	static void ShakePowerUpdate();
-	static float GetShapeX();
-	static float GetShapeY();
+	static float GetPowerX();
+	static float GetPowerY();
 };

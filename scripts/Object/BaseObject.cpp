@@ -2,6 +2,7 @@
 #include "../Lib/Lib.h"
 #include "../Math/Math.h"
 #include "../Particle/Particle.h"
+#include "../Scroll/Scroll.h"
 #include <cmath>
 
 ObjectSample ObjectManager::smp;
@@ -96,6 +97,9 @@ void BaseObject::Collition(BaseObject& object)
 {
 	if (Collision::CiycleCollision(this->m_position, this->m_R, object.m_position, object.m_R))
 	{
+		FLOAT2 l_shakePower = { 1.0f,1.0f };
+		Shake::AddShakePower(l_shakePower);
+
 		this->m_isHit = true;
 		object.m_isHit = true;
 
@@ -213,6 +217,19 @@ void ObjectManager::Update(FLOAT2& f_playerPos, bool f_playerIsOutside)
 	object1.Update(f_playerPos, f_playerIsOutside);
 	object2.Update(f_playerPos, f_playerIsOutside);
 	AllCollision();
+
+	if (Shake::GetPower().u > 0.0f)
+	{
+		FLOAT2 l_shakePower = { -0.1f,-0.1f };
+		Shake::AddShakePower(l_shakePower);
+	}
+	if (Shake::GetPower().u < 0.0f)
+	{
+		FLOAT2 l_shakePower = Shake::GetPower();
+		l_shakePower.u *= -1.0f;
+		l_shakePower.v *= -1.0f;
+		Shake::AddShakePower(l_shakePower);
+	}
 }
 
 void ObjectManager::Draw()
