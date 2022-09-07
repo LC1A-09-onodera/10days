@@ -105,6 +105,10 @@ void BaseObject::Collition(BaseObject& object)
 		{
 			ParticleManager::pinkParticle.ExprotionParticle(this->m_position, startSize, endSize, 6, 30);
 		}
+		else if (m_objectType == ObjectType::ORANGE)
+		{
+			ParticleManager::orangeParticle.ExprotionParticle(this->m_position, startSize, endSize, 6, 30);
+		}
 		else
 		{
 			ParticleManager::smpParticle.ExprotionParticle(this->m_position, startSize, endSize, 6, 30);
@@ -121,7 +125,11 @@ void BaseObject::Collition(FLOAT2& f_playerPos)
 		FLOAT2 endSize = { 0.0f, 0.0f };
 		if (m_objectType == ObjectType::PINK)
 		{
- 			ParticleManager::pinkParticle.ExprotionParticle(this->m_position, startSize, endSize, 6, 30);
+			ParticleManager::pinkParticle.ExprotionParticle(this->m_position, startSize, endSize, 6, 30);
+		}
+		else if (m_objectType == ObjectType::ORANGE)
+		{
+			ParticleManager::orangeParticle.ExprotionParticle(this->m_position, startSize, endSize, 6, 30);
 		}
 		else
 		{
@@ -165,8 +173,8 @@ void BaseObject::Update()
 	m_nowR = Collision::Lenght(centerPos, m_position);
 	if (rand() % 3 == 0)
 	{
-		FLOAT2 startSize = {10.0f, 10.0f};
-		FLOAT2 endSize = {1.0f, 1.0f};
+		FLOAT2 startSize = { 10.0f, 10.0f };
+		FLOAT2 endSize = { 1.0f, 1.0f };
 		ParticleManager::smpParticle.StayParticle(m_position, startSize, endSize, 4, 60);
 	}
 	if (m_nowR >= BaseObject::InsideR)
@@ -204,6 +212,7 @@ void ObjectManager::Update(FLOAT2& f_playerPos, bool f_playerIsOutside)
 	smp.Update(f_playerPos, f_playerIsOutside);
 	object1.Update(f_playerPos, f_playerIsOutside);
 	object2.Update(f_playerPos, f_playerIsOutside);
+	AllCollision();
 }
 
 void ObjectManager::Draw()
@@ -211,4 +220,15 @@ void ObjectManager::Draw()
 	smp.Draw();
 	object1.Draw();
 	object2.Draw();
+}
+
+void ObjectManager::AllCollision()
+{
+	for (auto itr = object1.m_objects.begin(); itr != object1.m_objects.end(); ++itr)
+	{
+		for (auto itr2 = object2.m_objects.begin(); itr2 != object2.m_objects.end(); ++itr2)
+		{
+			(*itr)->Collition(*(*itr2));
+		}
+	}
 }

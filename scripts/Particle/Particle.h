@@ -43,6 +43,7 @@ class ParticleManager
 public:
 	static Particle smpParticle;
 	static Particle pinkParticle;
+	static Particle orangeParticle;
 	static void LoadFile();
 	static void Update();
 	static void Draw();

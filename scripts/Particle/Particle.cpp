@@ -5,7 +5,7 @@
 
 Particle ParticleManager::smpParticle;
 Particle ParticleManager::pinkParticle;
-
+Particle ParticleManager::orangeParticle;
 void Particle::AddParitcle(FLOAT2& f_pos, FLOAT2& f_vec, FLOAT2& f_acc, FLOAT2& f_startSize, FLOAT2& f_endSize, int f_life)
 {
 	ParticleEach *each = new ParticleEach();
@@ -111,16 +111,19 @@ void ParticleManager::LoadFile()
 {
 	smpParticle.LoadFile("Resources/particle.png");
 	pinkParticle.LoadFile("Resources/ParticlePink.png");
+	orangeParticle.LoadFile("Resources/ParticleOrange.png");
 }
 
 void ParticleManager::Update()
 {
 	smpParticle.Update();
 	pinkParticle.Update();
+	orangeParticle.Update();
 }
 
 void ParticleManager::Draw()
 {
 	smpParticle.Draw();
 	pinkParticle.Draw();
+	orangeParticle.Draw();
 }

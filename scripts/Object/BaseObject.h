@@ -15,7 +15,7 @@ struct BaseObject
 
 	enum class ObjectType
 	{
-		ORANGI,
+		ORANGE,
 		PINK
 	};
 
@@ -57,10 +57,10 @@ struct BaseObject
 
 class ObjectSample
 {
-	std::list<BaseObject*> m_objects;
-	std::list<std::list<BaseObject *>::iterator> m_deleteObject;
 	int m_sprite;
 public:
+	std::list<BaseObject*> m_objects;
+	std::list<std::list<BaseObject*>::iterator> m_deleteObject;
 	void LoadFile(const char* path);
 	void Update(FLOAT2& f_playerPos, bool f_playerIsOutside);
 	void Shot(FLOAT2 f_position, FLOAT2 m_sprite, FLOAT2 f_direction, float R, BaseObject::ObjectType f_type);
@@ -77,6 +77,7 @@ public:
 	static void LoadFile();
 	static void Update(FLOAT2 &f_playerPos, bool f_playerIsOutside);
 	static void Draw();
+	static void AllCollision();
 };
 
 
