@@ -20,7 +20,7 @@ void GameScene::Update()
 		m_sidePosition[i].v -= 2.0f;
 		if (m_sidePosition[i].v < -m_sideSize.u)
 		{
-			m_sidePosition[i].v = m_sideSize.u + 1;
+			m_sidePosition[i].v = m_sideSize.u - m_sideSize.u / 4.0f;
 		}
 	}
 	for (int i = static_cast<int>(Direction::Left1); i <= static_cast<int>(Direction::Left2); i++)
@@ -28,7 +28,7 @@ void GameScene::Update()
 		m_sidePosition[i].v += 2.0f;
 		if (m_sidePosition[i].v > m_sideSize.u)
 		{
-			m_sidePosition[i].v = -m_sideSize.u + 1;
+			m_sidePosition[i].v = -(m_sideSize.u - m_sideSize.u / 4.0f);
 		}
 	}
 }

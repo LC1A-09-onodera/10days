@@ -32,7 +32,10 @@ void ObjectSample::Update(FLOAT2& f_playerPos, bool f_playerIsOutside)
 		{
 			if (itr != itr2)
 			{
-				(*itr)->Collition(*(*itr2));
+				if ((*itr)->m_isShotMove && (*itr2)->m_isShotMove)
+				{
+					(*itr)->Collition(*(*itr2));
+				}
 			}
 		}
 
