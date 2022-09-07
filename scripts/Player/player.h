@@ -45,7 +45,7 @@ private:
 	const float C_HALF_WID = 640.0f;
 	const float C_HALF_HEI = 360.0f;
 
-	const float C_ADD_TIMER = 0.01f;
+	const float C_ADD_TIMER = 0.02f;
 
 private:
 	int m_spaceCount;
@@ -59,6 +59,8 @@ public:
 	void Update();
 	void Draw();
 	void LoadFile();
+	bool GetIsMove();
+	bool GetIsSide();
 
 private:
 	void AddForce();

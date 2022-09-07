@@ -30,12 +30,15 @@
     <ClCompile Include="scripts\Particle\Particle.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+<<<<<<< HEAD
+=======
     <ClCompile Include="scripts\Scroll\Scroll.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="scripts\Object\BaseObject.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+>>>>>>> 0e5b718552f08937160dd4838e3dadd6127f4659
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="scripts\Lib\Lib.h">
@@ -50,6 +53,8 @@
     <ClInclude Include="scripts\Particle\Particle.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+<<<<<<< HEAD
+=======
     <ClInclude Include="scripts\Scroll\Scroll.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -59,5 +64,6 @@
     <ClInclude Include="scripts\Math\Math.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+>>>>>>> 0e5b718552f08937160dd4838e3dadd6127f4659
   </ItemGroup>
 </Project>
