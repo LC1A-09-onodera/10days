@@ -47,12 +47,17 @@ private:
 
 	const float C_ADD_TIMER = 0.02f;
 
+	const float C_SUB_RAD = 2.0f;
+
 private:
+	FLOAT2 m_outside_pos;
 	int m_spaceCount;
 	float m_easeTimer;
+	float m_outside_rad;
 	bool m_side;
 	bool m_loc;
 	bool m_isMove;
+	bool m_isChange;
 
 public:
 	void Init();
