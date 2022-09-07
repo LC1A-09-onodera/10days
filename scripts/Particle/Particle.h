@@ -26,11 +26,22 @@ class Particle
 	Emitter m_emitter;
 	int m_sprite;
 public:
-	
 	void AddParitcle(FLOAT2 &f_pos, FLOAT2 & f_vec, FLOAT2 & f_acc, FLOAT2 & f_startSize, FLOAT2 & f_endSize, int f_life);
+public:
 	void Start();
 	void Update();
 	void EachUpdate(ParticleEach *itr);
 	void Draw();
 	void LoadFile(const char *path);
+	void FlyParticle(FLOAT2 &f_emitPos, FLOAT2& f_startSize, FLOAT2& f_endSize, int f_count, int f_life);
+	void ExprotionParticle(FLOAT2& f_emitPos, FLOAT2& f_startSize, FLOAT2& f_endSize, int f_count, int f_life);
+};
+
+class ParticleManager
+{
+public:
+	static Particle smpParticle;
+	static void LoadFile();
+	static void Update();
+	static void Draw();
 };

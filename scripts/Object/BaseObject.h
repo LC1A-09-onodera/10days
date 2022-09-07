@@ -35,6 +35,7 @@ struct BaseObject
 	static const int InsideR = 300;
 	static const int OutshideR = 320;
 	const float MoveSpeed = 0.05f;
+	const float CiycleSpeed = 1.0f;
 
 	FLOAT2 centerPos = { 1280 / 2 , 720 / 2 };
 
@@ -62,7 +63,8 @@ class ObjectManager
 {
 public:
 	static ObjectSample smp;
-
+	static ObjectSample object1;
+	static ObjectSample object2;
 	static void LoadFile();
 	static void Update();
 	static void Draw();
