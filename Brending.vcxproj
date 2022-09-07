@@ -131,14 +131,19 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="scripts\Input\Input.cpp" />
     <ClCompile Include="scripts\Lib\Lib.cpp" />
+    <ClCompile Include="scripts\Object\BaseObject.cpp" />
     <ClCompile Include="scripts\Particle\Particle.cpp" />
     <ClCompile Include="scripts\Player\player.cpp" />
+    <ClCompile Include="scripts\Scroll\Scroll.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="scripts\Input\Input.h" />
     <ClInclude Include="scripts\Lib\Lib.h" />
+    <ClInclude Include="scripts\Math\Math.h" />
+    <ClInclude Include="scripts\Object\BaseObject.h" />
     <ClInclude Include="scripts\Particle\Particle.h" />
     <ClInclude Include="scripts\Player\player.h" />
+    <ClInclude Include="scripts\Scroll\Scroll.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
