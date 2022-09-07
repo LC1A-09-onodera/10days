@@ -4,6 +4,7 @@
 #include "scripts/Input/Input.h"
 #include "scripts/Particle/Particle.h"
 #include "scripts/Object/BaseObject.h"
+#include "scripts/Scene/Scene.h"
 
 // ウィンドウのタイトルに表示する文字列
 const char TITLE[] = "10days";
@@ -43,6 +44,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 	// 画像などのリソースデータの変数宣言と読み込み
 	int Particle1 = LoadGraph("Resources/particle.png");
+	FLOAT2 particlePos = { 0 };
+	float easeTime = 0;
+
+	int BackGraund = LoadGraph("Resources/back.png");
 
 	// ゲームループで使う変数の宣言
 	int mouse_x;
@@ -53,6 +58,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	par.LoadFile("Resources/particle.png");
 	ObjectManager::LoadFile();
 	ParticleManager::LoadFile();
+	GameScene::LoadFile();
+	GameScene::Init();
 	// ゲームループ
 	while (1)
 	{
@@ -75,7 +82,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		if (player.GetIsMove())
 		{
 			time++;
-			if (time > 15)
+			if (time > 2)
 			{
 				time = 0;
 				angle = rand() % 360;
@@ -86,13 +93,18 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 				//FLOAT2 winSizeHalf = { mouse_x,  mouse_y };
 				FLOAT2 winSizeHalf = { player.GetPos().u,  player.GetPos().v };
 				FLOAT2 spriteSize = { 30.0f, 30.0f };
+				float l_leftStickDeg = Input::GetJoyLeftStickAngle();
+				l_leftStickDeg = 180.0f / DX_PI_F * l_leftStickDeg;
+
 				if (rand() % 2 == 0)
 				{
-					ObjectManager::object1.Shot(winSizeHalf, spriteSize, angle, 18.0f);
+					//ObjectManager::object1.Shot(winSizeHalf, spriteSize, angle, 18.0f, BaseObject::ObjectType::ORANGE);
+					ObjectManager::object1.Shot(winSizeHalf, spriteSize, l_leftStickDeg, 18.0f, BaseObject::ObjectType::ORANGE);
 				}
 				else
 				{
-					ObjectManager::object2.Shot(winSizeHalf, spriteSize, angle, 18.0f);
+					//ObjectManager::object2.Shot(winSizeHalf, spriteSize, angle, 18.0f, BaseObject::ObjectType::PINK);
+					ObjectManager::object2.Shot(winSizeHalf, spriteSize, l_leftStickDeg, 18.0f, BaseObject::ObjectType::PINK);
 				}
 			}
 		}
@@ -101,11 +113,17 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 		ParticleManager::Update();
 
+
+
 		// 描画処理
+		DrawGraph(0, 0, BackGraund, true);
+
 		player.Draw();
 		ObjectManager::Draw();
 
 		ParticleManager::Draw();
+		GameScene::Update();
+		GameScene::Draw();
 
 		//---------  ここまでにプログラムを記述  ---------//
 		// (ダブルバッファ)裏面

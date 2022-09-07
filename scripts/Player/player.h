@@ -38,21 +38,29 @@ private:
 	};
 
 private:
-	const int C_STAGE_RAD = 300;
-	const float C_PLAYER_RAD = 20.0f;
-	const float C_TOTAL_RAD = C_STAGE_RAD + C_PLAYER_RAD;
-
-	const float C_HALF_WID = 640.0f;
-	const float C_HALF_HEI = 360.0f;
-
-	const float C_ADD_TIMER = 0.02f;
+	const int C_STAGE_RAD = 243;		//ステージの半径
+	const float C_PLAYER_RAD = 20.0f;	//プレイヤーの半径
+	const float C_TOTAL_RAD = 
+		C_STAGE_RAD + C_PLAYER_RAD;		//未使用
+	const float C_HALF_WID = 640.0f;	//ウィンドウサイズ横半分
+	const float C_HALF_HEI = 360.0f;	//ウィンドウサイズ縦半分
+	const float C_ADD_TIMER = 0.02f;	//イージング加算タイマー
+	const float C_SUB_RAD = 2.0f;		//仮自機の半径の減算用
+	const float C_LINE_WID = 7.0f;		//ステージの線の幅
 
 private:
+	FLOAT2 m_outside_pos;
 	int m_spaceCount;
 	float m_easeTimer;
+	float m_outside_rad;
 	bool m_side;
 	bool m_loc;
 	bool m_isMove;
+	bool m_isChange;
+
+	int m_s_player;
+	int m_s_stage;
+	FLOAT2 m_stageSize;
 
 public:
 	void Init();

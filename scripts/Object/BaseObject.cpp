@@ -2,6 +2,7 @@
 #include "../Lib/Lib.h"
 #include "../Math/Math.h"
 #include "../Particle/Particle.h"
+#include "../Scroll/Scroll.h"
 #include <cmath>
 
 ObjectSample ObjectManager::smp;
@@ -31,7 +32,10 @@ void ObjectSample::Update(FLOAT2& f_playerPos, bool f_playerIsOutside)
 		{
 			if (itr != itr2)
 			{
-				(*itr)->Collition(*(*itr2));
+				if ((*itr)->m_isShotMove && (*itr2)->m_isShotMove)
+				{
+					(*itr)->Collition(*(*itr2));
+				}
 			}
 		}
 
@@ -58,18 +62,18 @@ void ObjectSample::Update(FLOAT2& f_playerPos, bool f_playerIsOutside)
 	m_deleteObject.clear();
 }
 
-void ObjectSample::Shot(FLOAT2 f_position, FLOAT2 m_sprite, FLOAT2 f_direction, float R)
+void ObjectSample::Shot(FLOAT2 f_position, FLOAT2 m_sprite, FLOAT2 f_direction, float R, BaseObject::ObjectType f_type)
 {
 	BaseObject* obj = new BaseObject();
-	obj->Init(f_position, m_sprite, R);
+	obj->Init(f_position, m_sprite, R, f_type);
 	obj->Shot(f_direction);
 	m_objects.push_back(obj);
 }
 
-void ObjectSample::Shot(FLOAT2 f_position, FLOAT2 m_sprite, float f_direction, float R)
+void ObjectSample::Shot(FLOAT2 f_position, FLOAT2 m_sprite, float f_direction, float R, BaseObject::ObjectType f_type)
 {
 	BaseObject* obj = new BaseObject();
-	obj->Init(f_position, m_sprite, R);
+	obj->Init(f_position, m_sprite, R, f_type);
 	obj->Shot(f_direction);
 	m_objects.push_back(obj);
 }
@@ -96,12 +100,26 @@ void BaseObject::Collition(BaseObject& object)
 {
 	if (Collision::CiycleCollision(this->m_position, this->m_R, object.m_position, object.m_R))
 	{
+		FLOAT2 l_shakePower = { 1.0f,1.0f };
+		Shake::AddShakePower(l_shakePower);
+
 		this->m_isHit = true;
 		object.m_isHit = true;
 
 		FLOAT2 startSize = { 30.0f, 30.0f };
 		FLOAT2 endSize = { 0.0f, 0.0f };
-		ParticleManager::smpParticle.ExprotionParticle(this->m_position, startSize, endSize, 6, 30);
+		if (m_objectType == ObjectType::PINK)
+		{
+			ParticleManager::pinkParticle.ExprotionParticle(this->m_position, startSize, endSize, 6, 30);
+		}
+		else if (m_objectType == ObjectType::ORANGE)
+		{
+			ParticleManager::orangeParticle.ExprotionParticle(this->m_position, startSize, endSize, 6, 30);
+		}
+		else
+		{
+			ParticleManager::smpParticle.ExprotionParticle(this->m_position, startSize, endSize, 6, 30);
+		}
 	}
 }
 
@@ -112,7 +130,18 @@ void BaseObject::Collition(FLOAT2& f_playerPos)
 		this->m_isHit = true;
 		FLOAT2 startSize = { 30.0f, 30.0f };
 		FLOAT2 endSize = { 0.0f, 0.0f };
-		ParticleManager::smpParticle.ExprotionParticle(this->m_position, startSize, endSize, 6, 30);
+		if (m_objectType == ObjectType::PINK)
+		{
+			ParticleManager::pinkParticle.ExprotionParticle(this->m_position, startSize, endSize, 6, 30);
+		}
+		else if (m_objectType == ObjectType::ORANGE)
+		{
+			ParticleManager::orangeParticle.ExprotionParticle(this->m_position, startSize, endSize, 6, 30);
+		}
+		else
+		{
+			ParticleManager::smpParticle.ExprotionParticle(this->m_position, startSize, endSize, 6, 30);
+		}
 	}
 }
 
@@ -141,6 +170,9 @@ void BaseObject::Update()
 		float R = BaseObject::InsideR;
 		m_position.u = centerPos.u + R * DxLibMath::Cos(angle);
 		m_position.v = centerPos.v + R * DxLibMath::Sin(angle);
+		FLOAT2 startSize = { 10.0f, 10.0f };
+		FLOAT2 endSize = { 1.0f, 1.0f };
+		ParticleManager::smpParticle.StayParticle(m_position, startSize, endSize, 1, 60);
 		return;
 	}
 
@@ -149,6 +181,12 @@ void BaseObject::Update()
 	m_position.u += R * DxLibMath::Cos(angle) * MoveSpeed;
 	m_position.v += R * DxLibMath::Sin(angle) * MoveSpeed;
 	m_nowR = Collision::Lenght(centerPos, m_position);
+	if (rand() % 3 == 0)
+	{
+		FLOAT2 startSize = { 10.0f, 10.0f };
+		FLOAT2 endSize = { 1.0f, 1.0f };
+		ParticleManager::smpParticle.StayParticle(m_position, startSize, endSize, 4, 60);
+	}
 	if (m_nowR >= BaseObject::InsideR)
 	{
 		float angleSmp;
@@ -164,11 +202,12 @@ void BaseObject::Update()
 	}
 }
 
-void BaseObject::Init(FLOAT2 position, FLOAT2 spriteSize, float R)
+void BaseObject::Init(FLOAT2 position, FLOAT2 spriteSize, float R, ObjectType f_type)
 {
 	m_position = position;
 	m_spriteSize = spriteSize;
 	m_R = R;
+	m_objectType = f_type;
 }
 
 void ObjectManager::LoadFile()
@@ -183,6 +222,20 @@ void ObjectManager::Update(FLOAT2& f_playerPos, bool f_playerIsOutside)
 	smp.Update(f_playerPos, f_playerIsOutside);
 	object1.Update(f_playerPos, f_playerIsOutside);
 	object2.Update(f_playerPos, f_playerIsOutside);
+	AllCollision();
+
+	if (Shake::GetPower().u > 0.0f)
+	{
+		FLOAT2 l_shakePower = { -0.1f,-0.1f };
+		Shake::AddShakePower(l_shakePower);
+	}
+	if (Shake::GetPower().u < 0.0f)
+	{
+		FLOAT2 l_shakePower = Shake::GetPower();
+		l_shakePower.u *= -1.0f;
+		l_shakePower.v *= -1.0f;
+		Shake::AddShakePower(l_shakePower);
+	}
 }
 
 void ObjectManager::Draw()
@@ -190,4 +243,15 @@ void ObjectManager::Draw()
 	smp.Draw();
 	object1.Draw();
 	object2.Draw();
+}
+
+void ObjectManager::AllCollision()
+{
+	for (auto itr = object1.m_objects.begin(); itr != object1.m_objects.end(); ++itr)
+	{
+		for (auto itr2 = object2.m_objects.begin(); itr2 != object2.m_objects.end(); ++itr2)
+		{
+			(*itr)->Collition(*(*itr2));
+		}
+	}
 }
