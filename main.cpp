@@ -79,7 +79,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			}
 			FLOAT2 winSizeHalf = { mouse_x,  mouse_y };
 			FLOAT2 spriteSize = { 10.0f, 10.0f };
-			ObjectManager::smp.Shot(winSizeHalf, spriteSize, angle, 7.0f);
+			//ObjectManager::smp.Shot(winSizeHalf, spriteSize, angle, 7.0f);
+			ObjectManager::smp.Shot(player.GetPos(), spriteSize, angle, 7.0f);
 		}
 
 		ObjectManager::Update();
@@ -87,7 +88,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		ParticleManager::Update();
 
 		// ï`âÊèàóù
-		//player.Draw();
+		player.Draw();
 		ObjectManager::Draw();
 
 		ParticleManager::Draw();
