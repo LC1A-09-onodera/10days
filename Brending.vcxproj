@@ -135,6 +135,7 @@
     <ClCompile Include="scripts\Particle\Particle.cpp" />
     <ClCompile Include="scripts\Player\player.cpp" />
     <ClCompile Include="scripts\Scroll\Scroll.cpp" />
+    <ClCompile Include="scripts\WindowFrame\WindowFrame.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="scripts\Input\Input.h" />
@@ -144,6 +145,7 @@
     <ClInclude Include="scripts\Particle\Particle.h" />
     <ClInclude Include="scripts\Player\player.h" />
     <ClInclude Include="scripts\Scroll\Scroll.h" />
+    <ClInclude Include="scripts\WindowFrame\WindowFrame.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
