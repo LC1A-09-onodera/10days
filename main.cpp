@@ -88,11 +88,11 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 				FLOAT2 spriteSize = { 30.0f, 30.0f };
 				if (rand() % 2 == 0)
 				{
-					ObjectManager::object1.Shot(winSizeHalf, spriteSize, angle, 18.0f);
+					ObjectManager::object1.Shot(winSizeHalf, spriteSize, angle, 18.0f, BaseObject::ObjectType::ORANGI);
 				}
 				else
 				{
-					ObjectManager::object2.Shot(winSizeHalf, spriteSize, angle, 18.0f);
+					ObjectManager::object2.Shot(winSizeHalf, spriteSize, angle, 18.0f, BaseObject::ObjectType::PINK);
 				}
 			}
 		}

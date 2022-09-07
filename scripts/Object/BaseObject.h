@@ -13,6 +13,12 @@ struct BaseObject
 		OUTSHIDE,
 	};
 
+	enum class ObjectType
+	{
+		ORANGI,
+		PINK
+	};
+
 	FLOAT2 m_position = { 0, 0 };
 	FLOAT2 m_spriteSize = {100, 100};
 	//ìñÇΩÇËîªíËópîºåa
@@ -27,6 +33,8 @@ struct BaseObject
 	float m_easeR = 0.0f;
 
 	Shide m_shide = Shide::INSHIDE;
+
+	ObjectType m_objectType;
 
 	//ë≈ÇøèoÇµÇΩéûÇÃï˚å¸Ç«Ç¡ÇøÇ≈çsÇ±Ç§Ç©
 	float angle = 0.0f;
@@ -44,7 +52,7 @@ struct BaseObject
 	void Shot(FLOAT2& direction);
 	void Shot(float direction);
 	void Update();
-	void Init(FLOAT2 position, FLOAT2 spriteSize, float R);
+	void Init(FLOAT2 position, FLOAT2 spriteSize, float R, ObjectType f_type);
 };
 
 class ObjectSample
@@ -55,8 +63,8 @@ class ObjectSample
 public:
 	void LoadFile(const char* path);
 	void Update(FLOAT2& f_playerPos, bool f_playerIsOutside);
-	void Shot(FLOAT2 f_position, FLOAT2 m_sprite, FLOAT2 f_direction, float R);
-	void Shot(FLOAT2 f_position, FLOAT2 m_sprite, float f_direction, float R);
+	void Shot(FLOAT2 f_position, FLOAT2 m_sprite, FLOAT2 f_direction, float R, BaseObject::ObjectType f_type);
+	void Shot(FLOAT2 f_position, FLOAT2 m_sprite, float f_direction, float R, BaseObject::ObjectType f_type);
 	void Draw();
 };
 

@@ -35,12 +35,14 @@ public:
 	void LoadFile(const char *path);
 	void FlyParticle(FLOAT2 &f_emitPos, FLOAT2& f_startSize, FLOAT2& f_endSize, int f_count, int f_life);
 	void ExprotionParticle(FLOAT2& f_emitPos, FLOAT2& f_startSize, FLOAT2& f_endSize, int f_count, int f_life);
+	void StayParticle(FLOAT2& f_emitPos, FLOAT2& f_startSize, FLOAT2& f_endSize, int f_count, int f_life);
 };
 
 class ParticleManager
 {
 public:
 	static Particle smpParticle;
+	static Particle pinkParticle;
 	static void LoadFile();
 	static void Update();
 	static void Draw();

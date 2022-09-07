@@ -58,18 +58,18 @@ void ObjectSample::Update(FLOAT2& f_playerPos, bool f_playerIsOutside)
 	m_deleteObject.clear();
 }
 
-void ObjectSample::Shot(FLOAT2 f_position, FLOAT2 m_sprite, FLOAT2 f_direction, float R)
+void ObjectSample::Shot(FLOAT2 f_position, FLOAT2 m_sprite, FLOAT2 f_direction, float R, BaseObject::ObjectType f_type)
 {
 	BaseObject* obj = new BaseObject();
-	obj->Init(f_position, m_sprite, R);
+	obj->Init(f_position, m_sprite, R, f_type);
 	obj->Shot(f_direction);
 	m_objects.push_back(obj);
 }
 
-void ObjectSample::Shot(FLOAT2 f_position, FLOAT2 m_sprite, float f_direction, float R)
+void ObjectSample::Shot(FLOAT2 f_position, FLOAT2 m_sprite, float f_direction, float R, BaseObject::ObjectType f_type)
 {
 	BaseObject* obj = new BaseObject();
-	obj->Init(f_position, m_sprite, R);
+	obj->Init(f_position, m_sprite, R, f_type);
 	obj->Shot(f_direction);
 	m_objects.push_back(obj);
 }
@@ -101,7 +101,14 @@ void BaseObject::Collition(BaseObject& object)
 
 		FLOAT2 startSize = { 30.0f, 30.0f };
 		FLOAT2 endSize = { 0.0f, 0.0f };
-		ParticleManager::smpParticle.ExprotionParticle(this->m_position, startSize, endSize, 6, 30);
+		if (m_objectType == ObjectType::PINK)
+		{
+			ParticleManager::pinkParticle.ExprotionParticle(this->m_position, startSize, endSize, 6, 30);
+		}
+		else
+		{
+			ParticleManager::smpParticle.ExprotionParticle(this->m_position, startSize, endSize, 6, 30);
+		}
 	}
 }
 
@@ -112,7 +119,14 @@ void BaseObject::Collition(FLOAT2& f_playerPos)
 		this->m_isHit = true;
 		FLOAT2 startSize = { 30.0f, 30.0f };
 		FLOAT2 endSize = { 0.0f, 0.0f };
-		ParticleManager::smpParticle.ExprotionParticle(this->m_position, startSize, endSize, 6, 30);
+		if (m_objectType == ObjectType::PINK)
+		{
+ 			ParticleManager::pinkParticle.ExprotionParticle(this->m_position, startSize, endSize, 6, 30);
+		}
+		else
+		{
+			ParticleManager::smpParticle.ExprotionParticle(this->m_position, startSize, endSize, 6, 30);
+		}
 	}
 }
 
@@ -149,6 +163,12 @@ void BaseObject::Update()
 	m_position.u += R * DxLibMath::Cos(angle) * MoveSpeed;
 	m_position.v += R * DxLibMath::Sin(angle) * MoveSpeed;
 	m_nowR = Collision::Lenght(centerPos, m_position);
+	if (rand() % 3 == 0)
+	{
+		FLOAT2 startSize = {10.0f, 10.0f};
+		FLOAT2 endSize = {1.0f, 1.0f};
+		ParticleManager::smpParticle.StayParticle(m_position, startSize, endSize, 4, 60);
+	}
 	if (m_nowR >= BaseObject::InsideR)
 	{
 		float angleSmp;
@@ -164,11 +184,12 @@ void BaseObject::Update()
 	}
 }
 
-void BaseObject::Init(FLOAT2 position, FLOAT2 spriteSize, float R)
+void BaseObject::Init(FLOAT2 position, FLOAT2 spriteSize, float R, ObjectType f_type)
 {
 	m_position = position;
 	m_spriteSize = spriteSize;
 	m_R = R;
+	m_objectType = f_type;
 }
 
 void ObjectManager::LoadFile()
