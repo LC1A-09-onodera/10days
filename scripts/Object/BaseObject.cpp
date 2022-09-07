@@ -16,6 +16,7 @@ void ObjectSample::Update(FLOAT2& f_playerPos, bool f_playerIsOutside)
 {
 	//全部の当たり判定を取る
 	int index = 0;
+	
 	for (auto itr = m_objects.begin(); itr != m_objects.end(); ++itr)
 	{
 		//itr→メインのチェック対象
@@ -31,6 +32,7 @@ void ObjectSample::Update(FLOAT2& f_playerPos, bool f_playerIsOutside)
 			if (itr != itr2)
 			{
 				(*itr)->Collition(*(*itr2));
+				//(*itr)->
 			}
 		}
 		index++;
