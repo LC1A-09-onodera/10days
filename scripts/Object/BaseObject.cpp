@@ -4,12 +4,17 @@
 #include "../Particle/Particle.h"
 #include "../Scroll/Scroll.h"
 #include "../Sound/Sound.h"
+#include "DxLib.h"
 
 #include <cmath>
 
 ObjectSample ObjectManager::smp;
 ObjectSample ObjectManager::object1;
 ObjectSample ObjectManager::object2;
+std::list<InducedExplosion*> ObjectManager::exprotionObject;
+std::list<std::list<InducedExplosion*>::iterator> ObjectManager::deleteExprotionObject;
+int InducedExplosion::m_s_exprosion[1];
+
 void ObjectSample::LoadFile(const char* path)
 {
 	m_sprite = LoadGraph(path);
@@ -122,6 +127,11 @@ void BaseObject::Collition(BaseObject& object)
 		{
 			ParticleManager::smpParticle.ExprotionParticle(this->m_position, startSize, endSize, 6, 30);
 		}
+
+		InducedExplosion *ind = new InducedExplosion();
+		ind->Init(this->m_position, this->m_R + 30);
+		ObjectManager::exprotionObject.push_back(ind);
+
 		StopSoundMem(SoundManager::shotHitSound);
 		PlaySoundMem(SoundManager::shotHitSound, DX_PLAYTYPE_BACK, true);
 	}
@@ -249,6 +259,10 @@ void ObjectManager::Draw()
 	smp.Draw();
 	object1.Draw();
 	object2.Draw();
+	for (auto itr = exprotionObject.begin(); itr != exprotionObject.end(); ++itr)
+	{
+		(*itr)->Draw();
+	}
 }
 
 void ObjectManager::AllCollision()
@@ -259,5 +273,84 @@ void ObjectManager::AllCollision()
 		{
 			(*itr)->Collition(*(*itr2));
 		}
+	}
+
+	for (auto itr = exprotionObject.begin(); itr != exprotionObject.end(); ++itr)
+	{
+		for (auto itr2 = object1.m_objects.begin(); itr2 != object1.m_objects.end(); ++itr2)
+		{
+			(*itr)->Collition(*(*itr2));
+		}
+		for (auto itr3 = object2.m_objects.begin(); itr3 != object2.m_objects.end(); ++itr3)
+		{
+			(*itr)->Collition(*(*itr3));
+		}
+		(*itr)->Update();
+		if ((*itr)->m_life <= 0)
+		{
+			deleteExprotionObject.push_back(itr);
+		}
+	}
+	for (auto itr = deleteExprotionObject.begin(); itr != deleteExprotionObject.end(); ++itr)
+	{
+		exprotionObject.erase(*itr);
+	}
+	deleteExprotionObject.clear();
+}
+
+void InducedExplosion::LoadFile()
+{
+	m_s_exprosion[0] = LoadGraph("Resources/.png");
+}
+
+void InducedExplosion::Init(FLOAT2 f_position, float ExprosionR)
+{
+	m_position = f_position;
+	this->ExplosionR = ExprosionR;
+}
+
+void InducedExplosion::Update()
+{
+	m_life--;
+
+}
+
+void InducedExplosion::Draw()
+{
+	//DrawExtendGraph(0, 0, 10 , 10,  InducedExplosion::m_s_exprosion[0], true);
+	DrawCircle(m_position.u, m_position.v, ExplosionR, GetColor(255, 0, 255));
+}
+
+void InducedExplosion::Collition(BaseObject& obj)
+{
+	if (obj.m_isHit || !obj.m_isShotMove)
+	{
+		return;
+	}
+	if (Collision::CiycleCollision(m_position, ExplosionR, obj.m_position, obj.m_R))
+	{
+ 		FLOAT2 l_shakePower = { 1.0f,1.0f };
+		Shake::AddShakePower(l_shakePower);
+
+		obj.m_isHit = true;
+
+		FLOAT2 startSize = { 30.0f, 30.0f };
+		FLOAT2 endSize = { 0.0f, 0.0f };
+		if (obj.m_objectType == BaseObject::ObjectType::PINK)
+		{
+			ParticleManager::pinkParticle.ExprotionParticle(this->m_position, startSize, endSize, 6, 30);
+		}
+		else if (obj.m_objectType == BaseObject::ObjectType::ORANGE)
+		{
+			ParticleManager::orangeParticle.ExprotionParticle(this->m_position, startSize, endSize, 6, 30);
+		}
+		else
+		{
+			ParticleManager::smpParticle.ExprotionParticle(this->m_position, startSize, endSize, 6, 30);
+		}
+
+		InducedExplosion* ind = new InducedExplosion();
+		ind->Init(obj.m_position, obj.m_R + 10);
+		ObjectManager::exprotionObject.push_back(ind);
 	}
 }
