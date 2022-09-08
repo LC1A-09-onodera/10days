@@ -17,7 +17,7 @@ int InducedExplosion::m_s_exprosion[1];
 
 bool BaseObject::IsMove = false;
 
-int BaseObject::CiycleSpeed = 1;
+float BaseObject::CiycleSpeed = 1;
 
 void ObjectSample::LoadFile(const char* path)
 {
@@ -99,6 +99,12 @@ void ObjectSample::Draw()
 	}
 }
 
+void ObjectSample::Clear()
+{
+	m_objects.clear();
+	m_deleteObject.clear();
+}
+
 BaseObject::BaseObject()
 {
 }
@@ -132,7 +138,7 @@ void BaseObject::Collition(BaseObject& object)
 			ParticleManager::smpParticle.ExprotionParticle(this->m_position, startSize, endSize, 6, 30);
 		}
 
-		InducedExplosion *ind = new InducedExplosion();
+		InducedExplosion* ind = new InducedExplosion();
 		ind->Init(this->m_position, this->m_R + 30);
 		ObjectManager::exprotionObject.push_back(ind);
 
@@ -237,7 +243,7 @@ void BaseObject::Init(FLOAT2 position, FLOAT2 spriteSize, float R, ObjectType f_
 
 void BaseObject::SpeedUpdate()
 {
-	CiycleSpeed += IncreaseSpeed;
+	CiycleSpeed += (float)IncreaseSpeed / 5.0f;
 }
 
 void BaseObject::ResetSpeed()
@@ -322,6 +328,15 @@ void ObjectManager::AllCollision()
 	deleteExprotionObject.clear();
 }
 
+void ObjectManager::AllClear()
+{
+	smp.Clear();
+	object1.Clear();
+	object2.Clear();
+	exprotionObject.clear();
+	deleteExprotionObject.clear();
+}
+
 void InducedExplosion::LoadFile()
 {
 	m_s_exprosion[0] = LoadGraph("Resources/.png");
@@ -353,7 +368,7 @@ void InducedExplosion::Collition(BaseObject& obj)
 	}
 	if (Collision::CiycleCollision(m_position, ExplosionR, obj.m_position, obj.m_R))
 	{
- 		FLOAT2 l_shakePower = { 1.0f,1.0f };
+		FLOAT2 l_shakePower = { 1.0f,1.0f };
 		Shake::AddShakePower(l_shakePower);
 
 		obj.m_isHit = true;
@@ -374,7 +389,7 @@ void InducedExplosion::Collition(BaseObject& obj)
 		}
 
 		InducedExplosion* ind = new InducedExplosion();
-		ind->Init(obj.m_position, obj.m_R + 10);
+		ind->Init(obj.m_position, obj.m_R + 5);
 		ObjectManager::exprotionObject.push_back(ind);
 	}
 }

@@ -91,12 +91,13 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 				sceneNum = GAME;
 			}
 		}
-		if (sceneNum == GAME)
+
+		else if (sceneNum == GAME)
 		{
 			player.Update();
 			static float angle = 0.0f;
 			static int time = 0;
-			if (player.GetIsMove())
+			if (player.GetIsMove() && Input::isJoyLeftStickBottom())
 			{
 				time++;
 				if (time > 2)
@@ -109,18 +110,29 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 					}
 					FLOAT2 winSizeHalf = { player.GetPos().u,  player.GetPos().v };
 					FLOAT2 spriteSize = { 30.0f, 30.0f };
-					float l_leftStickDeg = Input::GetJoyLeftStickAngle();
+					float l_leftStickDeg = 0.0f;
+					l_leftStickDeg = Input::GetJoyLeftStickAngle();
 					l_leftStickDeg = 180.0f / DX_PI_F * l_leftStickDeg;
 
-					if (rand() % 2 == 0)
+					//弾が残ってるかの判定
+					bool isShot = player.ShotBullet();
+					if (isShot)
 					{
-						ObjectManager::object1.Shot(winSizeHalf, spriteSize, l_leftStickDeg, 18.0f, BaseObject::ObjectType::ORANGE);
-					}
-					else
-					{
-						ObjectManager::object2.Shot(winSizeHalf, spriteSize, l_leftStickDeg, 18.0f, BaseObject::ObjectType::PINK);
+						if (rand() % 2 == 0)
+						{
+							ObjectManager::object1.Shot(winSizeHalf, spriteSize, l_leftStickDeg, 18.0f, BaseObject::ObjectType::ORANGE);
+						}
+						else
+						{
+							ObjectManager::object2.Shot(winSizeHalf, spriteSize, l_leftStickDeg, 18.0f, BaseObject::ObjectType::PINK);
+						}
 					}
 				}
+				BaseObject::ResetSpeed();
+			}
+			if (player.GetIsChangeTrigger())
+			{
+				BaseObject::SpeedUpdate();
 			}
 			BaseObject::SetIsMove(player.GetIsMove());
 			FLOAT2 pos = player.GetPos();
@@ -128,6 +140,13 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			ObjectManager::Update(pos, player.GetIsSide());
 			//パーティクルの更新
 			ParticleManager::Update();
+			if (Input::GetKeyTrigger(KEY_INPUT_ESCAPE))
+			{
+				sceneNum = TITLE;
+				ParticleManager::AllClear();
+				ObjectManager::AllClear();
+				player.Init();
+			}
 		}
 		// 描画処理
 		DrawGraph(0, 0, BackGraund, true);
@@ -140,12 +159,13 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			TitleScene::Draw();
 		}
 
-		if (sceneNum == GAME)
+		else if (sceneNum == GAME)
 		{
 			player.Draw();
 			ObjectManager::Draw();
 			GameScene::Update();
 			GameScene::Draw();
+			DrawFormatString(0, 100, GetColor(0, 0, 0), "BulletNum:%d", player.GetBulletNum());
 		}
 
 		//---------  ここまでにプログラムを記述  ---------//
@@ -162,10 +182,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		}
 
 		// ESCキーが押されたらループから抜ける
-		if (CheckHitKey(KEY_INPUT_ESCAPE) == 1)
+		/*if (CheckHitKey(KEY_INPUT_ESCAPE) == 1)
 		{
 			break;
-		}
+		}*/
 	}
 	// Dxライブラリ終了処理
 	DxLib_End();
