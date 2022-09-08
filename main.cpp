@@ -122,6 +122,11 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 						ObjectManager::object2.Shot(winSizeHalf, spriteSize, l_leftStickDeg, 18.0f, BaseObject::ObjectType::PINK);
 					}
 				}
+				BaseObject::ResetSpeed();
+			}
+			if (player.GetIsChangeTrigger())
+			{
+				BaseObject::SpeedUpdate();
 			}
 			BaseObject::SetIsMove(player.GetIsMove());
 			FLOAT2 pos = player.GetPos();

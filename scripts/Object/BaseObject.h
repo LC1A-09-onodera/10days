@@ -43,7 +43,7 @@ struct BaseObject
 	static const int InsideR = 222;
 	static const int OutshideR = 320;
 	const float MoveSpeed = 0.05f;
-	static int CiycleSpeed;
+	static float CiycleSpeed;
 	static const int IncreaseSpeed = 1;
 
 	static bool IsMove;

@@ -17,7 +17,7 @@ int InducedExplosion::m_s_exprosion[1];
 
 bool BaseObject::IsMove = false;
 
-int BaseObject::CiycleSpeed = 1;
+float BaseObject::CiycleSpeed = 1;
 
 void ObjectSample::LoadFile(const char* path)
 {
@@ -243,7 +243,7 @@ void BaseObject::Init(FLOAT2 position, FLOAT2 spriteSize, float R, ObjectType f_
 
 void BaseObject::SpeedUpdate()
 {
-	CiycleSpeed += IncreaseSpeed;
+	CiycleSpeed += (float)IncreaseSpeed / 5.0f;
 }
 
 void BaseObject::ResetSpeed()
@@ -389,7 +389,7 @@ void InducedExplosion::Collition(BaseObject& obj)
 		}
 
 		InducedExplosion* ind = new InducedExplosion();
-		ind->Init(obj.m_position, obj.m_R + 10);
+		ind->Init(obj.m_position, obj.m_R + 5);
 		ObjectManager::exprotionObject.push_back(ind);
 	}
 }
