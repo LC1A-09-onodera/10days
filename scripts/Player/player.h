@@ -30,7 +30,7 @@ private:
 private:
 	enum SIDE
 	{
-		OUTSIDE, INSIDE
+		OUTSIDE,INSIDE
 	};
 	enum LOC
 	{
@@ -39,8 +39,9 @@ private:
 
 private:
 	const int C_STAGE_RAD = 243;		//ステージの半径
+	const int C_BULLET_INIT_VAL = 5;	//弾初期値
 	const float C_PLAYER_RAD = 20.0f;	//プレイヤーの半径
-	const float C_TOTAL_RAD = 
+	const float C_TOTAL_RAD =
 		C_STAGE_RAD + C_PLAYER_RAD;		//未使用
 	const float C_HALF_WID = 640.0f;	//ウィンドウサイズ横半分
 	const float C_HALF_HEI = 360.0f;	//ウィンドウサイズ縦半分
@@ -51,12 +52,15 @@ private:
 private:
 	FLOAT2 m_outside_pos;
 	int m_spaceCount;
+	int m_stage_Rad;
+	int m_bulletNum;
 	float m_easeTimer;
 	float m_outside_rad;
 	bool m_side;
 	bool m_loc;
 	bool m_isMove;
 	bool m_isChange;
+	bool m_isChangeTrigger;
 
 	int m_s_player;
 	int m_s_stage;
@@ -81,5 +85,8 @@ private:
 	}
 
 public:
-	FLOAT2 GetPos() { return m_position; }
+	bool ShotBullet();
+	const FLOAT2& GetPos() { return m_position; }
+	const int& GetBulletNum() { return m_bulletNum; }
+	const bool& GetIsChangeTrigger() { return m_isChangeTrigger; }
 };

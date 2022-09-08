@@ -12,6 +12,8 @@ void Player::Init()
 
 	m_outside_pos = { C_HALF_WID,0 };
 	m_spaceCount = 2;
+	m_stage_Rad = C_STAGE_RAD;
+	m_bulletNum = C_BULLET_INIT_VAL;
 	m_easeTimer = 0.0f;
 	m_outside_rad = 0.0f;
 	m_side = OUTSIDE;
@@ -19,6 +21,7 @@ void Player::Init()
 	m_isMove = false;
 	m_stageSize = { 504, 504 };
 	m_isChange = false;
+	m_isChangeTrigger = false;
 }
 
 void Player::Update()
@@ -30,42 +33,42 @@ void Player::Update()
 	//内外移動の処理
 	if (!m_isMove)
 	{
-		if (Input::GetKeyTrigger(KEY_INPUT_SPACE) || Input::isJoyBottomTrigger(XINPUT_BUTTON_A))
+		//内外移動
+		if (Input::GetKeyTrigger(KEY_INPUT_Z) || Input::isJoyBottomTrigger(XINPUT_BUTTON_B))
 		{
-			//縦移動
-			if (m_spaceCount >= 2)
-			{
-				m_spaceCount = 0;
-				m_isMove = true;
-			}
-			//内外移動
-			else
-			{
-				//内外移動演出用
-				m_isChange = true;
+			//内外移動演出用
+			m_isChange = true;
 
-				if (m_side == OUTSIDE)
+			if (m_side == OUTSIDE)
+			{
+				//下で内から外の場合
+				if (m_loc == LOWER)
 				{
-					//下で内から外の場合
-					if (m_loc == LOWER)
-					{
-						//LOWERの座標指定
-						m_outside_pos.v = m_position.v + C_PLAYER_RAD * 2 + C_LINE_WID;
+					//LOWERの座標指定
+					m_outside_pos.v = m_position.v + C_PLAYER_RAD * 2 + C_LINE_WID;
 
-					}
-					//上で内から外の場合
-					else
-					{
-						//UPPERの座標指定
-						m_outside_pos.v = m_position.v - C_PLAYER_RAD * 2 - C_LINE_WID;
-					}
-					m_side = INSIDE;
 				}
+				//上で内から外の場合
 				else
 				{
-					m_side = OUTSIDE;
+					//UPPERの座標指定
+					m_outside_pos.v = m_position.v - C_PLAYER_RAD * 2 - C_LINE_WID;
 				}
-				m_spaceCount++;
+
+				m_side = INSIDE;
+			}
+			else
+			{
+				m_side = OUTSIDE;
+			}
+			m_spaceCount++;
+		}
+		//縦断(上の処理順敵にOUTSIDEになってる)
+		if (m_side == OUTSIDE)
+		{
+			if (Input::GetKeyTrigger(KEY_INPUT_X) || Input::isJoyBottomTrigger(XINPUT_BUTTON_A))
+			{
+				m_isMove = true;
 			}
 		}
 	}
@@ -111,14 +114,31 @@ void Player::Update()
 		if (m_side == OUTSIDE)
 		{
 			m_outside_rad -= C_SUB_RAD;
-			if (m_outside_rad == 0) { m_isChange = false; }
+			if (m_outside_rad == 0)
+			{
+				m_isChange = false;
+				//内外移動した瞬間true
+				m_isChangeTrigger = true;
+			}
 		}
 		//外から内
 		else
 		{
 			m_outside_rad += C_SUB_RAD;
-			if (m_outside_rad == C_PLAYER_RAD) { m_isChange = false; }
+			if (m_outside_rad == C_PLAYER_RAD)
+			{
+				m_isChange = false;
+				//内外移動した瞬間true
+				m_isChangeTrigger = true;
+			}
 		}
+	}
+
+	//内外移動トリガー
+	if (m_isChangeTrigger)
+	{
+		m_bulletNum++;
+		m_isChangeTrigger = false;
 	}
 }
 
@@ -196,4 +216,14 @@ void Player::AddForce()
 void Player::AttachForce()
 {
 
+}
+
+bool Player::ShotBullet()
+{
+	if (m_bulletNum > 0)
+	{
+		m_bulletNum--;
+		return true;
+	}
+	return false;
 }
