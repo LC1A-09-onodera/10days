@@ -128,7 +128,7 @@ void BaseObject::Collition(BaseObject& object)
 			ParticleManager::smpParticle.ExprotionParticle(this->m_position, startSize, endSize, 6, 30);
 		}
 
-		InducedExplosion *ind = new InducedExplosion();
+		InducedExplosion* ind = new InducedExplosion();
 		ind->Init(this->m_position, this->m_R + 30);
 		ObjectManager::exprotionObject.push_back(ind);
 
@@ -318,7 +318,7 @@ void InducedExplosion::Update()
 void InducedExplosion::Draw()
 {
 	//DrawExtendGraph(0, 0, 10 , 10,  InducedExplosion::m_s_exprosion[0], true);
-	DrawCircle(m_position.u, m_position.v, ExplosionR, GetColor(255, 0, 255));
+	DrawCircle(m_position.u, m_position.v, ExplosionR, GetColor(255, 0, 255), false);
 }
 
 void InducedExplosion::Collition(BaseObject& obj)
@@ -329,7 +329,7 @@ void InducedExplosion::Collition(BaseObject& obj)
 	}
 	if (Collision::CiycleCollision(m_position, ExplosionR, obj.m_position, obj.m_R))
 	{
- 		FLOAT2 l_shakePower = { 1.0f,1.0f };
+		FLOAT2 l_shakePower = { 1.0f,1.0f };
 		Shake::AddShakePower(l_shakePower);
 
 		obj.m_isHit = true;

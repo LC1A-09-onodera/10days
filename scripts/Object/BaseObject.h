@@ -60,7 +60,7 @@ struct InducedExplosion
 	float ExplosionR;
 	static int m_s_exprosion[1];
 	FLOAT2 m_position;
-	int m_life = 30;
+	int m_life = 2;
 	static void LoadFile();
 	void Init(FLOAT2 f_position, float ExprosionR);
 	void Update();
