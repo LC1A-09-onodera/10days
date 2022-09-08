@@ -55,15 +55,23 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	int mouse_y;
 	Player player;
 	player.LoadFile();
-	Particle par;
-	par.LoadFile("Resources/particle.png");
 	ObjectManager::LoadFile();
 	ParticleManager::LoadFile();
 	GameScene::LoadFile();
 	GameScene::Init();
-
+	TitleScene::LoadFile();
+	TitleScene::Init();
 	SoundManager::LoadFile();
-	
+
+	enum SceneNum
+	{
+		TITLE,
+		GAME,
+		RESULT,
+	};
+
+	SceneNum sceneNum = TITLE;
+
 	// ゲームループ
 	while (1)
 	{
@@ -76,60 +84,68 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		GetMousePoint(&mouse_x, &mouse_y);
 
 		// 更新処理
-		player.Update();
-		par.Update();
-		// 描画処理
-		//player.Draw();
-		par.Draw();
-		static float angle = 0.0f;
-		static int time = 0;
-		if (player.GetIsMove())
+		if (sceneNum == TITLE)
 		{
-			time++;
-			if (time > 2)
+			if (Input::GetKeyTrigger(KEY_INPUT_SPACE))
 			{
-				time = 0;
-				angle = rand() % 360;
-				if (angle >= 360.0f)
-				{
-					angle = 0.0f;
-				}
-				//FLOAT2 winSizeHalf = { mouse_x,  mouse_y };
-				FLOAT2 winSizeHalf = { player.GetPos().u,  player.GetPos().v };
-				FLOAT2 spriteSize = { 30.0f, 30.0f };
-				float l_leftStickDeg = Input::GetJoyLeftStickAngle();
-				l_leftStickDeg = 180.0f / DX_PI_F * l_leftStickDeg;
-
-				if (rand() % 2 == 0)
-				{
-					//ObjectManager::object1.Shot(winSizeHalf, spriteSize, angle, 18.0f, BaseObject::ObjectType::ORANGE);
-					ObjectManager::object1.Shot(winSizeHalf, spriteSize, l_leftStickDeg, 18.0f, BaseObject::ObjectType::ORANGE);
-				}
-				else
-				{
-					//ObjectManager::object2.Shot(winSizeHalf, spriteSize, angle, 18.0f, BaseObject::ObjectType::PINK);
-					ObjectManager::object2.Shot(winSizeHalf, spriteSize, l_leftStickDeg, 18.0f, BaseObject::ObjectType::PINK);
-				}
+				sceneNum = GAME;
 			}
 		}
-		FLOAT2 pos = player.GetPos();
-		ObjectManager::Update(pos, player.GetIsSide());
+		if (sceneNum == GAME)
+		{
+			player.Update();
+			static float angle = 0.0f;
+			static int time = 0;
+			if (player.GetIsMove())
+			{
+				time++;
+				if (time > 2)
+				{
+					time = 0;
+					angle = rand() % 360;
+					if (angle >= 360.0f)
+					{
+						angle = 0.0f;
+					}
+					FLOAT2 winSizeHalf = { player.GetPos().u,  player.GetPos().v };
+					FLOAT2 spriteSize = { 30.0f, 30.0f };
+					float l_leftStickDeg = Input::GetJoyLeftStickAngle();
+					l_leftStickDeg = 180.0f / DX_PI_F * l_leftStickDeg;
 
-		ParticleManager::Update();
-
-
-
+					if (rand() % 2 == 0)
+					{
+						ObjectManager::object1.Shot(winSizeHalf, spriteSize, l_leftStickDeg, 18.0f, BaseObject::ObjectType::ORANGE);
+					}
+					else
+					{
+						ObjectManager::object2.Shot(winSizeHalf, spriteSize, l_leftStickDeg, 18.0f, BaseObject::ObjectType::PINK);
+					}
+				}
+			}
+			FLOAT2 pos = player.GetPos();
+			//各オブジェクトの更新
+			ObjectManager::Update(pos, player.GetIsSide());
+			//パーティクルの更新
+			ParticleManager::Update();
+		}
 		// 描画処理
 		DrawGraph(0, 0, BackGraund, true);
 
 		ParticleManager::Draw();
 
-		player.Draw();
-		ObjectManager::Draw();
+		if (sceneNum == TITLE)
+		{
+			TitleScene::Update();
+			TitleScene::Draw();
+		}
 
-		
-		GameScene::Update();
-		GameScene::Draw();
+		if (sceneNum == GAME)
+		{
+			player.Draw();
+			ObjectManager::Draw();
+			GameScene::Update();
+			GameScene::Draw();
+		}
 
 		//---------  ここまでにプログラムを記述  ---------//
 		// (ダブルバッファ)裏面

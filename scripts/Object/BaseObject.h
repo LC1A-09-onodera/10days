@@ -55,6 +55,19 @@ struct BaseObject
 	void Init(FLOAT2 position, FLOAT2 spriteSize, float R, ObjectType f_type);
 };
 
+struct InducedExplosion
+{
+	float ExplosionR;
+	static int m_s_exprosion[1];
+	FLOAT2 m_position;
+	int m_life = 30;
+	static void LoadFile();
+	void Init(FLOAT2 f_position, float ExprosionR);
+	void Update();
+	void Draw();
+	void Collition(BaseObject &obj);
+};
+
 class ObjectSample
 {
 	int m_sprite;
@@ -74,7 +87,8 @@ public:
 	static ObjectSample smp;
 	static ObjectSample object1;
 	static ObjectSample object2;
-
+	static std::list<InducedExplosion *> exprotionObject;
+	static std::list<std::list<InducedExplosion*>::iterator> deleteExprotionObject;
 	static void LoadFile();
 	static void Update(FLOAT2 &f_playerPos, bool f_playerIsOutside);
 	static void Draw();
