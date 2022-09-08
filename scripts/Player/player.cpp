@@ -14,6 +14,7 @@ void Player::Init()
 	m_spaceCount = 2;
 	m_stage_Rad = C_STAGE_RAD;
 	m_bulletNum = C_BULLET_INIT_VAL;
+	m_maxBulletNum = m_bulletNum;
 	m_easeTimer = 0.0f;
 	m_outside_rad = 0.0f;
 	m_side = OUTSIDE;
@@ -22,6 +23,7 @@ void Player::Init()
 	m_stageSize = { 504, 504 };
 	m_isChange = false;
 	m_isChangeTrigger = false;
+	m_isReload = false;
 }
 
 void Player::Update()
@@ -36,9 +38,19 @@ void Player::Update()
 		//内外移動
 		if (Input::GetKeyTrigger(KEY_INPUT_Z) || Input::isJoyBottomTrigger(XINPUT_BUTTON_B))
 		{
+			//リロード
+			if (!m_isReload)
+			{
+				m_bulletNum = m_maxBulletNum;
+				m_isReload = true;
+			}
+			else
+			{
+				m_bulletNum++;
+			}
+
 			//内外移動演出用
 			m_isChange = true;
-			m_bulletNum++;
 
 			if (m_side == OUTSIDE)
 			{
@@ -69,6 +81,11 @@ void Player::Update()
 		{
 			if (Input::GetKeyTrigger(KEY_INPUT_X) || Input::isJoyBottomTrigger(XINPUT_BUTTON_A))
 			{
+				if (m_maxBulletNum < m_bulletNum)
+				{
+					m_maxBulletNum = m_bulletNum;
+				}
+				m_isReload = false;
 				m_isMove = true;
 			}
 		}

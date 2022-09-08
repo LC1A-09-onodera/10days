@@ -30,7 +30,7 @@ private:
 private:
 	enum SIDE
 	{
-		OUTSIDE,INSIDE
+		OUTSIDE, INSIDE
 	};
 	enum LOC
 	{
@@ -54,6 +54,7 @@ private:
 	int m_spaceCount;
 	int m_stage_Rad;
 	int m_bulletNum;
+	int m_maxBulletNum;
 	float m_easeTimer;
 	float m_outside_rad;
 	bool m_side;
@@ -61,6 +62,7 @@ private:
 	bool m_isMove;
 	bool m_isChange;
 	bool m_isChangeTrigger;
+	bool m_isReload;
 
 	int m_s_player;
 	int m_s_stage;
@@ -88,5 +90,6 @@ public:
 	bool ShotBullet();
 	const FLOAT2& GetPos() { return m_position; }
 	const int& GetBulletNum() { return m_bulletNum; }
+	const int& GetMaxBulletNum() { return m_maxBulletNum; }
 	const bool& GetIsChangeTrigger() { return m_isChangeTrigger; }
 };
