@@ -28,7 +28,7 @@ void ObjectSample::Update(FLOAT2& f_playerPos, bool f_playerIsOutside)
 {
 	//全部の当たり判定を取る
 	int index = 0;
-
+	BaseObject::isAllHit = false;
 	for (auto itr = m_objects.begin(); itr != m_objects.end(); ++itr)
 	{
 		//itr→メインのチェック対象
@@ -115,7 +115,6 @@ BaseObject::~BaseObject()
 
 void BaseObject::Collition(BaseObject& object)
 {
-	isAllHit = false;
 	if (Collision::CiycleCollision(this->m_position, this->m_R, object.m_position, object.m_R))
 	{
 		FLOAT2 l_shakePower = { 1.0f,1.0f };
@@ -167,6 +166,7 @@ void BaseObject::Collition(FLOAT2& f_playerPos)
 		this->m_isHit = true;
 		FLOAT2 startSize = { 30.0f, 30.0f };
 		FLOAT2 endSize = { 0.0f, 0.0f };
+		isAllHit = true;
 		if (m_objectType == ObjectType::PINK)
 		{
 			ParticleManager::pinkParticle.ExprotionParticle(this->m_position, startSize, endSize, 6, 30);
