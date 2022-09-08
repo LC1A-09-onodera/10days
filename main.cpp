@@ -96,7 +96,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			player.Update();
 			static float angle = 0.0f;
 			static int time = 0;
-			if (player.GetIsMove())
+			if (player.GetIsMove() && Input::isJoyLeftStickBottom())
 			{
 				time++;
 				if (time > 2)
@@ -109,7 +109,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 					}
 					FLOAT2 winSizeHalf = { player.GetPos().u,  player.GetPos().v };
 					FLOAT2 spriteSize = { 30.0f, 30.0f };
-					float l_leftStickDeg = Input::GetJoyLeftStickAngle();
+					float l_leftStickDeg = 0.0f;
+					l_leftStickDeg = Input::GetJoyLeftStickAngle();
 					l_leftStickDeg = 180.0f / DX_PI_F * l_leftStickDeg;
 
 					if (rand() % 2 == 0)

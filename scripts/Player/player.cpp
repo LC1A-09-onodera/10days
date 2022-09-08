@@ -135,7 +135,7 @@ void Player::Update()
 	}
 
 	//“àŠOˆÚ“®ƒgƒŠƒK[
-	if (m_isChangeTrigger)
+	else if (m_isChangeTrigger)
 	{
 		m_bulletNum++;
 		m_isChangeTrigger = false;
