@@ -86,6 +86,7 @@ public:
 	void Shot(FLOAT2 f_position, FLOAT2 m_sprite, FLOAT2 f_direction, float R, BaseObject::ObjectType f_type);
 	void Shot(FLOAT2 f_position, FLOAT2 m_sprite, float f_direction, float R, BaseObject::ObjectType f_type);
 	void Draw();
+	void Clear();
 };
 
 class ObjectManager
@@ -100,6 +101,7 @@ public:
 	static void Update(FLOAT2 &f_playerPos, bool f_playerIsOutside);
 	static void Draw();
 	static void AllCollision();
+	static void AllClear();
 };
 
 

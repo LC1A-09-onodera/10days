@@ -122,6 +122,12 @@ void Particle::SampleParticle(FLOAT2& f_startSize, FLOAT2& f_endSize, int f_coun
 	}
 }
 
+void Particle::Clear()
+{
+	m_particles.clear();
+	m_deleteParticles.clear();
+}
+
 void ParticleManager::LoadFile()
 {
 	smpParticle.LoadFile("Resources/particle_b.png");
@@ -141,4 +147,11 @@ void ParticleManager::Draw()
 	smpParticle.Draw();
 	pinkParticle.Draw();
 	orangeParticle.Draw();
+}
+
+void ParticleManager::AllClear()
+{
+	smpParticle.Clear();
+	pinkParticle.Clear();
+	orangeParticle.Clear();
 }

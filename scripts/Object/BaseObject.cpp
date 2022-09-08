@@ -99,6 +99,12 @@ void ObjectSample::Draw()
 	}
 }
 
+void ObjectSample::Clear()
+{
+	m_objects.clear();
+	m_deleteObject.clear();
+}
+
 BaseObject::BaseObject()
 {
 }
@@ -319,6 +325,15 @@ void ObjectManager::AllCollision()
 	{
 		exprotionObject.erase(*itr);
 	}
+	deleteExprotionObject.clear();
+}
+
+void ObjectManager::AllClear()
+{
+	smp.Clear();
+	object1.Clear();
+	object2.Clear();
+	exprotionObject.clear();
 	deleteExprotionObject.clear();
 }
 
