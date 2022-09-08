@@ -17,18 +17,18 @@ void GameScene::Update()
 {
 	for (int i = static_cast<int>(Direction::Right1); i <= static_cast<int>(Direction::Right2); i++)
 	{
-		m_sidePosition[i].v -= 2.0f;
-		if (m_sidePosition[i].v < -m_sideSize.u)
+		m_sidePosition[i].v -= 8.0f;
+		if (m_sidePosition[i].v < -m_sideSize.u / 2)
 		{
-			m_sidePosition[i].v = m_sideSize.u - m_sideSize.u / 4.0f;
+			m_sidePosition[i].v = m_sideSize.u + (m_sideSize.u / 2);
 		}
 	}
 	for (int i = static_cast<int>(Direction::Left1); i <= static_cast<int>(Direction::Left2); i++)
 	{
-		m_sidePosition[i].v += 2.0f;
-		if (m_sidePosition[i].v > m_sideSize.u)
+		m_sidePosition[i].v += 8.0f;
+		if (m_sidePosition[i].v > 720 + m_sideSize.u / 2)
 		{
-			m_sidePosition[i].v = -(m_sideSize.u - m_sideSize.u / 4.0f);
+			m_sidePosition[i].v = -((m_sideSize.u - 720) + m_sideSize.u / 2);
 		}
 	}
 }
@@ -37,11 +37,11 @@ void GameScene::Init()
 {
 	for (int i = static_cast<int>(Direction::Right1); i <= static_cast<int>(Direction::Right2); i++)
 	{
-		m_sidePosition[i] = {0, 1139.0f * (i + 1)};
+		m_sidePosition[i] = {0, 1280 + (m_sideSize.u * i)};
 	}
 	for (int i = static_cast<int>(Direction::Left1); i <= static_cast<int>(Direction::Left2); i++)
 	{
-		m_sidePosition[i] = { 1280 - m_sideSize.v, -1139.0f * (i - 1)};
+		m_sidePosition[i] = { 1280 - m_sideSize.v, (-m_sideSize.u / 2) - (m_sideSize.u * (i - 2))};
 	}
 }
 
