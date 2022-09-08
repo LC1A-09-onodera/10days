@@ -91,7 +91,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 				sceneNum = GAME;
 			}
 		}
-		if (sceneNum == GAME)
+
+		else if (sceneNum == GAME)
 		{
 			player.Update();
 			static float angle = 0.0f;
@@ -122,12 +123,25 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 						ObjectManager::object2.Shot(winSizeHalf, spriteSize, l_leftStickDeg, 18.0f, BaseObject::ObjectType::PINK);
 					}
 				}
+				BaseObject::ResetSpeed();
 			}
+			if (player.GetIsChangeTrigger())
+			{
+				BaseObject::SpeedUpdate();
+			}
+			BaseObject::SetIsMove(player.GetIsMove());
 			FLOAT2 pos = player.GetPos();
 			//各オブジェクトの更新
 			ObjectManager::Update(pos, player.GetIsSide());
 			//パーティクルの更新
 			ParticleManager::Update();
+			if (Input::GetKeyTrigger(KEY_INPUT_ESCAPE))
+			{
+				sceneNum = TITLE;
+				ParticleManager::AllClear();
+				ObjectManager::AllClear();
+				player.Init();
+			}
 		}
 		// 描画処理
 		DrawGraph(0, 0, BackGraund, true);
@@ -140,7 +154,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			TitleScene::Draw();
 		}
 
-		if (sceneNum == GAME)
+		else if (sceneNum == GAME)
 		{
 			player.Draw();
 			ObjectManager::Draw();
@@ -162,10 +176,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		}
 
 		// ESCキーが押されたらループから抜ける
-		if (CheckHitKey(KEY_INPUT_ESCAPE) == 1)
+		/*if (CheckHitKey(KEY_INPUT_ESCAPE) == 1)
 		{
 			break;
-		}
+		}*/
 	}
 	// Dxライブラリ終了処理
 	DxLib_End();

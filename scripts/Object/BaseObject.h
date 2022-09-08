@@ -43,7 +43,11 @@ struct BaseObject
 	static const int InsideR = 222;
 	static const int OutshideR = 320;
 	const float MoveSpeed = 0.05f;
-	const float CiycleSpeed = 1.0f;
+	static float CiycleSpeed;
+	static const int IncreaseSpeed = 1;
+
+	static bool IsMove;
+	static void SetIsMove(bool move);
 
 	FLOAT2 centerPos = { 1280 / 2 , 720 / 2 };
 
@@ -53,6 +57,9 @@ struct BaseObject
 	void Shot(float direction);
 	void Update();
 	void Init(FLOAT2 position, FLOAT2 spriteSize, float R, ObjectType f_type);
+	static void SpeedUpdate();
+	static void ResetSpeed();
+	static void ResetSpeed(int speed);
 };
 
 struct InducedExplosion
@@ -79,6 +86,7 @@ public:
 	void Shot(FLOAT2 f_position, FLOAT2 m_sprite, FLOAT2 f_direction, float R, BaseObject::ObjectType f_type);
 	void Shot(FLOAT2 f_position, FLOAT2 m_sprite, float f_direction, float R, BaseObject::ObjectType f_type);
 	void Draw();
+	void Clear();
 };
 
 class ObjectManager
@@ -93,6 +101,7 @@ public:
 	static void Update(FLOAT2 &f_playerPos, bool f_playerIsOutside);
 	static void Draw();
 	static void AllCollision();
+	static void AllClear();
 };
 
 

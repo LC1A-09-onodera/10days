@@ -15,6 +15,10 @@ std::list<InducedExplosion*> ObjectManager::exprotionObject;
 std::list<std::list<InducedExplosion*>::iterator> ObjectManager::deleteExprotionObject;
 int InducedExplosion::m_s_exprosion[1];
 
+bool BaseObject::IsMove = false;
+
+float BaseObject::CiycleSpeed = 1;
+
 void ObjectSample::LoadFile(const char* path)
 {
 	m_sprite = LoadGraph(path);
@@ -95,6 +99,12 @@ void ObjectSample::Draw()
 	}
 }
 
+void ObjectSample::Clear()
+{
+	m_objects.clear();
+	m_deleteObject.clear();
+}
+
 BaseObject::BaseObject()
 {
 }
@@ -135,6 +145,11 @@ void BaseObject::Collition(BaseObject& object)
 		StopSoundMem(SoundManager::shotHitSound);
 		PlaySoundMem(SoundManager::shotHitSound, DX_PLAYTYPE_BACK, true);
 	}
+}
+
+void BaseObject::SetIsMove(bool move)
+{
+	IsMove = move;
 }
 
 void BaseObject::Collition(FLOAT2& f_playerPos)
@@ -180,7 +195,7 @@ void BaseObject::Update()
 		return;
 	}
 	//‰~Žü‚É“–‚½‚Á‚Ä‚¢‚é‚Æ‚«
-	if (m_isShotMove)
+	if (m_isShotMove && !BaseObject::IsMove)
 	{
 		angle += CiycleSpeed;
 		float R = BaseObject::InsideR;
@@ -224,6 +239,21 @@ void BaseObject::Init(FLOAT2 position, FLOAT2 spriteSize, float R, ObjectType f_
 	m_spriteSize = spriteSize;
 	m_R = R;
 	m_objectType = f_type;
+}
+
+void BaseObject::SpeedUpdate()
+{
+	CiycleSpeed += (float)IncreaseSpeed / 5.0f;
+}
+
+void BaseObject::ResetSpeed()
+{
+	CiycleSpeed = 1;
+}
+
+void BaseObject::ResetSpeed(int speed)
+{
+	CiycleSpeed = speed;
 }
 
 void ObjectManager::LoadFile()
@@ -298,6 +328,15 @@ void ObjectManager::AllCollision()
 	deleteExprotionObject.clear();
 }
 
+void ObjectManager::AllClear()
+{
+	smp.Clear();
+	object1.Clear();
+	object2.Clear();
+	exprotionObject.clear();
+	deleteExprotionObject.clear();
+}
+
 void InducedExplosion::LoadFile()
 {
 	m_s_exprosion[0] = LoadGraph("Resources/.png");
@@ -350,7 +389,7 @@ void InducedExplosion::Collition(BaseObject& obj)
 		}
 
 		InducedExplosion* ind = new InducedExplosion();
-		ind->Init(obj.m_position, obj.m_R + 10);
+		ind->Init(obj.m_position, obj.m_R + 5);
 		ObjectManager::exprotionObject.push_back(ind);
 	}
 }
