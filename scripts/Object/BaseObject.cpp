@@ -18,7 +18,7 @@ int InducedExplosion::m_s_exprosion[1];
 bool BaseObject::IsMove = false;
 
 float BaseObject::CiycleSpeed = 1;
-
+bool BaseObject::isAllHit = false;
 void ObjectSample::LoadFile(const char* path)
 {
 	m_sprite = LoadGraph(path);
