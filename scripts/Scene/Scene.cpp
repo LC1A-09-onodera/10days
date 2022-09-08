@@ -7,6 +7,14 @@ FLOAT2 TitleScene::m_sideSize;
 int GameScene::m_s_side;
 FLOAT2 GameScene::m_sidePosition[4];
 FLOAT2 GameScene::m_sideSize;
+
+
+int TitleScene::m_s_title;
+int TitleScene::m_s_space;
+FLOAT2 TitleScene::m_titlePos;
+FLOAT2 TitleScene::m_spacePos;
+FLOAT2 TitleScene::m_titleSize;
+FLOAT2 TitleScene::m_spaceSize;
 void GameScene::LoadFile()
 {
 	m_s_side = LoadGraph("Resources/EncanEncounter.png");
@@ -65,6 +73,8 @@ void GameScene::Draw()
 void TitleScene::LoadFile()
 {
 	m_s_side = LoadGraph("Resources/EncanEncounter.png");
+	m_s_title = LoadGraph("Resources/title.png");
+	m_s_space = LoadGraph("Resources/space.png");
 	m_sideSize = { 1139.0f, 104.0f };
 }
 

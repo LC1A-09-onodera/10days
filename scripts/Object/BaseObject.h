@@ -43,7 +43,11 @@ struct BaseObject
 	static const int InsideR = 222;
 	static const int OutshideR = 320;
 	const float MoveSpeed = 0.05f;
-	const float CiycleSpeed = 1.0f;
+	static int CiycleSpeed;
+	static const int IncreaseSpeed = 1;
+
+	static bool IsMove;
+	static void SetIsMove(bool move);
 
 	FLOAT2 centerPos = { 1280 / 2 , 720 / 2 };
 
@@ -53,6 +57,9 @@ struct BaseObject
 	void Shot(float direction);
 	void Update();
 	void Init(FLOAT2 position, FLOAT2 spriteSize, float R, ObjectType f_type);
+	static void SpeedUpdate();
+	static void ResetSpeed();
+	static void ResetSpeed(int speed);
 };
 
 struct InducedExplosion
@@ -60,7 +67,7 @@ struct InducedExplosion
 	float ExplosionR;
 	static int m_s_exprosion[1];
 	FLOAT2 m_position;
-	int m_life = 30;
+	int m_life = 2;
 	static void LoadFile();
 	void Init(FLOAT2 f_position, float ExprosionR);
 	void Update();

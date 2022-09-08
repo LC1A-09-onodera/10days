@@ -122,6 +122,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 					}
 				}
 			}
+			BaseObject::SetIsMove(player.GetIsMove());
 			FLOAT2 pos = player.GetPos();
 			//各オブジェクトの更新
 			ObjectManager::Update(pos, player.GetIsSide());

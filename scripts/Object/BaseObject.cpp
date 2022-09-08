@@ -15,6 +15,10 @@ std::list<InducedExplosion*> ObjectManager::exprotionObject;
 std::list<std::list<InducedExplosion*>::iterator> ObjectManager::deleteExprotionObject;
 int InducedExplosion::m_s_exprosion[1];
 
+bool BaseObject::IsMove = false;
+
+int BaseObject::CiycleSpeed = 1;
+
 void ObjectSample::LoadFile(const char* path)
 {
 	m_sprite = LoadGraph(path);
@@ -137,6 +141,11 @@ void BaseObject::Collition(BaseObject& object)
 	}
 }
 
+void BaseObject::SetIsMove(bool move)
+{
+	IsMove = move;
+}
+
 void BaseObject::Collition(FLOAT2& f_playerPos)
 {
 	if (Collision::CiycleCollision(this->m_position, this->m_R, f_playerPos, 20.0f))
@@ -180,7 +189,7 @@ void BaseObject::Update()
 		return;
 	}
 	//‰~Žü‚É“–‚½‚Á‚Ä‚¢‚é‚Æ‚«
-	if (m_isShotMove)
+	if (m_isShotMove && !BaseObject::IsMove)
 	{
 		angle += CiycleSpeed;
 		float R = BaseObject::InsideR;
@@ -224,6 +233,21 @@ void BaseObject::Init(FLOAT2 position, FLOAT2 spriteSize, float R, ObjectType f_
 	m_spriteSize = spriteSize;
 	m_R = R;
 	m_objectType = f_type;
+}
+
+void BaseObject::SpeedUpdate()
+{
+	CiycleSpeed += IncreaseSpeed;
+}
+
+void BaseObject::ResetSpeed()
+{
+	CiycleSpeed = 1;
+}
+
+void BaseObject::ResetSpeed(int speed)
+{
+	CiycleSpeed = speed;
 }
 
 void ObjectManager::LoadFile()
@@ -318,7 +342,7 @@ void InducedExplosion::Update()
 void InducedExplosion::Draw()
 {
 	//DrawExtendGraph(0, 0, 10 , 10,  InducedExplosion::m_s_exprosion[0], true);
-	DrawCircle(m_position.u, m_position.v, ExplosionR, GetColor(255, 0, 255));
+	DrawCircle(m_position.u, m_position.v, ExplosionR, GetColor(255, 0, 255), false);
 }
 
 void InducedExplosion::Collition(BaseObject& obj)
