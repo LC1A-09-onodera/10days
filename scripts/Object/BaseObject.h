@@ -46,6 +46,9 @@ struct BaseObject
 	static float CiycleSpeed;
 	static const int IncreaseSpeed = 1;
 
+	static bool isAllHit;
+	static bool GetIsAllHit();
+
 	static bool IsMove;
 	static void SetIsMove(bool move);
 
