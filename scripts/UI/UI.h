@@ -19,6 +19,7 @@ struct UISprite
 class BulletUI
 {
 	std::list<UISprite *> m_bullets;
+	std::list<std::list<UISprite *>::iterator> m_deleteBullets;
 	int m_sprite;
 	//trueŠï”,false‹ô”
 	bool m_isOddnumber;
@@ -32,7 +33,7 @@ class BulletUI
 	void Draw();
 	void LoadFile();
 	void LoadBullet();
-	void shotBullet();
+	void ShotBullet();
 };
 
 class UIManager

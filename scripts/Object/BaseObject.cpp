@@ -138,7 +138,7 @@ void BaseObject::Collition(BaseObject& object)
 			ParticleManager::smpParticle.ExprotionParticle(this->m_position, startSize, endSize, 6, 30);
 		}
 
-		InducedExplosion *ind = new InducedExplosion();
+		InducedExplosion* ind = new InducedExplosion();
 		ind->Init(this->m_position, this->m_R + 30);
 		ObjectManager::exprotionObject.push_back(ind);
 
@@ -368,7 +368,7 @@ void InducedExplosion::Collition(BaseObject& obj)
 	}
 	if (Collision::CiycleCollision(m_position, ExplosionR, obj.m_position, obj.m_R))
 	{
- 		FLOAT2 l_shakePower = { 1.0f,1.0f };
+		FLOAT2 l_shakePower = { 1.0f,1.0f };
 		Shake::AddShakePower(l_shakePower);
 
 		obj.m_isHit = true;

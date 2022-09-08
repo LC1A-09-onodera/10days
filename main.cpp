@@ -102,7 +102,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			player.Update();
 			static float angle = 0.0f;
 			static int time = 0;
-			if (player.GetIsMove())
+			if (player.GetIsMove() && Input::isJoyLeftStickBottom())
 			{
 				time++;
 				if (time > 2)
@@ -115,16 +115,22 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 					}
 					FLOAT2 winSizeHalf = { player.GetPos().u,  player.GetPos().v };
 					FLOAT2 spriteSize = { 30.0f, 30.0f };
-					float l_leftStickDeg = Input::GetJoyLeftStickAngle();
+					float l_leftStickDeg = 0.0f;
+					l_leftStickDeg = Input::GetJoyLeftStickAngle();
 					l_leftStickDeg = 180.0f / DX_PI_F * l_leftStickDeg;
 
-					if (rand() % 2 == 0)
+					//’e‚ªŽc‚Á‚Ä‚é‚©‚Ì”»’è
+					bool isShot = player.ShotBullet();
+					if (isShot)
 					{
-						ObjectManager::object1.Shot(winSizeHalf, spriteSize, l_leftStickDeg, 18.0f, BaseObject::ObjectType::ORANGE);
-					}
-					else
-					{
-						ObjectManager::object2.Shot(winSizeHalf, spriteSize, l_leftStickDeg, 18.0f, BaseObject::ObjectType::PINK);
+						if (rand() % 2 == 0)
+						{
+							ObjectManager::object1.Shot(winSizeHalf, spriteSize, l_leftStickDeg, 18.0f, BaseObject::ObjectType::ORANGE);
+						}
+						else
+						{
+							ObjectManager::object2.Shot(winSizeHalf, spriteSize, l_leftStickDeg, 18.0f, BaseObject::ObjectType::PINK);
+						}
 					}
 				}
 				BaseObject::ResetSpeed();
@@ -169,6 +175,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			ObjectManager::Draw();
 			GameScene::Update();
 			GameScene::Draw();
+			DrawFormatString(0, 100, GetColor(0, 0, 0), "BulletNum:%d", player.GetBulletNum());
+			DrawFormatString(0, 120, GetColor(0, 0, 0), "BulletNum:%d", player.GetMaxBulletNum());
 			ui.Draw();
 		}
 
