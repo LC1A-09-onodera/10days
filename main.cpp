@@ -114,13 +114,18 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 					l_leftStickDeg = Input::GetJoyLeftStickAngle();
 					l_leftStickDeg = 180.0f / DX_PI_F * l_leftStickDeg;
 
-					if (rand() % 2 == 0)
+					//弾が残ってるかの判定
+					bool isShot = player.ShotBullet();
+					if (isShot)
 					{
-						ObjectManager::object1.Shot(winSizeHalf, spriteSize, l_leftStickDeg, 18.0f, BaseObject::ObjectType::ORANGE);
-					}
-					else
-					{
-						ObjectManager::object2.Shot(winSizeHalf, spriteSize, l_leftStickDeg, 18.0f, BaseObject::ObjectType::PINK);
+						if (rand() % 2 == 0)
+						{
+							ObjectManager::object1.Shot(winSizeHalf, spriteSize, l_leftStickDeg, 18.0f, BaseObject::ObjectType::ORANGE);
+						}
+						else
+						{
+							ObjectManager::object2.Shot(winSizeHalf, spriteSize, l_leftStickDeg, 18.0f, BaseObject::ObjectType::PINK);
+						}
 					}
 				}
 				BaseObject::ResetSpeed();
@@ -160,6 +165,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			ObjectManager::Draw();
 			GameScene::Update();
 			GameScene::Draw();
+			DrawFormatString(0, 100, GetColor(0, 0, 0), "BulletNum:%d", player.GetBulletNum());
 		}
 
 		//---------  ここまでにプログラムを記述  ---------//

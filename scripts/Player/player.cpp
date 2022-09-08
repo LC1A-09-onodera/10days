@@ -38,6 +38,7 @@ void Player::Update()
 		{
 			//内外移動演出用
 			m_isChange = true;
+			m_bulletNum++;
 
 			if (m_side == OUTSIDE)
 			{
@@ -137,7 +138,6 @@ void Player::Update()
 	//内外移動トリガー
 	else if (m_isChangeTrigger)
 	{
-		m_bulletNum++;
 		m_isChangeTrigger = false;
 	}
 }
