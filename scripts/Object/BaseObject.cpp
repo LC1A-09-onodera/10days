@@ -115,6 +115,7 @@ BaseObject::~BaseObject()
 
 void BaseObject::Collition(BaseObject& object)
 {
+	isAllHit = false;
 	if (Collision::CiycleCollision(this->m_position, this->m_R, object.m_position, object.m_R))
 	{
 		FLOAT2 l_shakePower = { 1.0f,1.0f };
@@ -122,6 +123,8 @@ void BaseObject::Collition(BaseObject& object)
 
 		this->m_isHit = true;
 		object.m_isHit = true;
+
+		isAllHit = true;
 
 		FLOAT2 startSize = { 30.0f, 30.0f };
 		FLOAT2 endSize = { 0.0f, 0.0f };
@@ -150,6 +153,11 @@ void BaseObject::Collition(BaseObject& object)
 void BaseObject::SetIsMove(bool move)
 {
 	IsMove = move;
+}
+
+bool BaseObject::GetIsAllHit()
+{
+	return isAllHit;
 }
 
 void BaseObject::Collition(FLOAT2& f_playerPos)
