@@ -6,6 +6,7 @@
 #include "scripts/Object/BaseObject.h"
 #include "scripts/Scene/Scene.h"
 #include "scripts/Sound/Sound.h"
+#include "scripts//UI/UI.h"
 
 // ウィンドウのタイトルに表示する文字列
 const char TITLE[] = "10days";
@@ -71,6 +72,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	};
 
 	SceneNum sceneNum = TITLE;
+
+	BulletUI ui;
+	ui.LoadFile();
+	ui.AddBullet();
 
 	// ゲームループ
 	while (1)
@@ -141,6 +146,11 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 				ObjectManager::AllClear();
 				player.Init();
 			}
+			/*if (Input::GetKeyTrigger(KEY_INPUT_SPACE))
+			{
+				ui.AddBullet();
+			}*/
+			ui.Update(player.GetBulletNum());
 		}
 		// 描画処理
 		DrawGraph(0, 0, BackGraund, true);
@@ -159,6 +169,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			ObjectManager::Draw();
 			GameScene::Update();
 			GameScene::Draw();
+			ui.Draw();
 		}
 
 		//---------  ここまでにプログラムを記述  ---------//
