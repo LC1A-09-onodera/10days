@@ -3,6 +3,8 @@
 #include "../Math/Math.h"
 #include "../Particle/Particle.h"
 #include "../Scroll/Scroll.h"
+#include "../Sound/Sound.h"
+
 #include <cmath>
 
 ObjectSample ObjectManager::smp;
@@ -120,6 +122,8 @@ void BaseObject::Collition(BaseObject& object)
 		{
 			ParticleManager::smpParticle.ExprotionParticle(this->m_position, startSize, endSize, 6, 30);
 		}
+		StopSoundMem(SoundManager::shotHitSound);
+		PlaySoundMem(SoundManager::shotHitSound, DX_PLAYTYPE_BACK, true);
 	}
 }
 
@@ -142,6 +146,8 @@ void BaseObject::Collition(FLOAT2& f_playerPos)
 		{
 			ParticleManager::smpParticle.ExprotionParticle(this->m_position, startSize, endSize, 6, 30);
 		}
+		StopSoundMem(SoundManager::shotHitSound);
+		PlaySoundMem(SoundManager::shotHitSound, DX_PLAYTYPE_BACK, true);
 	}
 }
 
