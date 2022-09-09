@@ -1,6 +1,7 @@
 #pragma once
 #include "DxLib.h"
 #include "../Particle/Particle.h"
+#include "../WindowsSize/WindowSize.h"
 
 class Player
 {
@@ -43,8 +44,8 @@ private:
 	const float C_PLAYER_RAD = 20.0f;	//プレイヤーの半径
 	const float C_TOTAL_RAD =
 		C_STAGE_RAD + C_PLAYER_RAD;		//未使用
-	const float C_HALF_WID = 640.0f;	//ウィンドウサイズ横半分
-	const float C_HALF_HEI = 360.0f;	//ウィンドウサイズ縦半分
+	const float C_HALF_WID = WindowSize::Wid / 2;	//ウィンドウサイズ横半分
+	const float C_HALF_HEI = WindowSize::Hi / 2;	//ウィンドウサイズ縦半分
 	const float C_ADD_TIMER = 0.02f;	//イージング加算タイマー
 	const float C_SUB_RAD = 2.0f;		//仮自機の半径の減算用
 	const float C_LINE_WID = 7.0f;		//ステージの線の幅

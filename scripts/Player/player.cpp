@@ -202,9 +202,9 @@ void Player::Draw()
 
 	//仮ステージ
 	float hoge = Shake::GetPowerX();
-	DrawExtendGraph(640 + Shake::GetShake().u - m_stageSize.u / 2.0f, 360 + Shake::GetShake().v - m_stageSize.v / 2.0f,
-		640 + Shake::GetShake().u + m_stageSize.u / 2.0f, 360 + Shake::GetShake().v + m_stageSize.v / 2.0f,
-		m_s_stage, true);
+	DrawExtendGraph((WindowSize::Wid / 2) + Shake::GetShake().u - m_stageSize.u / 2.0f, (WindowSize::Hi / 2) + Shake::GetShake().v - m_stageSize.v / 2.0f,
+					(WindowSize::Wid / 2) + Shake::GetShake().u + m_stageSize.u / 2.0f, (WindowSize::Hi / 2) + Shake::GetShake().v + m_stageSize.v / 2.0f,
+					m_s_stage, true);
 	DrawFormatString(0, 40, GetColor(255, 255, 255), "ShakeX:%f", hoge);
 	/*DrawCircle(
 		640 + Shake::GetShake().u,

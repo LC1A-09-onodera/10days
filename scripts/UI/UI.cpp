@@ -1,10 +1,11 @@
 #include "UI.h"
 #include "../Lib/Lib.h"
+#include "../WindowsSize/WindowSize.h"
 
 void BulletUI::AddBullet()
 {
 	UISprite* bullet = new UISprite();
-	bullet->m_position = { -100, 720 / 2 };
+	bullet->m_position = { -100, WindowSize::Hi / 2 };
 	float sen = 0.1f;
 	bullet->m_size = { 167.0f * sen, 70.0f * sen };
 	m_bullets.push_back(bullet);
@@ -29,7 +30,7 @@ void BulletUI::Update(int bulletNum)
 	}
 	if (nowBullet % 2 == 0)
 	{
-		standardPositionY = 720 / 2 + bulletDistance / 2;
+		standardPositionY = WindowSize::Hi / 2 + bulletDistance / 2;
 		auto itr = m_bullets.begin();
 		for (int i = 0; i < nowBullet / 2; i++)
 		{
@@ -44,7 +45,7 @@ void BulletUI::Update(int bulletNum)
 	}
 	else
 	{
-		standardPositionY = 720 / 2;
+		standardPositionY = WindowSize::Hi / 2;
 		auto itr = m_bullets.begin();
 		for (int i = 0; i < (nowBullet - 1) / 2; i++)
 		{
@@ -75,7 +76,7 @@ void BulletUI::Draw()
 		for (auto itr = m_bullets.begin(); itr != m_bullets.end(); ++itr)
 		{
 			DrawExtendGraph((*itr)->m_position.u - (*itr)->m_size.u / 2, (*itr)->m_position.v - (*itr)->m_size.v / 2,
-				(*itr)->m_position.u + (*itr)->m_size.u / 2, (*itr)->m_position.v + (*itr)->m_size.v / 2, m_sprite, true);
+							(*itr)->m_position.u + (*itr)->m_size.u / 2, (*itr)->m_position.v + (*itr)->m_size.v / 2, m_sprite, true);
 		}
 	}
 }

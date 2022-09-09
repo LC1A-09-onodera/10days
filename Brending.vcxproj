@@ -129,6 +129,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="scripts\Enemy\Enemy.cpp" />
     <ClCompile Include="scripts\Input\Input.cpp" />
     <ClCompile Include="scripts\Lib\Lib.cpp" />
     <ClCompile Include="scripts\Object\BaseObject.cpp" />
@@ -141,6 +142,7 @@
     <ClCompile Include="scripts\WindowFrame\WindowFrame.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="scripts\Enemy\Enemy.h" />
     <ClInclude Include="scripts\Input\Input.h" />
     <ClInclude Include="scripts\Lib\Lib.h" />
     <ClInclude Include="scripts\Math\Math.h" />
@@ -152,6 +154,7 @@
     <ClInclude Include="scripts\Sound\Sound.h" />
     <ClInclude Include="scripts\UI\UI.h" />
     <ClInclude Include="scripts\WindowFrame\WindowFrame.h" />
+    <ClInclude Include="scripts\WindowsSize\WindowSize.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

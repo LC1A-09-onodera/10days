@@ -1,5 +1,6 @@
 #include "Scene.h"
 #include "../Scroll/Scroll.h"
+#include "../WindowsSize/WindowSize.h"
 
 int TitleScene::m_s_side;
 FLOAT2 TitleScene::m_sideSize;
@@ -41,9 +42,9 @@ void GameScene::Update()
 	for (int i = static_cast<int>(Direction::Left1); i <= static_cast<int>(Direction::Left2); i++)
 	{
 		SceneSide::m_sidePosition[i].v += speed;
-		if (SceneSide::m_sidePosition[i].v > 720 + m_sideSize.u / 2)
+		if (SceneSide::m_sidePosition[i].v > WindowSize::Hi + m_sideSize.u / 2)
 		{
-			SceneSide::m_sidePosition[i].v = -((m_sideSize.u - 720) + m_sideSize.u / 2);
+			SceneSide::m_sidePosition[i].v = -((m_sideSize.u - WindowSize::Hi) + m_sideSize.u / 2);
 		}
 	}
 }
@@ -52,11 +53,11 @@ void GameScene::Init()
 {
 	for (int i = static_cast<int>(Direction::Right1); i <= static_cast<int>(Direction::Right2); i++)
 	{
-		SceneSide::m_sidePosition[i] = {0, 1280 + (m_sideSize.u * i)};
+		SceneSide::m_sidePosition[i] = {0, WindowSize::Wid + (m_sideSize.u * i)};
 	}
 	for (int i = static_cast<int>(Direction::Left1); i <= static_cast<int>(Direction::Left2); i++)
 	{
-		SceneSide::m_sidePosition[i] = { 1280 - m_sideSize.v, (-m_sideSize.u / 2) - (m_sideSize.u * (i - 2))};
+		SceneSide::m_sidePosition[i] = { WindowSize::Wid - m_sideSize.v, (-m_sideSize.u / 2) - (m_sideSize.u * (i - 2))};
 	}
 }
 
@@ -101,9 +102,9 @@ void TitleScene::Update()
 	for (int i = static_cast<int>(Direction::Left1); i <= static_cast<int>(Direction::Left2); i++)
 	{
 		SceneSide::m_sidePosition[i].v += speed;
-		if (SceneSide::m_sidePosition[i].v > 720 + m_sideSize.u / 2)
+		if (SceneSide::m_sidePosition[i].v > WindowSize::Hi + m_sideSize.u / 2)
 		{
-			SceneSide::m_sidePosition[i].v = -((m_sideSize.u - 720) + m_sideSize.u / 2);
+			SceneSide::m_sidePosition[i].v = -((m_sideSize.u - WindowSize::Hi) + m_sideSize.u / 2);
 		}
 	}
 }
@@ -112,19 +113,19 @@ void TitleScene::Init()
 {
 	for (int i = static_cast<int>(Direction::Right1); i <= static_cast<int>(Direction::Right2); i++)
 	{
-		SceneSide::m_sidePosition[i] = { 0, 1280 + (m_sideSize.u * i) };
+		SceneSide::m_sidePosition[i] = { 0, WindowSize::Wid + (m_sideSize.u * i) };
 	}
 	for (int i = static_cast<int>(Direction::Left1); i <= static_cast<int>(Direction::Left2); i++)
 	{
-		SceneSide::m_sidePosition[i] = { 1280 - m_sideSize.v, (-m_sideSize.u / 2) - (m_sideSize.u * (i - 2)) };
+		SceneSide::m_sidePosition[i] = { WindowSize::Wid - m_sideSize.v, (-m_sideSize.u / 2) - (m_sideSize.u * (i - 2)) };
 	}
 }
 
 void TitleScene::Draw()
 {
-	DrawExtendGraph(640 + Shake::GetShake().u - m_ciycleSize.u / 2.0f, 360 + Shake::GetShake().v - m_ciycleSize.v / 2.0f,
-		640 + Shake::GetShake().u + m_ciycleSize.u / 2.0f, 360 + Shake::GetShake().v + m_ciycleSize.v / 2.0f,
-		m_s_ciycle, true);
+	DrawExtendGraph((WindowSize::Wid / 2) + Shake::GetShake().u - m_ciycleSize.u / 2.0f, WindowSize::Hi / 2 + Shake::GetShake().v - m_ciycleSize.v / 2.0f,
+					(WindowSize::Wid / 2) + Shake::GetShake().u + m_ciycleSize.u / 2.0f, WindowSize::Hi / 2 + Shake::GetShake().v + m_ciycleSize.v / 2.0f,
+					m_s_ciycle, true);
 	for (int i = static_cast<int>(Direction::Right1); i <= static_cast<int>(Direction::Right2); i++)
 	{
 		DrawRotaGraph(SceneSide::m_sidePosition[i].u + m_sideSize.v / 2.0f, SceneSide::m_sidePosition[i].v,
@@ -137,8 +138,8 @@ void TitleScene::Draw()
 			1.0f, 3.1415f / 2.0f * 3.0f,
 			m_s_side, true, false);
 	}
-	float win = 1280 / 2;
-	float hi = 720 / 2;
+	float win = WindowSize::Wid / 2;
+	float hi = WindowSize::Hi / 2;
 	DrawExtendGraph(win - m_titleSize.u / 2, hi - 40 - m_titleSize.v / 2, win + m_titleSize.u / 2, hi - 40 + m_titleSize.v / 2, m_s_title, true);
 	DrawExtendGraph(win - m_spaceSize.u / 2, hi + 100 - m_spaceSize.v / 2, win + m_spaceSize.u / 2, hi + 100 + m_spaceSize.v / 2, m_s_space, true);
 }

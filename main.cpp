@@ -7,6 +7,7 @@
 #include "scripts/Scene/Scene.h"
 #include "scripts/Sound/Sound.h"
 #include "scripts//UI/UI.h"
+#include "scripts/WindowsSize/WindowSize.h"
 
 // ウィンドウのタイトルに表示する文字列
 const char TITLE[] = "10days";
@@ -30,7 +31,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	SetMainWindowText(TITLE);
 
 	// 画面サイズの最大サイズ、カラービット数を設定(モニターの解像度に合わせる)
-	SetGraphMode(WIN_WIDTH, WIN_HEIGHT, 32);
+	SetGraphMode(WindowSize::Wid, WindowSize::Hi, 32);
 
 	// 画面サイズを設定(解像度との比率で設定)
 	SetWindowSizeExtendRate(1.0);
@@ -161,8 +162,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			bulletUI.Update(player.GetBulletNum());
 		}
 		// 描画処理
-		DrawGraph(0, 0, BackGraund, true);
-
+		DrawExtendGraph(0, 0, WindowSize::Wid, WindowSize::Hi, BackGraund, true);
 		ParticleManager::Draw();
 
 		if (sceneNum == TITLE)
