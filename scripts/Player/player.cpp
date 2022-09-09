@@ -12,9 +12,10 @@ void Player::Init()
 
 	m_outside_pos = { C_HALF_WID,0 };
 	m_spaceCount = 2;
-	m_stage_Rad = C_STAGE_RAD;
+	m_stage_rad = C_STAGE_RAD;
 	m_bulletNum = C_BULLET_INIT_VAL;
 	m_maxBulletNum = m_bulletNum;
+	m_stage_rad = C_STAGE_RAD;
 	m_easeTimer = 0.0f;
 	m_outside_rad = 0.0f;
 	m_side = OUTSIDE;
@@ -35,60 +36,64 @@ void Player::Update()
 	//内外移動の処理
 	if (!m_isMove)
 	{
-		//内外移動
-		if (Input::GetKeyTrigger(KEY_INPUT_Z) || Input::isJoyBottomTrigger(XINPUT_BUTTON_B))
+		if (!m_isChange)
 		{
-			//リロード
-			if (!m_isReload)
+			//内外移動
+			if (Input::GetKeyTrigger(KEY_INPUT_Z) || Input::isJoyBottomTrigger(XINPUT_BUTTON_B))
 			{
-				m_bulletNum = m_maxBulletNum;
-				m_isReload = true;
-			}
-			else
-			{
-				m_bulletNum++;
-			}
-
-			//内外移動演出用
-			m_isChange = true;
-
-			if (m_side == OUTSIDE)
-			{
-				//下で内から外の場合
-				if (m_loc == LOWER)
+				//リロード
+				if (!m_isReload)
 				{
-					//LOWERの座標指定
-					m_outside_pos.v = m_position.v + C_PLAYER_RAD * 2 + C_LINE_WID;
-
+					m_bulletNum = m_maxBulletNum;
+					m_isReload = true;
 				}
-				//上で内から外の場合
 				else
 				{
-					//UPPERの座標指定
-					m_outside_pos.v = m_position.v - C_PLAYER_RAD * 2 - C_LINE_WID;
+					m_bulletNum++;
 				}
 
-				m_side = INSIDE;
-			}
-			else
-			{
-				m_side = OUTSIDE;
-			}
-			m_spaceCount++;
-		}
-		//縦断(上の処理順敵にOUTSIDEになってる)
-		if (m_side == OUTSIDE)
-		{
-			if (Input::GetKeyTrigger(KEY_INPUT_X) || Input::isJoyBottomTrigger(XINPUT_BUTTON_A))
-			{
-				if (m_maxBulletNum < m_bulletNum)
+				//内外移動演出用
+				m_isChange = true;
+
+				if (m_side == OUTSIDE)
 				{
-					m_maxBulletNum = m_bulletNum;
+					//下で内から外の場合
+					if (m_loc == LOWER)
+					{
+						//LOWERの座標指定
+						m_outside_pos.v = m_position.v + C_PLAYER_RAD * 2 + C_LINE_WID;
+
+					}
+					//上で内から外の場合
+					else
+					{
+						//UPPERの座標指定
+						m_outside_pos.v = m_position.v - C_PLAYER_RAD * 2 - C_LINE_WID;
+					}
+
+					m_side = INSIDE;
 				}
-				m_isReload = false;
-				m_isMove = true;
+				else
+				{
+					m_side = OUTSIDE;
+				}
+				m_spaceCount++;
+			}
+			//縦断(上の処理順敵にOUTSIDEになってる)
+			if (m_side == OUTSIDE)
+			{
+				if (Input::GetKeyTrigger(KEY_INPUT_X) || Input::isJoyBottomTrigger(XINPUT_BUTTON_A))
+				{
+					if (m_maxBulletNum < m_bulletNum)
+					{
+						m_maxBulletNum = m_bulletNum;
+					}
+					m_isReload = false;
+					m_isMove = true;
+				}
 			}
 		}
+
 	}
 
 	//縦移動中の処理
@@ -100,8 +105,8 @@ void Player::Update()
 		//下から上
 		if (m_loc == LOWER)
 		{
-			const float l_start = C_HALF_HEI + C_STAGE_RAD - C_PLAYER_RAD;
-			const float l_end = C_HALF_HEI - C_STAGE_RAD + C_PLAYER_RAD;
+			const float l_start = C_HALF_HEI + m_stage_rad - C_PLAYER_RAD;
+			const float l_end = C_HALF_HEI - m_stage_rad + C_PLAYER_RAD;
 			m_position.v = (l_end - l_start) * easeInOutSine(m_easeTimer) + l_start;
 			if (m_easeTimer >= 1.0f)
 			{
@@ -113,8 +118,8 @@ void Player::Update()
 		//上から下
 		else
 		{
-			const float l_start = C_HALF_HEI - C_STAGE_RAD + C_PLAYER_RAD;
-			const float l_end = C_HALF_HEI + C_STAGE_RAD - C_PLAYER_RAD;
+			const float l_start = C_HALF_HEI - m_stage_rad + C_PLAYER_RAD;
+			const float l_end = C_HALF_HEI + m_stage_rad - C_PLAYER_RAD;
 			m_position.v = (l_end - l_start) * easeInOutSine(m_easeTimer) + l_start;
 			if (m_easeTimer >= 1.0f)
 			{
