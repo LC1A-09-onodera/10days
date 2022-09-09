@@ -52,7 +52,7 @@ private:
 private:
 	FLOAT2 m_outside_pos;
 	int m_spaceCount;
-	int m_stage_Rad;
+	int m_stage_rad;
 	int m_bulletNum;
 	int m_maxBulletNum;
 	float m_easeTimer;
@@ -89,7 +89,23 @@ private:
 public:
 	bool ShotBullet();
 	const FLOAT2& GetPos() { return m_position; }
+	const FLOAT2& GetStageSize() { return m_stageSize; }
 	const int& GetBulletNum() { return m_bulletNum; }
 	const int& GetMaxBulletNum() { return m_maxBulletNum; }
 	const bool& GetIsChangeTrigger() { return m_isChangeTrigger; }
+
+public:
+	const void SetStageSize(const FLOAT2& stageSize) { m_stageSize = stageSize; }
+	const void SetStageRad(const int& stageRad) { m_stage_rad = stageRad; }
+	const void AddPlayerPosY(const float& addPosY)
+	{
+		if (m_loc == LOWER)
+		{
+			m_position.v += addPosY;
+		}
+		else
+		{
+			m_position.v -= addPosY;
+		}
+	}
 };
