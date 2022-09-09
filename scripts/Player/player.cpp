@@ -49,9 +49,11 @@ void Player::Update()
 				}
 				else
 				{
-					m_bulletNum++;
+					if (m_bulletNum < 30)
+					{
+						m_bulletNum++;
+					}
 				}
-
 				//“àŠOˆÚ“®‰‰o—p
 				m_isChange = true;
 
