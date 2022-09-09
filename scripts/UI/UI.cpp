@@ -13,7 +13,12 @@ void BulletUI::AddBullet()
 void BulletUI::Update(int bulletNum)
 {
 	int nowBullet = m_bullets.size();
-	if (nowBullet < bulletNum)
+	if (m_isAllShot)
+	{
+		AllShot();
+		nowBullet = m_bullets.size();
+	}
+	else if (nowBullet < bulletNum)
 	{
 		AddBullet();
 	}
@@ -84,6 +89,29 @@ void BulletUI::ShotBullet()
 {
 	auto itr = m_bullets.begin();
 	m_bullets.erase(itr);
+}
+
+void BulletUI::AllShotStart()
+{
+	m_isAllShot = true;
+}
+
+void BulletUI::AllShot()
+{
+	if (m_bullets.size() > 0)
+	{
+		ShotBullet();
+	}
+}
+
+int BulletUI::BulletNum()
+{
+	return m_bullets.size();
+}
+
+bool BulletUI::GetIsAllShot()
+{
+	return m_isAllShot;
 }
 
 void UISprite::EaseMove()

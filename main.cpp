@@ -73,9 +73,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 	SceneNum sceneNum = TITLE;
 
-	BulletUI ui;
-	ui.LoadFile();
-	ui.AddBullet();
+	BulletUI bulletUI;
+	bulletUI.LoadFile();
+	bulletUI.AddBullet();
 
 	// ゲームループ
 	while (1)
@@ -147,16 +147,23 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			ParticleManager::Update();
 			if (Input::GetKeyTrigger(KEY_INPUT_ESCAPE))
 			{
-				sceneNum = TITLE;
+				
 				ParticleManager::AllClear();
 				ObjectManager::AllClear();
+				//player.Init();
+				bulletUI.AllShotStart();
+			}
+			if (bulletUI.GetIsAllShot() && bulletUI.BulletNum() <= 0)
+			{
+				sceneNum = TITLE;
 				player.Init();
+				bulletUI.m_isAllShot = false;
 			}
 			/*if (Input::GetKeyTrigger(KEY_INPUT_SPACE))
 			{
 				ui.AddBullet();
 			}*/
-			ui.Update(player.GetBulletNum());
+			bulletUI.Update(player.GetBulletNum());
 		}
 		// 描画処理
 		DrawGraph(0, 0, BackGraund, true);
@@ -177,7 +184,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			GameScene::Draw();
 			DrawFormatString(0, 100, GetColor(0, 0, 0), "BulletNum:%d", player.GetBulletNum());
 			DrawFormatString(0, 120, GetColor(0, 0, 0), "BulletNum:%d", player.GetMaxBulletNum());
-			ui.Draw();
+			bulletUI.Draw();
 		}
 
 		//---------  ここまでにプログラムを記述  ---------//
