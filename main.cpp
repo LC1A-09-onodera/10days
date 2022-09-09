@@ -147,7 +147,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			ParticleManager::Update();
 			if (Input::GetKeyTrigger(KEY_INPUT_ESCAPE))
 			{
-				
 				ParticleManager::AllClear();
 				ObjectManager::AllClear();
 				//player.Init();
@@ -159,10 +158,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 				player.Init();
 				bulletUI.m_isAllShot = false;
 			}
-			/*if (Input::GetKeyTrigger(KEY_INPUT_SPACE))
-			{
-				ui.AddBullet();
-			}*/
 			bulletUI.Update(player.GetBulletNum());
 		}
 		// ï`âÊèàóù

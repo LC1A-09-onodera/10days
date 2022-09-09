@@ -19,6 +19,8 @@ FLOAT2 TitleScene::m_ciycleSize = { 504, 504 };
 
 FLOAT2 SceneSide::m_sidePosition[4];
 
+int GameScene::sceneTimer = 300;
+
 void GameScene::LoadFile()
 {
 	m_s_side = LoadGraph("Resources/EncanEncounter.png");

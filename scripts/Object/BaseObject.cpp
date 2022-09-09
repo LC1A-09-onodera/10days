@@ -115,6 +115,7 @@ BaseObject::~BaseObject()
 
 void BaseObject::Collition(BaseObject& object)
 {
+	if(!this->m_isShotMove) return;
 	if (Collision::CiycleCollision(this->m_position, this->m_R, object.m_position, object.m_R))
 	{
 		FLOAT2 l_shakePower = { 1.0f,1.0f };
