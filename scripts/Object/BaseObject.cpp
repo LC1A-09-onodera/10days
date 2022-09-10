@@ -4,6 +4,7 @@
 #include "../Particle/Particle.h"
 #include "../Scroll/Scroll.h"
 #include "../Sound/Sound.h"
+#include "../WindowsSize/WindowSize.h"
 #include "DxLib.h"
 
 #include <cmath>
@@ -68,6 +69,10 @@ void ObjectSample::Update(FLOAT2& f_playerPos, bool f_playerIsOutside)
 	for (auto itr = m_objects.begin(); itr != m_objects.end(); ++itr)
 	{
 		(*itr)->Update();
+		if ((*itr)->m_position.u < -20 || (*itr)->m_position.u > WindowSize::Wid + 20 || (*itr)->m_position.v > WindowSize::Hi + 20 || (*itr)->m_position.u < -20)
+		{
+			m_deleteObject.push_back(itr);
+		}
 	}
 	for (auto itr = m_deleteObject.begin(); itr != m_deleteObject.end(); ++itr)
 	{
