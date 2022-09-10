@@ -112,7 +112,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			{
 				EnemyManager::AddEnemy();
 			}
-			if (player.GetIsMove() && Input::isJoyLeftStickBottom())
+			if (!player.GetIsMove())
 			{
 				time++;
 				if (time > 2)
@@ -125,9 +125,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 					}
 					FLOAT2 winSizeHalf = { player.GetPos().u,  player.GetPos().v };
 					FLOAT2 spriteSize = { 30.0f, 30.0f };
-					float l_leftStickDeg = 0.0f;
-					l_leftStickDeg = Input::GetJoyLeftStickAngle();
-					l_leftStickDeg = 180.0f / DX_PI_F * l_leftStickDeg;
 
 					//弾が残ってるかの判定
 					bool isShot = player.ShotBullet();
@@ -135,24 +132,20 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 					{
 						if (rand() % 2 == 0)
 						{
-							ObjectManager::object1.Shot(winSizeHalf, spriteSize, l_leftStickDeg, 18.0f, BaseObject::ObjectType::ORANGE);
+							ObjectManager::object1.Shot(winSizeHalf, spriteSize, player.GetDeg(), 18.0f, BaseObject::ObjectType::ORANGE);
 						}
 						else
 						{
-							ObjectManager::object2.Shot(winSizeHalf, spriteSize, l_leftStickDeg, 18.0f, BaseObject::ObjectType::PINK);
+							ObjectManager::object2.Shot(winSizeHalf, spriteSize, player.GetDeg(), 18.0f, BaseObject::ObjectType::PINK);
 						}
 					}
 				}
 				BaseObject::ResetSpeed();
 			}
-			if (player.GetIsChangeTrigger())
-			{
-				BaseObject::SpeedUpdate();
-			}
 			BaseObject::SetIsMove(player.GetIsMove());
 			FLOAT2 pos = player.GetPos();
 			//各オブジェクトの更新
-			ObjectManager::Update(pos, player.GetIsSide());
+			ObjectManager::Update(pos, true);
 			//パーティクルの更新
 			ParticleManager::Update();
 			//エネミーの更新
