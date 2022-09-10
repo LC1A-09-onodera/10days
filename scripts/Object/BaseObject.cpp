@@ -235,7 +235,7 @@ void BaseObject::Update()
 	{
 		FLOAT2 startSize = { 10.0f, 10.0f };
 		FLOAT2 endSize = { 1.0f, 1.0f };
-		ParticleManager::smpParticle.StayParticle(m_position, startSize, endSize, 4, 60);
+		ParticleManager::smpParticle.StayParticle(m_position, startSize, endSize, 1, 60);
 	}
 	//‰~Žüã‚És‚Á‚½‚Æ‚«‚É‰ñ“]‚µŽn‚ß‚é
 	/*if (m_nowR >= BaseObject::InsideR)

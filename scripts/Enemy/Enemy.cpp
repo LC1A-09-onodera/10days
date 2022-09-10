@@ -115,8 +115,10 @@ void BaseEnemy::LineMove()
 		{
 			int a = 0;
 			a++;
-
-			Score::score += m_returnNum;
+			FLOAT2 size = { 18.0f, 22.0f };
+			int score = 10 * (m_returnNum + 1);
+			ParticleManager::scoreParitcle.AddScore(m_position, size, size, score, 60);
+			isDelete = true;
 		}
 		//ƒ‰ƒCƒt‚ÅŽó‚¯‚é
 		else

@@ -150,20 +150,21 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			ParticleManager::Update();
 			//エネミーの更新
 			EnemyManager::Update();
-			if (Input::GetKeyTrigger(KEY_INPUT_ESCAPE))
-			{
-				ParticleManager::AllClear();
-				ObjectManager::AllClear();
-				//player.Init();
-				bulletUI.AllShotStart();
-			}
+			GameScene::Update();
 			if (bulletUI.GetIsAllShot() && bulletUI.BulletNum() <= 0)
 			{
 				sceneNum = TITLE;
 				player.Init();
 				bulletUI.m_isAllShot = false;
+				ParticleManager::AllClear();
+				ObjectManager::AllClear();
 			}
 			bulletUI.Update(player.GetBulletNum());
+			if (Input::GetKeyTrigger(KEY_INPUT_ESCAPE))
+			{
+				//player.Init();
+				bulletUI.AllShotStart();
+			}
 		}
 		// 描画処理
 		DrawExtendGraph(0, 0, WindowSize::Wid, WindowSize::Hi, BackGraund, true);
@@ -179,7 +180,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		{
 			player.Draw();
 			ObjectManager::Draw();
-			GameScene::Update();
 			GameScene::Draw();
 
 			EnemyManager::Draw();

@@ -242,32 +242,45 @@ void ScoreParticle::AddScore(FLOAT2& f_emitPos, FLOAT2& f_startSize, FLOAT2& f_e
 	FLOAT2 emitPos = { 0 };
 	FLOAT2 end = {0, 0};
 	float leng = 50.0f;
+	int dis = 10;
 	if (f_addScore < 10)
 	{
 		emitPos = { f_emitPos.u - (f_startSize.u / 2.0f), f_emitPos.v + leng };
 		end = emitPos;
 		end.v -= leng;
 		AddParitcle(emitPos, end, 10, f_startSize, f_life);
-		emitPos.u += f_startSize.u / 2.0f;
-		end.u += f_startSize.u * 2.0f;
+		emitPos.u += f_startSize.u / 2.0f + dis;
+		end.u += f_startSize.u * 2.0f + dis;
 		AddParitcle(emitPos, end, f_addScore, f_startSize, f_life);
 	}
 	else if (f_addScore < 100)
 	{
-		emitPos = { f_emitPos.u - f_startSize.u , f_emitPos.v + leng };
+		emitPos = { f_emitPos.u - (f_startSize.u / 2 * 2) , f_emitPos.v + leng };
 		end = emitPos;
 		end.v -= leng;
 		AddParitcle(emitPos, end, 10, f_startSize, f_life);
-		emitPos.u += f_startSize.u / 2.0f;
-		end.u += f_startSize.u / 2.0f;
-		AddParitcle(emitPos, end, f_addScore, f_startSize, f_life);
-		emitPos.u += f_startSize.u / 2.0f;
-		end.u += f_startSize.u / 2.0f;
-		AddParitcle(emitPos, end, f_addScore, f_startSize, f_life);
+		emitPos.u += f_startSize.u / 2.0f + dis;
+		end.u += f_startSize.u / 2.0f + dis;
+		AddParitcle(emitPos, end, f_addScore / 10 % 10, f_startSize, f_life);
+		emitPos.u += f_startSize.u / 2.0f + dis;
+		end.u += f_startSize.u / 2.0f + dis;
+		AddParitcle(emitPos, end, f_addScore % 10, f_startSize, f_life);
 	}
 	else if (f_addScore < 1000)
 	{
-
+		emitPos = { f_emitPos.u - (f_startSize.u / 2 * 3) , f_emitPos.v + leng };
+		end = emitPos;
+		end.v -= leng;
+		AddParitcle(emitPos, end, 10, f_startSize, f_life);
+		emitPos.u += f_startSize.u / 2.0f + dis;
+		end.u += f_startSize.u / 2.0f + dis;
+		AddParitcle(emitPos, end, f_addScore / 10 % 10, f_startSize, f_life);
+		emitPos.u += f_startSize.u / 2.0f + dis;
+		end.u += f_startSize.u / 2.0f + dis;
+		AddParitcle(emitPos, end, f_addScore % 10, f_startSize, f_life);
+		emitPos.u += f_startSize.u / 2.0f + dis;
+		end.u += f_startSize.u / 2.0f + dis;
+		AddParitcle(emitPos, end, f_addScore % 10, f_startSize, f_life);
 	}
 	else if (f_addScore < 10000)
 	{
