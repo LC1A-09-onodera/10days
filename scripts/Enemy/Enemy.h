@@ -58,6 +58,7 @@ public:
 	static const int NormalMode = 6;
 	//攻撃時の進行モード
 	static const int ProgressMode = 5;
+	static const int FriendMode = 0;
 	//中心に向かっていくときの速度
 	static const int ToCenterSpeed = 2;
 	//サークル場を回っているときの速度

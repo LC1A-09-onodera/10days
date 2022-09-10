@@ -81,7 +81,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	BulletUI bulletUI;
 	bulletUI.LoadFile();
 	bulletUI.AddBullet();
-
+	BaseEnemy::LoadFile();
 	// ÉQÅ[ÉÄÉãÅ[Év
 	while (1)
 	{

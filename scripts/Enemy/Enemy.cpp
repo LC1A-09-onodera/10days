@@ -17,10 +17,9 @@ int BaseEnemy::SpornAngle = 45;
 
 void BaseEnemy::LoadFile()
 {
-	for (int i = 0;i < 5;i++)
-	{
-		m_sprite[i] = LoadGraph("Resources/.png");
-	}
+	m_sprite[FriendMode] = LoadGraph("Resources/score_enemy.png");
+	m_sprite[ProgressMode] = LoadGraph("Resources/enemy.png");
+	m_sprite[NormalMode] = LoadGraph("Resources/enemy.png");
 }
 
 void BaseEnemy::Init()
@@ -37,6 +36,7 @@ void BaseEnemy::Init()
 	m_timer = MaxTimer;
 	m_easeTimer = 0.0f;
 	m_HP = MaxHP;
+	m_size = {20 , 20};
 }
 
 void BaseEnemy::Update()
@@ -60,13 +60,27 @@ void BaseEnemy::Update()
 	}
 
 	BulletCollision();
+
+	if (m_state == ToCiycle)
+	{
+		nowSpriteNum = NormalMode;
+	}
+	else if (m_state == ToCenter && m_HP > 0)
+	{
+		nowSpriteNum = ProgressMode;
+	}
+	else if (m_state == ToCenter && m_HP <= 0)
+	{
+		nowSpriteNum = FriendMode;
+	}
+
 }
 
 void BaseEnemy::Draw()
 {
-	/*DrawExtendGraph(m_position.u - (m_size.u / 2), m_position.v - (m_size.v / 2),
-					m_position.u + (m_size.u / 2), m_position.v + (m_size.v / 2), m_sprite[nowSpriteNum], true);*/
-	DrawCircle(m_position.u, m_position.v,10,  GetColor(13, 13, 13));
+	DrawExtendGraph(m_position.u - (m_size.u / 2), m_position.v - (m_size.v / 2),
+					m_position.u + (m_size.u / 2), m_position.v + (m_size.v / 2), m_sprite[nowSpriteNum], true);
+	//DrawCircle(m_position.u, m_position.v,10,  GetColor(13, 13, 13));
 }
 
 void BaseEnemy::ToCiycleMove()
@@ -168,7 +182,6 @@ void BaseEnemy::BulletCollision()
 			if (m_HP <= 0)
 			{
 				m_type = Angel;
-
 			}
 		}
 	}
