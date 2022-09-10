@@ -9,6 +9,8 @@
 #include "scripts//UI/UI.h"
 #include "scripts/WindowsSize/WindowSize.h"
 #include "scripts/Enemy/Enemy.h"
+#include "scripts/Score/Score.h"
+
 
 // ウィンドウのタイトルに表示する文字列
 const char TITLE[] = "10days";
@@ -190,6 +192,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			EnemyManager::Draw();
 			DrawFormatString(0, 100, GetColor(0, 0, 0), "BulletNum:%d", player.GetBulletNum());
 			DrawFormatString(0, 120, GetColor(0, 0, 0), "BulletNum:%d", player.GetMaxBulletNum());
+			DrawFormatString(400, 100, GetColor(0, 0, 0), "Score:%d", Score::GetScore());
 			bulletUI.Draw();
 		}
 

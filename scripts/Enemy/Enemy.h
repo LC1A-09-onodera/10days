@@ -62,7 +62,7 @@ public:
 	static const int ToCenterSpeed = 2;
 	//サークル場を回っているときの速度
 	static const int OnCiycleSpeed = 1;
-	static const int MaxTimer = 120;
+	static const int MaxTimer = 600;
 	static FLOAT2 CiycleCenter;
 	//ダメージ食らうゾーン
 	static float TowerR;

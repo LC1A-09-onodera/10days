@@ -4,6 +4,7 @@
 #include "../Lib/Lib.h"
 #include "../Math/Math.h"
 #include "../Object/BaseObject.h"
+#include "../Score/Score.h"
 
 int BaseEnemy::m_sprite[7];
 std::list<BaseEnemy*> EnemyManager::enemys;
@@ -66,10 +67,15 @@ void BaseEnemy::Update()
 			(*itr)->m_isHit = true;
 			ObjectManager::object1.m_deleteObject.push_back(itr);
 			m_HP--;
+			m_timer = 0;
+			//スコア加算
+			Score::score++;
+
+
 			if (m_HP <= 0)
 			{
 				m_type = Angel;
-
+				
 			}
 		}
 	}
@@ -82,6 +88,11 @@ void BaseEnemy::Update()
 			(*itr)->m_isHit = true;
 			ObjectManager::object2.m_deleteObject.push_back(itr);
 			m_HP--;
+			m_timer = 0;
+			//スコア加算
+			Score::score++;
+
+
 			if (m_HP <= 0)
 			{
 				m_type = Angel;
@@ -111,7 +122,7 @@ void BaseEnemy::ToCiycleMove()
 
 void BaseEnemy::CiycleMove()
 {
-	m_angle += OnCiycleSpeed;
+	m_angle += OnCiycleSpeed / 10.0f;
 	m_position.u = BaseEnemy::CiycleCenter.u + DxLibMath::Cos(m_angle) * CenterR;
 	m_position.v = BaseEnemy::CiycleCenter.v + DxLibMath::Sin(m_angle) * CenterR;
 	m_timer--;
@@ -135,7 +146,7 @@ void BaseEnemy::ReturnToCiycle()
 
 void BaseEnemy::LineMove()
 {
-	m_position = Easeing::EaseInQuad(m_position, BaseEnemy::CiycleCenter, (float)ToCenterSpeed / 10.0f);
+	m_position = Easeing::EaseInQuad(m_position, BaseEnemy::CiycleCenter, (float)ToCenterSpeed / 20.0f);
 	if (Collision::Lenght(BaseEnemy::CiycleCenter, m_position) < TowerR)
 	{
 		//スコア加算
@@ -144,6 +155,7 @@ void BaseEnemy::LineMove()
 			int a = 0;
 			a++;
 
+			Score::score += m_returnNum;
 		}
 		//ライフで受ける
 		else
