@@ -10,23 +10,17 @@ void Player::Init()
 	m_gravity.v = 0.9f;
 	m_scrollStartLine = { m_winSize.u / 2, 0 };
 
-	m_outside_pos = { C_HALF_WID,0 };
 	m_start_pos = { 0,0 };
 	m_vec = { 0,0 };
 	m_end_pos = { 0,0 };
-	m_spaceCount = 2;
 	m_stage_rad = C_STAGE_RAD;
 	m_bulletNum = C_BULLET_INIT_VAL;
 	m_maxBulletNum = m_bulletNum;
 	m_stage_rad = C_STAGE_RAD;
 	m_easeTimer = 0.0f;
-	m_outside_rad = 0.0f;
-	m_side = OUTSIDE;
-	m_loc = LOWER;
+	m_deg = 0;
 	m_isMove = false;
 	m_stageSize = { 504, 504 };
-	m_isChange = false;
-	m_isChangeTrigger = false;
 	m_isReload = false;
 }
 
@@ -36,9 +30,26 @@ void Player::Update()
 
 	AttachForce();
 
+	if (m_bulletNum == 0)
+	{
+		m_bulletNum = m_maxBulletNum;
+	}
+
 	//通常時
 	if (!m_isMove)
 	{
+		//自機の方向ベクトルを計算
+		FLOAT2 l_diff = { 0,0 };
+		l_diff.u = m_position.u - C_HALF_WID;
+		l_diff.v = m_position.v - C_HALF_HEI;
+		float l_len = sqrtf(
+			powf(l_diff.u, 2.0f) +
+			powf(l_diff.v, 2.0f));
+		FLOAT2 l_vec = { 0,0 };
+		l_vec.u = l_diff.u / l_len;
+		l_vec.v = l_diff.v / l_len;
+		m_deg = 180.0f / DX_PI_F * atan2f(-l_vec.v, -l_vec.u);
+
 		//左スティックが倒されている時のみ(コントローラー以外も対応させろ！)
 		if (Input::isJoyLeftStickBottom())
 		{
@@ -46,9 +57,22 @@ void Player::Update()
 			m_vec = Input::GetJoyLeftStick();
 			float l_len = sqrtf(powf(m_vec.u, 2.0f) + powf(m_vec.v, 2.0f));
 			m_vec.u /= l_len;
-			m_vec.v /= l_len;
-			m_position.u = m_vec.u * C_STAGE_RAD + C_HALF_WID;
-			m_position.v = -m_vec.v * C_STAGE_RAD + C_HALF_HEI;
+			m_vec.v /= l_len * -1;
+
+			float l_pAngle = 180.0f / DX_PI_F * atan2f(l_vec.v, l_vec.u);
+			float l_sAngle = 180.0f / DX_PI_F * atan2f(m_vec.v, m_vec.u);
+			if (l_pAngle < 0.0f) { l_pAngle += 360.0f; }
+			if (l_sAngle < 0.0f) { l_sAngle += 360.0f; }
+			float l_nearArc = RotateEarliestArc(l_pAngle, l_sAngle);
+
+			FLOAT2 l_nearVec = { 0,0 };
+			//要修正
+			float l_rad = (l_pAngle + (l_nearArc / 30.0f)) * DX_PI_F / 180.0f;
+			l_nearVec.u = cosf(l_rad);
+			l_nearVec.v = sinf(l_rad);
+
+			m_position.u = l_nearVec.u * C_STAGE_RAD + C_HALF_WID;
+			m_position.v = l_nearVec.v * C_STAGE_RAD + C_HALF_HEI;
 		}
 
 		//縦断入力
@@ -57,8 +81,11 @@ void Player::Update()
 		{
 			m_bulletNum = m_maxBulletNum;
 			m_start_pos = m_position;
-			m_end_pos.u = -m_vec.u * C_STAGE_RAD + C_HALF_WID;
-			m_end_pos.v = m_vec.v * C_STAGE_RAD + C_HALF_HEI;
+			l_vec.u *= -1.0f;
+			l_vec.v *= -1.0f;
+			m_end_pos.u = l_vec.u * C_STAGE_RAD + C_HALF_WID;
+			m_end_pos.v = l_vec.v * C_STAGE_RAD + C_HALF_HEI;
+			m_vec = l_vec;
 			m_isMove = true;
 		}
 	}
@@ -90,43 +117,27 @@ void Player::Draw()
 	DrawFormatString(0, 20, GetColor(255, 255, 255), "RIGHT:%2f", right);
 
 	//仮自機
-	if (m_outside_rad < C_PLAYER_RAD)
-	{
-		DrawCircleAA(
-			m_position.u + Shake::GetShake().u,
-			m_position.v + Shake::GetShake().v,
-			C_PLAYER_RAD - m_outside_rad,
-			100,
-			GetColor(13, 13, 13),
-			true
-		);
-	}
-	//外側用
-	if (m_outside_rad > 0)
-	{
-		DrawCircleAA(
-			m_outside_pos.u + Shake::GetShake().u,
-			m_outside_pos.v + Shake::GetShake().v,
-			m_outside_rad,
-			100,
-			GetColor(13, 13, 13),
-			true
-		);
-	}
+	DrawCircleAA(
+		m_position.u + Shake::GetShake().u,
+		m_position.v + Shake::GetShake().v,
+		C_PLAYER_RAD,
+		100,
+		GetColor(13, 13, 13),
+		true
+	);
 
 	//仮ステージ
+	DrawExtendGraph(
+		(WindowSize::Wid / 2) + Shake::GetShake().u - m_stageSize.u / 2.0f,
+		(WindowSize::Hi / 2) + Shake::GetShake().v - m_stageSize.v / 2.0f,
+		(WindowSize::Wid / 2) + Shake::GetShake().u + m_stageSize.u / 2.0f,
+		(WindowSize::Hi / 2) + Shake::GetShake().v + m_stageSize.v / 2.0f,
+		m_s_stage,
+		true
+	);
+
 	float hoge = Shake::GetPowerX();
-	DrawExtendGraph((WindowSize::Wid / 2) + Shake::GetShake().u - m_stageSize.u / 2.0f, (WindowSize::Hi / 2) + Shake::GetShake().v - m_stageSize.v / 2.0f,
-					(WindowSize::Wid / 2) + Shake::GetShake().u + m_stageSize.u / 2.0f, (WindowSize::Hi / 2) + Shake::GetShake().v + m_stageSize.v / 2.0f,
-					m_s_stage, true);
 	DrawFormatString(0, 40, GetColor(255, 255, 255), "ShakeX:%f", hoge);
-	/*DrawCircle(
-		640 + Shake::GetShake().u,
-		360 + Shake::GetShake().v,
-		C_STAGE_RAD,
-		GetColor(255, 255, 255),
-		false
-	);*/
 }
 
 void Player::LoadFile()
@@ -139,11 +150,6 @@ void Player::LoadFile()
 bool Player::GetIsMove()
 {
 	return m_isMove;
-}
-
-bool Player::GetIsSide()
-{
-	return m_side;
 }
 
 void Player::AddForce()

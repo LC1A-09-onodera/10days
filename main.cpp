@@ -142,14 +142,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 				}
 				BaseObject::ResetSpeed();
 			}
-			if (player.GetIsChangeTrigger())
-			{
-				BaseObject::SpeedUpdate();
-			}
 			BaseObject::SetIsMove(player.GetIsMove());
 			FLOAT2 pos = player.GetPos();
 			//各オブジェクトの更新
-			ObjectManager::Update(pos, player.GetIsSide());
+			ObjectManager::Update(pos, true);
 			//パーティクルの更新
 			ParticleManager::Update();
 			//エネミーの更新
