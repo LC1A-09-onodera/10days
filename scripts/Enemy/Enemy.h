@@ -76,6 +76,7 @@ public:
 	void ReturnToCiycle();
 	void LineMove();
 	void HitShiled();
+	void BulletCollision();
 };
 
 

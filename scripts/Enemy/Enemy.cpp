@@ -5,6 +5,7 @@
 #include "../Math/Math.h"
 #include "../Object/BaseObject.h"
 #include "../Score/Score.h"
+#include "../Particle/Particle.h"
 
 int BaseEnemy::m_sprite[7];
 std::list<BaseEnemy*> EnemyManager::enemys;
@@ -58,47 +59,7 @@ void BaseEnemy::Update()
 		ReturnToCiycle();
 	}
 
-	for (auto itr = ObjectManager::object1.m_objects.begin();itr != ObjectManager::object1.m_objects.end(); ++itr)
-	{
-		if (m_HP <= 0)continue;
-		if ((*itr)->m_isHit) continue;
-		if (Collision::CiycleCollision(m_position, 10, (*itr)->m_position, 10))
-		{
-			(*itr)->m_isHit = true;
-			ObjectManager::object1.m_deleteObject.push_back(itr);
-			m_HP--;
-			m_timer = 0;
-			//スコア加算
-			Score::score++;
-
-
-			if (m_HP <= 0)
-			{
-				m_type = Angel;
-				
-			}
-		}
-	}
-	for (auto itr = ObjectManager::object2.m_objects.begin(); itr != ObjectManager::object2.m_objects.end(); ++itr)
-	{
-		if (m_HP <= 0)continue;
-		if ((*itr)->m_isHit) continue;
-		if (Collision::CiycleCollision(m_position, 10, (*itr)->m_position, 10))
-		{
-			(*itr)->m_isHit = true;
-			ObjectManager::object2.m_deleteObject.push_back(itr);
-			m_HP--;
-			m_timer = 0;
-			//スコア加算
-			Score::score++;
-
-
-			if (m_HP <= 0)
-			{
-				m_type = Angel;
-			}
-		}
-	}
+	BulletCollision();
 }
 
 void BaseEnemy::Draw()
@@ -110,7 +71,7 @@ void BaseEnemy::Draw()
 
 void BaseEnemy::ToCiycleMove()
 {
-	m_easeTimer += (float)ToCenterSpeed / 80.0f;
+	m_easeTimer += (float)ToCenterSpeed / 200.0f;
  	m_position = Easeing::EaseInQuad(m_position, m_endPosition, m_easeTimer);
 	if (m_easeTimer >= 1.0f)
 	{
@@ -183,6 +144,53 @@ void BaseEnemy::HitShiled()
 		m_easeTimer = 0.0f;
 	}
 	
+}
+
+void BaseEnemy::BulletCollision()
+{
+	for (auto itr = ObjectManager::object1.m_objects.begin(); itr != ObjectManager::object1.m_objects.end(); ++itr)
+	{
+		if (m_HP <= 0)continue;
+		if ((*itr)->m_isHit) continue;
+		if (Collision::CiycleCollision(m_position, 10, (*itr)->m_position, 10))
+		{
+			(*itr)->m_isHit = true;
+			ObjectManager::object1.m_deleteObject.push_back(itr);
+			m_HP--;
+			m_timer = 0;
+			//スコア加算
+			Score::score++;
+			FLOAT2 size = { 10.0f, 17.0f };
+			ParticleManager::scoreParitcle.AddScore((*itr)->m_position, size , size, 1, 60);
+
+			if (m_HP <= 0)
+			{
+				m_type = Angel;
+
+			}
+		}
+	}
+	for (auto itr = ObjectManager::object2.m_objects.begin(); itr != ObjectManager::object2.m_objects.end(); ++itr)
+	{
+		if (m_HP <= 0)continue;
+		if ((*itr)->m_isHit) continue;
+		if (Collision::CiycleCollision(m_position, 10, (*itr)->m_position, 10))
+		{
+			(*itr)->m_isHit = true;
+			ObjectManager::object2.m_deleteObject.push_back(itr);
+			m_HP--;
+			m_timer = 0;
+			//スコア加算
+			Score::score++;
+			FLOAT2 size = { 10.0f, 17.0f };
+			ParticleManager::scoreParitcle.AddScore((*itr)->m_position, size, size, 1, 60);
+
+			if (m_HP <= 0)
+			{
+				m_type = Angel;
+			}
+		}
+	}
 }
 
 void EnemyManager::Init()
