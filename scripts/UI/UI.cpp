@@ -1,10 +1,11 @@
 #include "UI.h"
 #include "../Lib/Lib.h"
+#include "../WindowsSize/WindowSize.h"
 
 void BulletUI::AddBullet()
 {
 	UISprite* bullet = new UISprite();
-	bullet->m_position = { -100, 720 / 2 };
+	bullet->m_position = { -100, WindowSize::Hi / 2 };
 	float sen = 0.1f;
 	bullet->m_size = { 167.0f * sen, 70.0f * sen };
 	m_bullets.push_back(bullet);
@@ -13,7 +14,12 @@ void BulletUI::AddBullet()
 void BulletUI::Update(int bulletNum)
 {
 	int nowBullet = m_bullets.size();
-	if (nowBullet < bulletNum)
+	if (m_isAllShot)
+	{
+		AllShot();
+		nowBullet = m_bullets.size();
+	}
+	else if (nowBullet < bulletNum)
 	{
 		AddBullet();
 	}
@@ -24,7 +30,7 @@ void BulletUI::Update(int bulletNum)
 	}
 	if (nowBullet % 2 == 0)
 	{
-		standardPositionY = 720 / 2 + bulletDistance / 2;
+		standardPositionY = WindowSize::Hi / 2 + bulletDistance / 2;
 		auto itr = m_bullets.begin();
 		for (int i = 0; i < nowBullet / 2; i++)
 		{
@@ -39,7 +45,7 @@ void BulletUI::Update(int bulletNum)
 	}
 	else
 	{
-		standardPositionY = 720 / 2;
+		standardPositionY = WindowSize::Hi / 2;
 		auto itr = m_bullets.begin();
 		for (int i = 0; i < (nowBullet - 1) / 2; i++)
 		{
@@ -70,7 +76,7 @@ void BulletUI::Draw()
 		for (auto itr = m_bullets.begin(); itr != m_bullets.end(); ++itr)
 		{
 			DrawExtendGraph((*itr)->m_position.u - (*itr)->m_size.u / 2, (*itr)->m_position.v - (*itr)->m_size.v / 2,
-				(*itr)->m_position.u + (*itr)->m_size.u / 2, (*itr)->m_position.v + (*itr)->m_size.v / 2, m_sprite, true);
+							(*itr)->m_position.u + (*itr)->m_size.u / 2, (*itr)->m_position.v + (*itr)->m_size.v / 2, m_sprite, true);
 		}
 	}
 }
@@ -84,6 +90,29 @@ void BulletUI::ShotBullet()
 {
 	auto itr = m_bullets.begin();
 	m_bullets.erase(itr);
+}
+
+void BulletUI::AllShotStart()
+{
+	m_isAllShot = true;
+}
+
+void BulletUI::AllShot()
+{
+	if (m_bullets.size() > 0)
+	{
+		ShotBullet();
+	}
+}
+
+int BulletUI::BulletNum()
+{
+	return m_bullets.size();
+}
+
+bool BulletUI::GetIsAllShot()
+{
+	return m_isAllShot;
 }
 
 void UISprite::EaseMove()
