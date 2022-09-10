@@ -12,6 +12,8 @@
     <ClCompile Include="scripts\Scene\Scene.cpp" />
     <ClCompile Include="scripts\Sound\Sound.cpp" />
     <ClCompile Include="scripts\UI\UI.cpp" />
+    <ClCompile Include="scripts\Enemy\Enemy.cpp" />
+    <ClCompile Include="scripts\Score\Score.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="scripts\Input\Input.h" />
@@ -25,5 +27,8 @@
     <ClInclude Include="scripts\Scene\Scene.h" />
     <ClInclude Include="scripts\Sound\Sound.h" />
     <ClInclude Include="scripts\UI\UI.h" />
+    <ClInclude Include="scripts\Enemy\Enemy.h" />
+    <ClInclude Include="scripts\WindowsSize\WindowSize.h" />
+    <ClInclude Include="scripts\Score\Score.h" />
   </ItemGroup>
 </Project>

@@ -129,18 +129,21 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="scripts\Enemy\Enemy.cpp" />
     <ClCompile Include="scripts\Input\Input.cpp" />
     <ClCompile Include="scripts\Lib\Lib.cpp" />
     <ClCompile Include="scripts\Object\BaseObject.cpp" />
     <ClCompile Include="scripts\Particle\Particle.cpp" />
     <ClCompile Include="scripts\Player\player.cpp" />
     <ClCompile Include="scripts\Scene\Scene.cpp" />
+    <ClCompile Include="scripts\Score\Score.cpp" />
     <ClCompile Include="scripts\Scroll\Scroll.cpp" />
     <ClCompile Include="scripts\Sound\Sound.cpp" />
     <ClCompile Include="scripts\UI\UI.cpp" />
     <ClCompile Include="scripts\WindowFrame\WindowFrame.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="scripts\Enemy\Enemy.h" />
     <ClInclude Include="scripts\Input\Input.h" />
     <ClInclude Include="scripts\Lib\Lib.h" />
     <ClInclude Include="scripts\Math\Math.h" />
@@ -148,10 +151,12 @@
     <ClInclude Include="scripts\Particle\Particle.h" />
     <ClInclude Include="scripts\Player\player.h" />
     <ClInclude Include="scripts\Scene\Scene.h" />
+    <ClInclude Include="scripts\Score\Score.h" />
     <ClInclude Include="scripts\Scroll\Scroll.h" />
     <ClInclude Include="scripts\Sound\Sound.h" />
     <ClInclude Include="scripts\UI\UI.h" />
     <ClInclude Include="scripts\WindowFrame\WindowFrame.h" />
+    <ClInclude Include="scripts\WindowsSize\WindowSize.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

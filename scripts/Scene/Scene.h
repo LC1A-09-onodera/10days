@@ -50,6 +50,7 @@ public:
 	//static FLOAT2 m_backPosition;
 	//static FLOAT2 m_backSize;
 	static FLOAT2 m_sideSize;
+	static int sceneTimer;
 	static void LoadFile();
 	static void Update();
 	static void Init();

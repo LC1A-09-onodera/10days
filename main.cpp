@@ -7,6 +7,10 @@
 #include "scripts/Scene/Scene.h"
 #include "scripts/Sound/Sound.h"
 #include "scripts//UI/UI.h"
+#include "scripts/WindowsSize/WindowSize.h"
+#include "scripts/Enemy/Enemy.h"
+#include "scripts/Score/Score.h"
+
 
 // ウィンドウのタイトルに表示する文字列
 const char TITLE[] = "10days";
@@ -30,7 +34,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	SetMainWindowText(TITLE);
 
 	// 画面サイズの最大サイズ、カラービット数を設定(モニターの解像度に合わせる)
-	SetGraphMode(WIN_WIDTH, WIN_HEIGHT, 32);
+	SetGraphMode(WindowSize::Wid, WindowSize::Hi, 32);
 
 	// 画面サイズを設定(解像度との比率で設定)
 	SetWindowSizeExtendRate(1.0);
@@ -54,6 +58,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	// ゲームループで使う変数の宣言
 	int mouse_x;
 	int mouse_y;
+	FLOAT2 mousePos;
 	Player player;
 	player.LoadFile();
 	ObjectManager::LoadFile();
@@ -73,10 +78,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 	SceneNum sceneNum = TITLE;
 
-	BulletUI ui;
-	ui.LoadFile();
-	ui.AddBullet();
-
+	BulletUI bulletUI;
+	bulletUI.LoadFile();
+	bulletUI.AddBullet();
+	BaseEnemy::LoadFile();
 	// ゲームループ
 	while (1)
 	{
@@ -87,11 +92,12 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 		//---------  ここからプログラムを記述  ----------//
 		GetMousePoint(&mouse_x, &mouse_y);
+		mousePos = { (float)mouse_x, (float)mouse_y };
 
 		// 更新処理
 		if (sceneNum == TITLE)
 		{
-			if (Input::GetKeyTrigger(KEY_INPUT_SPACE))
+			if (Input::GetKeyTrigger(KEY_INPUT_SPACE) || Input::isJoyBottomTrigger(XINPUT_BUTTON_A))
 			{
 				sceneNum = GAME;
 			}
@@ -102,7 +108,11 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			player.Update();
 			static float angle = 0.0f;
 			static int time = 0;
-			if (player.GetIsMove() && Input::isJoyLeftStickBottom())
+			if (Input::GetKeyTrigger(KEY_INPUT_SPACE))
+			{
+				EnemyManager::AddEnemy();
+			}
+			if (!player.GetIsMove())
 			{
 				time++;
 				if (time > 2)
@@ -115,9 +125,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 					}
 					FLOAT2 winSizeHalf = { player.GetPos().u,  player.GetPos().v };
 					FLOAT2 spriteSize = { 30.0f, 30.0f };
-					float l_leftStickDeg = 0.0f;
-					l_leftStickDeg = Input::GetJoyLeftStickAngle();
-					l_leftStickDeg = 180.0f / DX_PI_F * l_leftStickDeg;
 
 					//弾が残ってるかの判定
 					bool isShot = player.ShotBullet();
@@ -125,42 +132,42 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 					{
 						if (rand() % 2 == 0)
 						{
-							ObjectManager::object1.Shot(winSizeHalf, spriteSize, l_leftStickDeg, 18.0f, BaseObject::ObjectType::ORANGE);
+							ObjectManager::object1.Shot(winSizeHalf, spriteSize, player.GetDeg(), 18.0f, BaseObject::ObjectType::ORANGE);
 						}
 						else
 						{
-							ObjectManager::object2.Shot(winSizeHalf, spriteSize, l_leftStickDeg, 18.0f, BaseObject::ObjectType::PINK);
+							ObjectManager::object2.Shot(winSizeHalf, spriteSize, player.GetDeg(), 18.0f, BaseObject::ObjectType::PINK);
 						}
 					}
 				}
 				BaseObject::ResetSpeed();
 			}
-			if (player.GetIsChangeTrigger())
-			{
-				BaseObject::SpeedUpdate();
-			}
 			BaseObject::SetIsMove(player.GetIsMove());
 			FLOAT2 pos = player.GetPos();
 			//各オブジェクトの更新
-			ObjectManager::Update(pos, player.GetIsSide());
+			ObjectManager::Update(pos, true);
 			//パーティクルの更新
 			ParticleManager::Update();
-			if (Input::GetKeyTrigger(KEY_INPUT_ESCAPE))
+			//エネミーの更新
+			EnemyManager::Update();
+			GameScene::Update();
+			if (bulletUI.GetIsAllShot() && bulletUI.BulletNum() <= 0)
 			{
 				sceneNum = TITLE;
+				player.Init();
+				bulletUI.m_isAllShot = false;
 				ParticleManager::AllClear();
 				ObjectManager::AllClear();
-				player.Init();
 			}
-			/*if (Input::GetKeyTrigger(KEY_INPUT_SPACE))
+			bulletUI.Update(player.GetBulletNum());
+			if (Input::GetKeyTrigger(KEY_INPUT_ESCAPE))
 			{
-				ui.AddBullet();
-			}*/
-			ui.Update(player.GetBulletNum());
+				//player.Init();
+				bulletUI.AllShotStart();
+			}
 		}
 		// 描画処理
-		DrawGraph(0, 0, BackGraund, true);
-
+		DrawExtendGraph(0, 0, WindowSize::Wid, WindowSize::Hi, BackGraund, true);
 		ParticleManager::Draw();
 
 		if (sceneNum == TITLE)
@@ -173,11 +180,13 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		{
 			player.Draw();
 			ObjectManager::Draw();
-			GameScene::Update();
 			GameScene::Draw();
+
+			EnemyManager::Draw();
 			DrawFormatString(0, 100, GetColor(0, 0, 0), "BulletNum:%d", player.GetBulletNum());
 			DrawFormatString(0, 120, GetColor(0, 0, 0), "BulletNum:%d", player.GetMaxBulletNum());
-			ui.Draw();
+			DrawFormatString(400, 100, GetColor(0, 0, 0), "Score:%d", Score::GetScore());
+			bulletUI.Draw();
 		}
 
 		//---------  ここまでにプログラムを記述  ---------//

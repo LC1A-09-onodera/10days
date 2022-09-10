@@ -26,7 +26,9 @@ class BulletUI
 	const int Xposition = 300;
 	const int bulletDistance = 20;
 	int standardPositionY;
+	
 	public:
+	bool m_isAllShot = false;
 	void AddBullet();
 	void Init();
 	void Update(int bulletNum);
@@ -34,6 +36,12 @@ class BulletUI
 	void LoadFile();
 	void LoadBullet();
 	void ShotBullet();
+
+	void AllShotStart();
+
+	void AllShot();
+	int BulletNum();
+	bool GetIsAllShot();
 };
 
 class UIManager

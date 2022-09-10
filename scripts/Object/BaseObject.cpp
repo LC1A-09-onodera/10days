@@ -4,6 +4,7 @@
 #include "../Particle/Particle.h"
 #include "../Scroll/Scroll.h"
 #include "../Sound/Sound.h"
+#include "../WindowsSize/WindowSize.h"
 #include "DxLib.h"
 
 #include <cmath>
@@ -18,7 +19,7 @@ int InducedExplosion::m_s_exprosion[1];
 bool BaseObject::IsMove = false;
 
 float BaseObject::CiycleSpeed = 1;
-
+bool BaseObject::isAllHit = false;
 void ObjectSample::LoadFile(const char* path)
 {
 	m_sprite = LoadGraph(path);
@@ -27,41 +28,48 @@ void ObjectSample::LoadFile(const char* path)
 void ObjectSample::Update(FLOAT2& f_playerPos, bool f_playerIsOutside)
 {
 	//全部の当たり判定を取る
-	int index = 0;
-
-	for (auto itr = m_objects.begin(); itr != m_objects.end(); ++itr)
-	{
-		//itr→メインのチェック対象
-		//itr2→リストを回す
-		auto itr2 = m_objects.begin();
-		//今までチャックしたオブジェクトを飛ばすため
-		for (int i = 0; i < index; i++)
-		{
-			itr2++;
-		}
-		for (; itr2 != m_objects.end(); ++itr2)
-		{
-			if (itr != itr2)
-			{
-				if ((*itr)->m_isShotMove && (*itr2)->m_isShotMove)
-				{
-					(*itr)->Collition(*(*itr2));
-				}
-			}
-		}
-
-		if (!f_playerIsOutside && (*itr)->m_isShotMove)
-		{
-			(*itr)->Collition(f_playerPos);
-		}
-
-		index++;
-	}
+	//int index = 0;
+	//BaseObject::isAllHit = false;
+	//for (auto itr = m_objects.begin(); itr != m_objects.end(); ++itr)
+	//{
+	//	//itr→メインのチェック対象
+	//	//itr2→リストを回す
+	//	auto itr2 = m_objects.begin();
+	//	//今までチャックしたオブジェクトを飛ばすため
+	//	for (int i = 0; i < index; i++)
+	//	{
+	//		itr2++;
+	//	}
+	//	for (; itr2 != m_objects.end(); ++itr2)
+	//	{
+	//		if (itr != itr2)
+	//		{
+	//			if ((*itr)->m_isShotMove && (*itr2)->m_isShotMove)
+	//			{
+	//				(*itr)->Collition(*(*itr2));
+	//			}
+	//		}
+	//	}
+	//	if (!f_playerIsOutside && (*itr)->m_isShotMove)
+	//	{
+	//		(*itr)->Collition(f_playerPos);
+	//	}
+	//	index++;
+	//}
+	//for (auto itr = m_objects.begin(); itr != m_objects.end(); ++itr)
+	//{
+	//	(*itr)->Update();
+	//	if ((*itr)->m_isHit)
+	//	{
+	//		m_deleteObject.push_back(itr);
+	//	}
+	//}
+	
+	//直線に動き続ける
 	for (auto itr = m_objects.begin(); itr != m_objects.end(); ++itr)
 	{
 		(*itr)->Update();
-
-		if ((*itr)->m_isHit)
+		if ((*itr)->m_position.u < -20 || (*itr)->m_position.u > WindowSize::Wid + 20 || (*itr)->m_position.v > WindowSize::Hi + 20 || (*itr)->m_position.u < -20)
 		{
 			m_deleteObject.push_back(itr);
 		}
@@ -113,8 +121,10 @@ BaseObject::~BaseObject()
 {
 }
 
+//弾同士の当たり判定
 void BaseObject::Collition(BaseObject& object)
 {
+	if(!this->m_isShotMove) return;
 	if (Collision::CiycleCollision(this->m_position, this->m_R, object.m_position, object.m_R))
 	{
 		FLOAT2 l_shakePower = { 1.0f,1.0f };
@@ -122,6 +132,8 @@ void BaseObject::Collition(BaseObject& object)
 
 		this->m_isHit = true;
 		object.m_isHit = true;
+
+		isAllHit = true;
 
 		FLOAT2 startSize = { 30.0f, 30.0f };
 		FLOAT2 endSize = { 0.0f, 0.0f };
@@ -152,6 +164,12 @@ void BaseObject::SetIsMove(bool move)
 	IsMove = move;
 }
 
+bool BaseObject::GetIsAllHit()
+{
+	return isAllHit;
+}
+
+//プレイヤーとの当たり判定
 void BaseObject::Collition(FLOAT2& f_playerPos)
 {
 	if (Collision::CiycleCollision(this->m_position, this->m_R, f_playerPos, 20.0f))
@@ -159,6 +177,7 @@ void BaseObject::Collition(FLOAT2& f_playerPos)
 		this->m_isHit = true;
 		FLOAT2 startSize = { 30.0f, 30.0f };
 		FLOAT2 endSize = { 0.0f, 0.0f };
+		//isAllHit = true;
 		if (m_objectType == ObjectType::PINK)
 		{
 			ParticleManager::pinkParticle.ExprotionParticle(this->m_position, startSize, endSize, 6, 30);
@@ -195,7 +214,7 @@ void BaseObject::Update()
 		return;
 	}
 	//円周に当たっているとき
-	if (m_isShotMove && !BaseObject::IsMove)
+	/*if (m_isShotMove && !BaseObject::IsMove)
 	{
 		angle += CiycleSpeed;
 		float R = BaseObject::InsideR;
@@ -205,7 +224,7 @@ void BaseObject::Update()
 		FLOAT2 endSize = { 1.0f, 1.0f };
 		ParticleManager::smpParticle.StayParticle(m_position, startSize, endSize, 1, 60);
 		return;
-	}
+	}*/
 
 	//定数で動いていく
 	float R = BaseObject::InsideR;
@@ -216,9 +235,10 @@ void BaseObject::Update()
 	{
 		FLOAT2 startSize = { 10.0f, 10.0f };
 		FLOAT2 endSize = { 1.0f, 1.0f };
-		ParticleManager::smpParticle.StayParticle(m_position, startSize, endSize, 4, 60);
+		ParticleManager::smpParticle.StayParticle(m_position, startSize, endSize, 1, 60);
 	}
-	if (m_nowR >= BaseObject::InsideR)
+	//円周上に行ったときに回転し始める
+	/*if (m_nowR >= BaseObject::InsideR)
 	{
 		float angleSmp;
 		m_nowR = BaseObject::InsideR;
@@ -230,7 +250,7 @@ void BaseObject::Update()
 		m_position.v = centerPos.v + R * vec.v;
 		angle = std::atan2(vec.v, vec.u) * 180.0f / 3.141592f;
 		m_isShotMove = true;
-	}
+	}*/
 }
 
 void BaseObject::Init(FLOAT2 position, FLOAT2 spriteSize, float R, ObjectType f_type)
@@ -268,7 +288,8 @@ void ObjectManager::Update(FLOAT2& f_playerPos, bool f_playerIsOutside)
 	smp.Update(f_playerPos, f_playerIsOutside);
 	object1.Update(f_playerPos, f_playerIsOutside);
 	object2.Update(f_playerPos, f_playerIsOutside);
-	AllCollision();
+	//弾同士の当たり判定
+	//AllCollision();
 
 	if (Shake::GetPower().u > 0.0f)
 	{
@@ -297,14 +318,14 @@ void ObjectManager::Draw()
 
 void ObjectManager::AllCollision()
 {
-	for (auto itr = object1.m_objects.begin(); itr != object1.m_objects.end(); ++itr)
+	//弾同士や誘爆の処理
+	/*for (auto itr = object1.m_objects.begin(); itr != object1.m_objects.end(); ++itr)
 	{
 		for (auto itr2 = object2.m_objects.begin(); itr2 != object2.m_objects.end(); ++itr2)
 		{
 			(*itr)->Collition(*(*itr2));
 		}
 	}
-
 	for (auto itr = exprotionObject.begin(); itr != exprotionObject.end(); ++itr)
 	{
 		for (auto itr2 = object1.m_objects.begin(); itr2 != object1.m_objects.end(); ++itr2)
@@ -320,7 +341,7 @@ void ObjectManager::AllCollision()
 		{
 			deleteExprotionObject.push_back(itr);
 		}
-	}
+	}*/
 	for (auto itr = deleteExprotionObject.begin(); itr != deleteExprotionObject.end(); ++itr)
 	{
 		exprotionObject.erase(*itr);
