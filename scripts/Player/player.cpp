@@ -137,7 +137,7 @@ void Player::Draw()
 	);
 
 	float hoge = Shake::GetPowerX();
-	DrawFormatString(0, 40, GetColor(255, 255, 255), "ShakeX:%f", hoge);
+	DrawFormatString(0, 40, GetColor(0, 0, 0), "ShakeX:%f", hoge);
 }
 
 void Player::LoadFile()
