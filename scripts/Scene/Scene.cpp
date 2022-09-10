@@ -80,11 +80,13 @@ void GameScene::Draw()
 void TitleScene::LoadFile()
 {
 	m_s_side = LoadGraph("Resources/EncanEncounter.png");
-	m_s_title = LoadGraph("Resources/title.png");
+	m_s_title = LoadGraph("Resources/new_title.png");
 	m_s_space = LoadGraph("Resources/space.png");
 	m_s_ciycle = LoadGraph("Resources/circle.png");
 	m_sideSize = { 1139.0f, 104.0f };
-	m_titleSize = {443, 118 };
+	//m_titleSize = {443, 118 };
+	float sen = 0.5f;
+	m_titleSize = { 872.0f * sen, 325.0f * sen };
 	m_spaceSize = {150, 34};
 }
 
@@ -140,6 +142,6 @@ void TitleScene::Draw()
 	}
 	float win = WindowSize::Wid / 2;
 	float hi = WindowSize::Hi / 2;
-	DrawExtendGraph(win - m_titleSize.u / 2, hi - 40 - m_titleSize.v / 2, win + m_titleSize.u / 2, hi - 40 + m_titleSize.v / 2, m_s_title, true);
+	DrawExtendGraph(win - m_titleSize.u / 2, hi - 0 - m_titleSize.v / 2, win + m_titleSize.u / 2, hi - 0 + m_titleSize.v / 2, m_s_title, true);
 	DrawExtendGraph(win - m_spaceSize.u / 2, hi + 100 - m_spaceSize.v / 2, win + m_spaceSize.u / 2, hi + 100 + m_spaceSize.v / 2, m_s_space, true);
 }

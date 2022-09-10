@@ -8,6 +8,7 @@
 #include "scripts/Sound/Sound.h"
 #include "scripts//UI/UI.h"
 #include "scripts/WindowsSize/WindowSize.h"
+#include "scripts/Enemy/Enemy.h"
 
 // ウィンドウのタイトルに表示する文字列
 const char TITLE[] = "10days";
@@ -55,6 +56,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	// ゲームループで使う変数の宣言
 	int mouse_x;
 	int mouse_y;
+	FLOAT2 mousePos;
 	Player player;
 	player.LoadFile();
 	ObjectManager::LoadFile();
@@ -88,6 +90,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 		//---------  ここからプログラムを記述  ----------//
 		GetMousePoint(&mouse_x, &mouse_y);
+		mousePos = { (float)mouse_x, (float)mouse_y };
 
 		// 更新処理
 		if (sceneNum == TITLE)
@@ -103,6 +106,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			player.Update();
 			static float angle = 0.0f;
 			static int time = 0;
+			if (Input::GetKeyTrigger(KEY_INPUT_SPACE))
+			{
+				EnemyManager::AddEnemy();
+			}
 			if (player.GetIsMove() && Input::isJoyLeftStickBottom())
 			{
 				time++;
@@ -146,6 +153,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			ObjectManager::Update(pos, player.GetIsSide());
 			//パーティクルの更新
 			ParticleManager::Update();
+			//エネミーの更新
+			EnemyManager::Update();
 			if (Input::GetKeyTrigger(KEY_INPUT_ESCAPE))
 			{
 				ParticleManager::AllClear();
@@ -177,6 +186,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			ObjectManager::Draw();
 			GameScene::Update();
 			GameScene::Draw();
+
+			EnemyManager::Draw();
 			DrawFormatString(0, 100, GetColor(0, 0, 0), "BulletNum:%d", player.GetBulletNum());
 			DrawFormatString(0, 120, GetColor(0, 0, 0), "BulletNum:%d", player.GetMaxBulletNum());
 			bulletUI.Draw();
