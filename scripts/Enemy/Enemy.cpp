@@ -3,9 +3,12 @@
 #include "../Lib/Lib.h"
 #include "../Lib/Lib.h"
 #include "../Math/Math.h"
+#include "../Object/BaseObject.h"
+#include "../Score/Score.h"
 
 int BaseEnemy::m_sprite[7];
 std::list<BaseEnemy*> EnemyManager::enemys;
+std::list<std::list<BaseEnemy*>::iterator> EnemyManager::deleteEnemys;
 
 FLOAT2 BaseEnemy::CiycleCenter = { WindowSize::Wid / 2, WindowSize::Hi / 2 };
 float BaseEnemy:: TowerR = 100;
@@ -32,6 +35,7 @@ void BaseEnemy::Init()
 	SpornAngle = SpornAngle + 120 + (rand() % 60);
 	m_timer = MaxTimer;
 	m_easeTimer = 0.0f;
+	m_HP = MaxHP;
 }
 
 void BaseEnemy::Update()
@@ -47,9 +51,54 @@ void BaseEnemy::Update()
 	else if (m_state == ToCenter)
 	{
 		LineMove();
+		HitShiled();
+	}
+	else if (m_state == ReturnCiycle)
+	{
+		ReturnToCiycle();
 	}
 
-	//if ()
+	for (auto itr = ObjectManager::object1.m_objects.begin();itr != ObjectManager::object1.m_objects.end(); ++itr)
+	{
+		if (m_HP <= 0)continue;
+		if ((*itr)->m_isHit) continue;
+		if (Collision::CiycleCollision(m_position, 10, (*itr)->m_position, 10))
+		{
+			(*itr)->m_isHit = true;
+			ObjectManager::object1.m_deleteObject.push_back(itr);
+			m_HP--;
+			m_timer = 0;
+			//スコア加算
+			Score::score++;
+
+
+			if (m_HP <= 0)
+			{
+				m_type = Angel;
+				
+			}
+		}
+	}
+	for (auto itr = ObjectManager::object2.m_objects.begin(); itr != ObjectManager::object2.m_objects.end(); ++itr)
+	{
+		if (m_HP <= 0)continue;
+		if ((*itr)->m_isHit) continue;
+		if (Collision::CiycleCollision(m_position, 10, (*itr)->m_position, 10))
+		{
+			(*itr)->m_isHit = true;
+			ObjectManager::object2.m_deleteObject.push_back(itr);
+			m_HP--;
+			m_timer = 0;
+			//スコア加算
+			Score::score++;
+
+
+			if (m_HP <= 0)
+			{
+				m_type = Angel;
+			}
+		}
+	}
 }
 
 void BaseEnemy::Draw()
@@ -73,7 +122,7 @@ void BaseEnemy::ToCiycleMove()
 
 void BaseEnemy::CiycleMove()
 {
-	m_angle += OnCiycleSpeed;
+	m_angle += OnCiycleSpeed / 10.0f;
 	m_position.u = BaseEnemy::CiycleCenter.u + DxLibMath::Cos(m_angle) * CenterR;
 	m_position.v = BaseEnemy::CiycleCenter.v + DxLibMath::Sin(m_angle) * CenterR;
 	m_timer--;
@@ -83,9 +132,21 @@ void BaseEnemy::CiycleMove()
 	}
 }
 
+void BaseEnemy::ReturnToCiycle()
+{
+	m_easeTimer += (float)ToCenterSpeed / 80.0f;
+	m_position = Easeing::EaseInQuad(m_position, m_endPosition, m_easeTimer);
+	if (m_easeTimer >= 1.0f)
+	{
+		m_position.u = BaseEnemy::CiycleCenter.u + DxLibMath::Cos(m_angle) * CenterR;
+		m_position.v = BaseEnemy::CiycleCenter.v + DxLibMath::Sin(m_angle) * CenterR;
+		m_state = ToCenter;
+	}
+}
+
 void BaseEnemy::LineMove()
 {
-	m_position = Easeing::EaseInQuad(m_position, BaseEnemy::CiycleCenter, (float)ToCenterSpeed / 10.0f);
+	m_position = Easeing::EaseInQuad(m_position, BaseEnemy::CiycleCenter, (float)ToCenterSpeed / 20.0f);
 	if (Collision::Lenght(BaseEnemy::CiycleCenter, m_position) < TowerR)
 	{
 		//スコア加算
@@ -93,13 +154,33 @@ void BaseEnemy::LineMove()
 		{
 			int a = 0;
 			a++;
+
+			Score::score += m_returnNum;
 		}
 		//ライフで受ける
 		else
 		{
 			int a = 0;
 			a++;
+
 		}
+	}
+	
+}
+
+void BaseEnemy::HitShiled()
+{
+	if (false)
+	{
+		//以下反射板に当たった時
+		m_isReturn = true;
+		m_returnNum++;
+		m_timer = MaxTimer;
+		m_state = ReturnCiycle;
+		float cos = DxLibMath::Cos(m_angle);
+		float sin = DxLibMath::Sin(m_angle);
+		m_endPosition = { BaseEnemy::CiycleCenter.u + CenterR * cos , BaseEnemy::CiycleCenter.v + CenterR * sin };
+		m_easeTimer = 0.0f;
 	}
 	
 }
@@ -121,7 +202,16 @@ void EnemyManager::Update()
 	for (auto itr = enemys.begin(); itr != enemys.end(); ++itr)
 	{
 		(*itr)->Update();
+		if ((*itr)->isDelete)
+		{
+			deleteEnemys.push_back(itr);
+		}
 	}
+	for (auto itr = deleteEnemys.begin(); itr != deleteEnemys.end(); ++itr)
+	{
+		enemys.erase(*itr);
+	}
+	deleteEnemys.clear();
 }
 
 void EnemyManager::Draw()

@@ -25,7 +25,9 @@ public:
 		//サイクル上を動く
 		OnCiycle,
 		//中心を目指していく
-		ToCenter
+		ToCenter,
+
+		ReturnCiycle,
 	};
 	int m_state;//現在のステータス
 
@@ -36,10 +38,15 @@ public:
 	};
 	int m_type = Devil;
 
+	int m_returnNum = 0;
+	bool m_isReturn = false;
+
 	static int m_sprite[7];
 	int nowSpriteNum = NormalMode;
 	
 	static int SpornAngle;
+
+	bool isDelete = false;
 
 	//中心からの停止用距離
 	static const int CenterR = 450;
@@ -55,7 +62,7 @@ public:
 	static const int ToCenterSpeed = 2;
 	//サークル場を回っているときの速度
 	static const int OnCiycleSpeed = 1;
-	static const int MaxTimer = 120;
+	static const int MaxTimer = 600;
 	static FLOAT2 CiycleCenter;
 	//ダメージ食らうゾーン
 	static float TowerR;
@@ -66,7 +73,9 @@ public:
 	void Draw();
 	void ToCiycleMove();
 	void CiycleMove();
+	void ReturnToCiycle();
 	void LineMove();
+	void HitShiled();
 };
 
 
@@ -74,6 +83,7 @@ class EnemyManager
 {
 public:
 	static std::list<BaseEnemy *> enemys;
+	static std::list<std::list<BaseEnemy*>::iterator> deleteEnemys;
 	static void Init();
 	static void AddEnemy();
 	static void Update();
