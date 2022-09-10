@@ -166,7 +166,7 @@ void BaseObject::Collition(FLOAT2& f_playerPos)
 		this->m_isHit = true;
 		FLOAT2 startSize = { 30.0f, 30.0f };
 		FLOAT2 endSize = { 0.0f, 0.0f };
-		isAllHit = true;
+		//isAllHit = true;
 		if (m_objectType == ObjectType::PINK)
 		{
 			ParticleManager::pinkParticle.ExprotionParticle(this->m_position, startSize, endSize, 6, 30);

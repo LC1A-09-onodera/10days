@@ -23,7 +23,7 @@ private:
 	//向き
 	FLOAT2 m_direction = { 0.0f, 0.0f };
 
-	const FLOAT2 m_winSize = { 1280, 720 };
+	const FLOAT2 m_winSize = { 1280, 920 };
 	//スクロール開始位置
 	FLOAT2 m_scrollStartLine = { m_winSize.u / 2, 0 };
 
@@ -38,19 +38,22 @@ private:
 	};
 
 private:
-	const int C_STAGE_RAD = 243;		//ステージの半径
-	const int C_BULLET_INIT_VAL = 5;	//弾初期値
-	const float C_PLAYER_RAD = 20.0f;	//プレイヤーの半径
+	const int C_STAGE_RAD = 243;					//ステージの半径
+	const int C_BULLET_INIT_VAL = 50;				//弾初期値
+	const float C_PLAYER_RAD = 20.0f;				//プレイヤーの半径
 	const float C_TOTAL_RAD =
-		C_STAGE_RAD + C_PLAYER_RAD;		//未使用
-	const float C_HALF_WID = 640.0f;	//ウィンドウサイズ横半分
-	const float C_HALF_HEI = 360.0f;	//ウィンドウサイズ縦半分
-	const float C_ADD_TIMER = 0.02f;	//イージング加算タイマー
-	const float C_SUB_RAD = 2.0f;		//仮自機の半径の減算用
-	const float C_LINE_WID = 7.0f;		//ステージの線の幅
+		C_STAGE_RAD + C_PLAYER_RAD;					//未使用
+	const float C_HALF_WID = m_winSize.u / 2.0f;	//ウィンドウサイズ横半分
+	const float C_HALF_HEI = m_winSize.v / 2.0f;	//ウィンドウサイズ縦半分
+	const float C_ADD_TIMER = 0.02f;				//イージング加算タイマー
+	const float C_SUB_RAD = 2.0f;					//仮自機の半径の減算用
+	const float C_LINE_WID = 7.0f;					//ステージの線の幅
 
 private:
 	FLOAT2 m_outside_pos;
+	FLOAT2 m_start_pos;
+	FLOAT2 m_end_pos;
+	FLOAT2 m_vec;
 	int m_spaceCount;
 	int m_stage_rad;
 	int m_bulletNum;
@@ -84,6 +87,18 @@ private:
 	float easeInOutSine(float x)
 	{
 		return -(cosf(3.14f * x) - 1) / 2;
+	}
+	float RotateEarliestArc(float NowAngle, float EndAngle)
+	{
+		if (fabsf(EndAngle - NowAngle) > 180.0f) {
+			if (NowAngle < 180.0f) {
+				NowAngle += 360.0f;
+			}
+			else {
+				NowAngle -= 360.0f;
+			}
+		}
+		return EndAngle - NowAngle;
 	}
 
 public:

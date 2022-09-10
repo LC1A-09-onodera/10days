@@ -91,7 +91,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		// 更新処理
 		if (sceneNum == TITLE)
 		{
-			if (Input::GetKeyTrigger(KEY_INPUT_SPACE))
+			if (Input::GetKeyTrigger(KEY_INPUT_SPACE) || Input::isJoyBottomTrigger(XINPUT_BUTTON_A))
 			{
 				sceneNum = GAME;
 			}
@@ -157,6 +157,26 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 				ui.AddBullet();
 			}*/
 			ui.Update(player.GetBulletNum());
+
+			//ステージ拡縮
+			/*if (BaseObject::GetIsAllHit())
+			{
+				FLOAT2 l_stageSize = player.GetStageSize();
+				l_stageSize.u += 2.0f;
+				l_stageSize.v += 2.0f;
+				player.SetStageSize(l_stageSize);
+				player.SetStageRad(static_cast<int>(l_stageSize.u / 2));
+				player.AddPlayerPosY(2.0f);
+			}
+			else
+			{
+				FLOAT2 l_stageSize = player.GetStageSize();
+				l_stageSize.u -= 0.2f;
+				l_stageSize.v -= 0.2f;
+				player.SetStageSize(l_stageSize);
+				player.SetStageRad(static_cast<int>(l_stageSize.u / 2));
+				player.AddPlayerPosY(-0.2f);
+			}*/
 		}
 		// 描画処理
 		DrawGraph(0, 0, BackGraund, true);

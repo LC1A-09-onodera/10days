@@ -11,6 +11,9 @@ void Player::Init()
 	m_scrollStartLine = { m_winSize.u / 2, 0 };
 
 	m_outside_pos = { C_HALF_WID,0 };
+	m_start_pos = { 0,0 };
+	m_vec = { 0,0 };
+	m_end_pos = { 0,0 };
 	m_spaceCount = 2;
 	m_stage_rad = C_STAGE_RAD;
 	m_bulletNum = C_BULLET_INIT_VAL;
@@ -33,134 +36,47 @@ void Player::Update()
 
 	AttachForce();
 
-	//内外移動の処理
+	//通常時
 	if (!m_isMove)
 	{
-		if (!m_isChange)
+		//左スティックが倒されている時のみ(コントローラー以外も対応させろ！)
+		if (Input::isJoyLeftStickBottom())
 		{
-			//内外移動
-			if (Input::GetKeyTrigger(KEY_INPUT_Z) || Input::isJoyBottomTrigger(XINPUT_BUTTON_B))
-			{
-				//リロード
-				if (!m_isReload)
-				{
-					m_bulletNum = m_maxBulletNum;
-					m_isReload = true;
-				}
-				else
-				{
-					m_bulletNum++;
-				}
-
-				//内外移動演出用
-				m_isChange = true;
-
-				if (m_side == OUTSIDE)
-				{
-					//下で内から外の場合
-					if (m_loc == LOWER)
-					{
-						//LOWERの座標指定
-						m_outside_pos.v = m_position.v + C_PLAYER_RAD * 2 + C_LINE_WID;
-
-					}
-					//上で内から外の場合
-					else
-					{
-						//UPPERの座標指定
-						m_outside_pos.v = m_position.v - C_PLAYER_RAD * 2 - C_LINE_WID;
-					}
-
-					m_side = INSIDE;
-				}
-				else
-				{
-					m_side = OUTSIDE;
-				}
-				m_spaceCount++;
-			}
-			//縦断(上の処理順敵にOUTSIDEになってる)
-			if (m_side == OUTSIDE)
-			{
-				if (Input::GetKeyTrigger(KEY_INPUT_X) || Input::isJoyBottomTrigger(XINPUT_BUTTON_A))
-				{
-					if (m_maxBulletNum < m_bulletNum)
-					{
-						m_maxBulletNum = m_bulletNum;
-					}
-					m_isReload = false;
-					m_isMove = true;
-				}
-			}
+			//自機の位置算出正規化
+			m_vec = Input::GetJoyLeftStick();
+			float l_len = sqrtf(powf(m_vec.u, 2.0f) + powf(m_vec.v, 2.0f));
+			m_vec.u /= l_len;
+			m_vec.v /= l_len;
+			m_position.u = m_vec.u * C_STAGE_RAD + C_HALF_WID;
+			m_position.v = -m_vec.v * C_STAGE_RAD + C_HALF_HEI;
 		}
 
+		//縦断入力
+		if (Input::GetKeyTrigger(KEY_INPUT_SPACE) ||
+			Input::isJoyBottomTrigger(XINPUT_BUTTON_A))
+		{
+			m_bulletNum = m_maxBulletNum;
+			m_start_pos = m_position;
+			m_end_pos.u = -m_vec.u * C_STAGE_RAD + C_HALF_WID;
+			m_end_pos.v = m_vec.v * C_STAGE_RAD + C_HALF_HEI;
+			m_isMove = true;
+		}
 	}
 
-	//縦移動中の処理
+	//縦断移動中
 	else
 	{
-		//加算処理
+		//タイマー加算
 		if (m_easeTimer < 1.0f) { m_easeTimer += C_ADD_TIMER; }
 
-		//下から上
-		if (m_loc == LOWER)
+		//移動処理
+		m_position.u = (m_end_pos.u - m_start_pos.u) * easeInOutSine(m_easeTimer) + m_start_pos.u;
+		m_position.v = (m_end_pos.v - m_start_pos.v) * easeInOutSine(m_easeTimer) + m_start_pos.v;
+		if (m_easeTimer >= 1.0f)
 		{
-			const float l_start = C_HALF_HEI + m_stage_rad - C_PLAYER_RAD;
-			const float l_end = C_HALF_HEI - m_stage_rad + C_PLAYER_RAD;
-			m_position.v = (l_end - l_start) * easeInOutSine(m_easeTimer) + l_start;
-			if (m_easeTimer >= 1.0f)
-			{
-				m_easeTimer = 0.0f;
-				m_isMove = false;
-				m_loc = UPPER;
-			}
+			m_easeTimer = 0.0f;
+			m_isMove = false;
 		}
-		//上から下
-		else
-		{
-			const float l_start = C_HALF_HEI - m_stage_rad + C_PLAYER_RAD;
-			const float l_end = C_HALF_HEI + m_stage_rad - C_PLAYER_RAD;
-			m_position.v = (l_end - l_start) * easeInOutSine(m_easeTimer) + l_start;
-			if (m_easeTimer >= 1.0f)
-			{
-				m_easeTimer = 0.0f;
-				m_isMove = false;
-				m_loc = LOWER;
-			}
-		}
-	}
-
-	//内外移動演出用
-	if (m_isChange)
-	{
-		//内から外
-		if (m_side == OUTSIDE)
-		{
-			m_outside_rad -= C_SUB_RAD;
-			if (m_outside_rad == 0)
-			{
-				m_isChange = false;
-				//内外移動した瞬間true
-				m_isChangeTrigger = true;
-			}
-		}
-		//外から内
-		else
-		{
-			m_outside_rad += C_SUB_RAD;
-			if (m_outside_rad == C_PLAYER_RAD)
-			{
-				m_isChange = false;
-				//内外移動した瞬間true
-				m_isChangeTrigger = true;
-			}
-		}
-	}
-
-	//内外移動トリガー
-	else if (m_isChangeTrigger)
-	{
-		m_isChangeTrigger = false;
 	}
 }
 
