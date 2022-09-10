@@ -110,7 +110,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			{
 				EnemyManager::AddEnemy();
 			}
-			if (player.GetIsMove() && Input::isJoyLeftStickBottom())
+			if (!player.GetIsMove())
 			{
 				time++;
 				if (time > 2)
@@ -123,9 +123,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 					}
 					FLOAT2 winSizeHalf = { player.GetPos().u,  player.GetPos().v };
 					FLOAT2 spriteSize = { 30.0f, 30.0f };
-					float l_leftStickDeg = 0.0f;
-					l_leftStickDeg = Input::GetJoyLeftStickAngle();
-					l_leftStickDeg = 180.0f / DX_PI_F * l_leftStickDeg;
 
 					//’e‚ªŽc‚Á‚Ä‚é‚©‚Ì”»’è
 					bool isShot = player.ShotBullet();
@@ -133,11 +130,11 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 					{
 						if (rand() % 2 == 0)
 						{
-							ObjectManager::object1.Shot(winSizeHalf, spriteSize, l_leftStickDeg, 18.0f, BaseObject::ObjectType::ORANGE);
+							ObjectManager::object1.Shot(winSizeHalf, spriteSize, player.GetDeg(), 18.0f, BaseObject::ObjectType::ORANGE);
 						}
 						else
 						{
-							ObjectManager::object2.Shot(winSizeHalf, spriteSize, l_leftStickDeg, 18.0f, BaseObject::ObjectType::PINK);
+							ObjectManager::object2.Shot(winSizeHalf, spriteSize, player.GetDeg(), 18.0f, BaseObject::ObjectType::PINK);
 						}
 					}
 				}
