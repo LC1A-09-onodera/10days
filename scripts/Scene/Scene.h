@@ -56,3 +56,21 @@ public:
 	static void Init();
 	static void Draw();
 };
+
+class ResultScene
+{
+public:
+	static const int MaxCiycle = 350;
+	static int ciycleR;
+	static int s_space;
+	static int s_score;
+	static int s_number[10];
+	static int m_score;
+	static bool isToTitle;
+	static FLOAT2 m_numSize;
+	static void LoadFile();
+	static void Init(int f_score);
+	static void Update();
+	static void Draw();
+	static void ResultToTitle();
+};

@@ -82,6 +82,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	bulletUI.LoadFile();
 	bulletUI.AddBullet();
 	BaseEnemy::LoadFile();
+	ResultScene::LoadFile();
 	// ゲームループ
 	while (1)
 	{
@@ -108,11 +109,13 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			player.Update();
 			static float angle = 0.0f;
 			static int time = 0;
+			EnemyManager::CiycleDec();
 			if (Input::GetKeyTrigger(KEY_INPUT_SPACE))
 			{
 				EnemyManager::AddEnemy();
 			}
-			if (!player.GetIsMove())
+			int nowBullet = bulletUI.m_bullets.size();
+			if (!player.GetIsMove() && nowBullet >= player.GetBulletNum())
 			{
 				time++;
 				if (time > 2)
@@ -128,7 +131,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 					//弾が残ってるかの判定
 					bool isShot = player.ShotBullet();
-					if (isShot)
+					if (isShot && !bulletUI.m_isAllShot)
 					{
 						if (rand() % 2 == 0)
 						{
@@ -138,6 +141,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 						{
 							ObjectManager::object2.Shot(winSizeHalf, spriteSize, player.GetDeg(), 18.0f, BaseObject::ObjectType::PINK);
 						}
+						StopSoundMem(SoundManager::shotBullet);
+						PlaySoundMem(SoundManager::shotBullet, DX_PLAYTYPE_BACK);
 					}
 				}
 				BaseObject::ResetSpeed();
@@ -151,15 +156,19 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			//エネミーの更新
 			EnemyManager::Update();
 			GameScene::Update();
+			
+			bulletUI.Update(player.GetBulletNum());
+			
 			if (bulletUI.GetIsAllShot() && bulletUI.BulletNum() <= 0)
 			{
-				sceneNum = TITLE;
+				sceneNum = RESULT;
 				player.Init();
 				bulletUI.m_isAllShot = false;
 				ParticleManager::AllClear();
 				ObjectManager::AllClear();
+				ResultScene::Init(0);
 			}
-			bulletUI.Update(player.GetBulletNum());
+			
 			if (Input::GetKeyTrigger(KEY_INPUT_ESCAPE))
 			{
 				//player.Init();
@@ -172,8 +181,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 		if (sceneNum == TITLE)
 		{
+			player.Draw();
 			TitleScene::Update();
 			TitleScene::Draw();
+			EnemyManager::Draw();
 		}
 
 		else if (sceneNum == GAME)
@@ -188,7 +199,25 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			DrawFormatString(400, 100, GetColor(0, 0, 0), "Score:%d", Score::GetScore());
 			bulletUI.Draw();
 		}
-
+		else if (sceneNum == RESULT)
+		{
+			if (Input::GetKeyTrigger(KEY_INPUT_SPACE))
+			{
+				ResultScene::isToTitle = true;
+			}
+			player.Draw();
+			ObjectManager::Draw();
+			GameScene::Draw();
+			TitleScene::Update();
+			EnemyManager::Draw();
+			bulletUI.Draw();
+			ResultScene::Update();
+			if (ResultScene::ciycleR < 2)
+			{
+				sceneNum = TITLE;
+			}
+			ResultScene::Draw();
+		}
 		//---------  ここまでにプログラムを記述  ---------//
 		// (ダブルバッファ)裏面
 		ScreenFlip();

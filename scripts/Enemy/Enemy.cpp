@@ -6,6 +6,7 @@
 #include "../Object/BaseObject.h"
 #include "../Score/Score.h"
 #include "../Particle/Particle.h"
+#include "../Sound/Sound.h"
 
 int BaseEnemy::m_sprite[7];
 std::list<BaseEnemy*> EnemyManager::enemys;
@@ -16,6 +17,9 @@ float BaseEnemy:: TowerR = 100;
 int BaseEnemy::SpornAngle = 45;
 
 int enemyCiycle;
+
+int EnemyManager::nowTowerR = MaxR;
+int EnemyManager::nowCenterR = MaxR;
 void BaseEnemy::LoadFile()
 {
 	m_sprite[FriendMode] = LoadGraph("Resources/score_enemy.png");
@@ -133,6 +137,8 @@ void BaseEnemy::LineMove()
 			FLOAT2 size = { 18.0f, 22.0f };
 			int score = 10 * (m_returnNum + 1);
 			ParticleManager::scoreParitcle.AddScore(m_position, size, size, score, 60);
+			StopSoundMem(SoundManager::addScore);
+			PlaySoundMem(SoundManager::addScore, DX_PLAYTYPE_BACK);
 		}
 		//ƒ‰ƒCƒt‚ÅŽó‚¯‚é
 		else
@@ -185,6 +191,9 @@ void BaseEnemy::BulletCollision()
 			{
 				m_type = Angel;
 			}
+
+			StopSoundMem(SoundManager::shotHitSound);
+			PlaySoundMem(SoundManager::shotHitSound, DX_PLAYTYPE_BACK);
 		}
 	}
 	for (auto itr = ObjectManager::object2.m_objects.begin(); itr != ObjectManager::object2.m_objects.end(); ++itr)
@@ -206,6 +215,9 @@ void BaseEnemy::BulletCollision()
 			{
 				m_type = Angel;
 			}
+
+			StopSoundMem(SoundManager::shotHitSound);
+			PlaySoundMem(SoundManager::shotHitSound, DX_PLAYTYPE_BACK);
 		}
 	}
 }
@@ -246,10 +258,22 @@ void EnemyManager::Update()
 
 void EnemyManager::Draw()
 {
-	DrawCircleAA(WindowSize::Wid / 2, WindowSize::Hi / 2, BaseEnemy::CenterR, 128,  GetColor(200, 13, 13), 0, 1.0f);
-	DrawCircleAA(WindowSize::Wid / 2, WindowSize::Hi / 2, BaseEnemy::TowerR, 128, GetColor(13, 200, 13), 0, 1.0f);
+	DrawCircleAA(WindowSize::Wid / 2, WindowSize::Hi / 2, nowCenterR, 128,  GetColor(200, 13, 13), 0, 1.0f);
+	DrawCircleAA(WindowSize::Wid / 2, WindowSize::Hi / 2, nowTowerR, 128, GetColor(13, 200, 13), 0, 1.0f);
 	for (auto itr = enemys.begin(); itr != enemys.end(); ++itr)
 	{
 		(*itr)->Draw();
 	}
+}
+
+void EnemyManager::CiycleInc()
+{
+	nowTowerR = Easeing::EaseInQuad(nowTowerR, MaxR, 0.2f);
+	nowCenterR = Easeing::EaseInQuad(nowCenterR, MaxR, 0.2f);
+}
+
+void EnemyManager::CiycleDec()
+{
+	nowTowerR = Easeing::EaseInQuad(nowTowerR, BaseEnemy::TowerR, 0.3f);
+	nowCenterR = Easeing::EaseInQuad(nowCenterR, BaseEnemy::CenterR, 0.3f);
 }
