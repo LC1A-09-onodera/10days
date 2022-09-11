@@ -4,6 +4,7 @@
 
 void Player::Init()
 {
+	//位置,変
 	m_position = {
 		C_HALF_WID,
 		C_HALF_HEI + C_STAGE_RAD - C_PLAYER_RAD };
@@ -53,6 +54,10 @@ void Player::Update()
 		l_vec.u = l_diff.u / l_len;
 		l_vec.v = l_diff.v / l_len;
 		float l_pRad = atan2f(-l_vec.v, -l_vec.u);
+		if (l_pRad < 0.0f)
+		{
+			l_pRad += DX_PI_F * 2;
+		}
 		m_deg = 180.0f / DX_PI_F * l_pRad;
 
 		//左スティックが倒されている時のみ(コントローラー以外も対応させろ！)
@@ -83,6 +88,10 @@ void Player::Update()
 			m_reflector_pos.u = l_vec.u * C_STAGE_REFLECTOR_RAD + C_HALF_WID;
 			m_reflector_pos.v = l_vec.v * C_STAGE_REFLECTOR_RAD + C_HALF_HEI;
 			m_reflector_rad = l_pRad - DX_PI_F / 2.0f;
+			if (m_reflector_rad < 0.0f)
+			{
+				m_reflector_rad += DX_PI_F * 2.0f;
+			}
 		}
 
 		//縦断入力
@@ -161,8 +170,10 @@ void Player::Draw()
 		true
 	);
 
+	//debug
 	float hoge = Shake::GetPowerX();
 	DrawFormatString(0, 40, GetColor(0, 0, 0), "ShakeX:%f", hoge);
+	DrawFormatString(0, 60, GetColor(0, 0, 0), "RefRad:%f", m_reflector_rad);
 }
 
 void Player::LoadFile()
