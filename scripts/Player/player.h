@@ -94,7 +94,9 @@ public:
 	bool ShotBullet();
 	const FLOAT2& GetPos() { return m_position; }
 	const FLOAT2& GetStageSize() { return m_stageSize; }
-	const float GetDeg() { return m_deg; }
+	const FLOAT2& GetReflectorPos() { return m_reflector_pos; }
+	const float& GetReflectorRad() { return m_reflector_rad; }
+	const float& GetDeg() { return m_deg; }
 	const int& GetBulletNum() { return m_bulletNum; }
 	const int& GetMaxBulletNum() { return m_maxBulletNum; }
 
