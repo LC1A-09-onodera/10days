@@ -81,7 +81,7 @@ void TitleScene::LoadFile()
 {
 	m_s_side = LoadGraph("Resources/EncanEncounter.png");
 	m_s_title = LoadGraph("Resources/new_title.png");
-	m_s_space = LoadGraph("Resources/space.png");
+	m_s_space = LoadGraph("Resources/space2.png");
 	m_s_ciycle = LoadGraph("Resources/circle.png");
 	m_sideSize = { 1139.0f, 104.0f };
 	//m_titleSize = {443, 118 };

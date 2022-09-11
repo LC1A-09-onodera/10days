@@ -13,6 +13,7 @@ struct UISprite
 	bool m_isShot;//Œ‚‚½‚ê‚½Žž
 	const float easeSpeed = 0.5f;
 	int m_num;//‰½”Ô–Ú‚©‚ð”FŽ¯
+	float angle;
 	void EaseMove();
 };
 
@@ -26,12 +27,18 @@ class BulletUI
 	const int Xposition = 300;
 	const int bulletDistance = 20;
 	int standardPositionY;
-	
+	float spornAngle = 0;
+
+	const int SpornR = 1500;
+	const int BulletR = 220;
 	public:
 	bool m_isAllShot = false;
 	void AddBullet();
+	void AddBullet2();
 	void Init();
 	void Update(int bulletNum);
+	void Update1();
+	void Update2();
 	void Draw();
 	void LoadFile();
 	void LoadBullet();
