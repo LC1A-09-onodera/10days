@@ -29,16 +29,6 @@ private:
 	FLOAT2 m_scrollStartLine = { m_winSize.u / 2, 0 };
 
 private:
-	enum SIDE
-	{
-		OUTSIDE, INSIDE
-	};
-	enum LOC
-	{
-		LOWER, UPPER
-	};
-
-private:
 	const int C_STAGE_RAD = 243;					//ステージの半径
 	const int C_STAGE_REFLECTOR_RAD = 300;			//中心から見たリフレクターの位置の半径
 	const int C_REFLECTOR_RAD = 15;					//リフレクターの半径(テクスチャ依存)

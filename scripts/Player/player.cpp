@@ -95,6 +95,8 @@ void Player::Update()
 			l_vec.v *= -1.0f;
 			m_end_pos.u = l_vec.u * C_STAGE_RAD + C_HALF_WID;
 			m_end_pos.v = l_vec.v * C_STAGE_RAD + C_HALF_HEI;
+			m_reflector_pos.u = l_vec.u * C_STAGE_REFLECTOR_RAD + C_HALF_WID;
+			m_reflector_pos.v = l_vec.v * C_STAGE_REFLECTOR_RAD + C_HALF_HEI;
 			m_vec = l_vec;
 			m_isMove = true;
 		}
