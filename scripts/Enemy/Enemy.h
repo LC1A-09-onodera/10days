@@ -84,8 +84,10 @@ public:
 class EnemyManager
 {
 public:
+	EnemyManager();
 	static std::list<BaseEnemy *> enemys;
 	static std::list<std::list<BaseEnemy*>::iterator> deleteEnemys;
+	//static int enemyCiycle;
 	static void Init();
 	static void AddEnemy();
 	static void Update();

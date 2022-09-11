@@ -40,7 +40,7 @@ private:
 
 private:
 	const int C_STAGE_RAD = 243;					//ステージの半径
-	const int C_BULLET_INIT_VAL = 40;				//弾初期値
+	const int C_BULLET_INIT_VAL = 100;				//弾初期値
 	const float C_PLAYER_RAD = 20.0f;				//プレイヤーの半径
 	const float C_TOTAL_RAD =
 		C_STAGE_RAD + C_PLAYER_RAD;		//未使用

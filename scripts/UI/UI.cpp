@@ -1,6 +1,9 @@
 #include "UI.h"
 #include "../Lib/Lib.h"
 #include "../WindowsSize/WindowSize.h"
+#include "../Math/Math.h"
+
+using namespace DxLibMath;
 
 void BulletUI::AddBullet()
 {
@@ -9,6 +12,17 @@ void BulletUI::AddBullet()
 	float sen = 0.1f;
 	bullet->m_size = { 167.0f * sen, 70.0f * sen };
 	m_bullets.push_back(bullet);
+}
+
+void BulletUI::AddBullet2()
+{
+	UISprite* bullet = new UISprite();
+	bullet->m_position = { WindowSize::Wid / 2, WindowSize::Hi / 2 };
+	bullet ->m_endPos = { WindowSize::Wid / 2 + BulletR * Cos(spornAngle), WindowSize::Hi / 2 + BulletR * Sin(spornAngle) };
+	float sen = 0.1f;
+	bullet->m_size = { 167.0f * sen, 70.0f * sen };
+	m_bullets.push_back(bullet);
+	spornAngle += 5.0f;
 }
 
 void BulletUI::Update(int bulletNum)
@@ -21,13 +35,29 @@ void BulletUI::Update(int bulletNum)
 	}
 	else if (nowBullet < bulletNum)
 	{
-		AddBullet();
+		AddBullet2();
 	}
 	if (nowBullet > bulletNum)
 	{
 		ShotBullet();
 		nowBullet = m_bullets.size();
 	}
+	
+	//Update1();
+	Update2();
+
+	if (m_bullets.size() > 0)
+	{
+		for (auto itr = m_bullets.begin(); itr != m_bullets.end(); ++itr)
+		{
+			(*itr)->EaseMove();
+		}
+	}
+}
+
+void BulletUI::Update1()
+{
+	int nowBullet = m_bullets.size();
 	if (nowBullet % 2 == 0)
 	{
 		standardPositionY = WindowSize::Hi / 2 + bulletDistance / 2;
@@ -60,12 +90,16 @@ void BulletUI::Update(int bulletNum)
 			itr++;
 		}
 	}
-	if (m_bullets.size() > 0)
+}
+
+void BulletUI::Update2()
+{
+	float angle = 0;
+	for (auto itr = m_bullets.begin(); itr != m_bullets.end(); ++itr)
 	{
-		for (auto itr = m_bullets.begin(); itr != m_bullets.end(); ++itr)
-		{
-			(*itr)->EaseMove();
-		}
+		(*itr)->m_endPos = { WindowSize::Wid / 2 + BulletR * Cos(angle + 180.0f), WindowSize::Hi / 2 + BulletR * Sin(angle + 180.0f) };
+		(*itr)->m_position = Easeing::EaseInQuad((*itr)->m_position, (*itr)->m_endPos, 0.3f);
+		angle += 5.0f;
 	}
 }
 
@@ -90,6 +124,7 @@ void BulletUI::ShotBullet()
 {
 	auto itr = m_bullets.begin();
 	m_bullets.erase(itr);
+	spornAngle -= 5.0f;
 }
 
 void BulletUI::AllShotStart()

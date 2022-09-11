@@ -15,6 +15,7 @@ FLOAT2 BaseEnemy::CiycleCenter = { WindowSize::Wid / 2, WindowSize::Hi / 2 };
 float BaseEnemy:: TowerR = 100;
 int BaseEnemy::SpornAngle = 45;
 
+int enemyCiycle;
 void BaseEnemy::LoadFile()
 {
 	m_sprite[FriendMode] = LoadGraph("Resources/score_enemy.png");
@@ -132,15 +133,16 @@ void BaseEnemy::LineMove()
 			FLOAT2 size = { 18.0f, 22.0f };
 			int score = 10 * (m_returnNum + 1);
 			ParticleManager::scoreParitcle.AddScore(m_position, size, size, score, 60);
-			isDelete = true;
 		}
 		//ƒ‰ƒCƒt‚ÅŽó‚¯‚é
 		else
 		{
 			int a = 0;
 			a++;
-
+			FLOAT2 size = { 18.0f, 22.0f };
+			ParticleManager::scoreParitcle.AddScore(m_position, size, size, 99, 60);
 		}
+		isDelete = true;
 	}
 	
 }
@@ -208,6 +210,11 @@ void BaseEnemy::BulletCollision()
 	}
 }
 
+EnemyManager::EnemyManager()
+{
+	enemyCiycle = LoadGraph("Resources/spawn_circle.png");
+}
+
 void EnemyManager::Init()
 {
 	
@@ -239,6 +246,8 @@ void EnemyManager::Update()
 
 void EnemyManager::Draw()
 {
+	DrawCircleAA(WindowSize::Wid / 2, WindowSize::Hi / 2, BaseEnemy::CenterR, 128,  GetColor(200, 13, 13), 0, 1.0f);
+	DrawCircleAA(WindowSize::Wid / 2, WindowSize::Hi / 2, BaseEnemy::TowerR, 128, GetColor(13, 200, 13), 0, 1.0f);
 	for (auto itr = enemys.begin(); itr != enemys.end(); ++itr)
 	{
 		(*itr)->Draw();
