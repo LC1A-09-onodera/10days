@@ -57,7 +57,7 @@ void BaseEnemy::Update()
 	else if (m_state == ToCenter)
 	{
 		LineMove();
-		HitShiled();
+		//HitShiled();
 	}
 	else if (m_state == ReturnCiycle)
 	{
@@ -120,13 +120,15 @@ void BaseEnemy::ReturnToCiycle()
 	{
 		m_position.u = BaseEnemy::CiycleCenter.u + DxLibMath::Cos(m_angle) * CenterR;
 		m_position.v = BaseEnemy::CiycleCenter.v + DxLibMath::Sin(m_angle) * CenterR;
+		m_easeTimer = 0.0f;
+		m_HP = MaxHP;
 		m_state = ToCenter;
 	}
 }
 
 void BaseEnemy::LineMove()
 {
-	m_position = Easeing::EaseInQuad(m_position, BaseEnemy::CiycleCenter, (float)ToCenterSpeed / 20.0f);
+	m_position = Easeing::EaseInQuad(m_position, BaseEnemy::CiycleCenter, (float)ToCenterSpeed / 50.0f);
 	if (Collision::Lenght(BaseEnemy::CiycleCenter, m_position) < TowerR)
 	{
 		//ƒXƒRƒA‰ÁŽZ
@@ -159,7 +161,7 @@ void BaseEnemy::LineMove()
 
 void BaseEnemy::HitShiled()
 {
-	if (false)
+	if (true)
 	{
 		//ˆÈ‰º”½ŽË”Â‚É“–‚½‚Á‚½Žž
 		m_isReturn = true;

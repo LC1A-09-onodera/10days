@@ -30,7 +30,7 @@ class BulletUI
 	float spornAngle = 0;
 
 	const int SpornR = 1500;
-	const int BulletR = 200;
+	const int BulletR = 220;
 	public:
 	std::list<UISprite *> m_bullets;
 	bool m_isAllShot = false;
@@ -50,6 +50,17 @@ class BulletUI
 	void AllShot();
 	int BulletNum();
 	bool GetIsAllShot();
+};
+
+class HPUI
+{
+	std::list<UISprite*> m_HPs;
+	std::list<std::list<UISprite*>::iterator> m_deleteHPs;
+	int m_sprite;
+	void Init();
+	void Update(int bulletNum);
+	void Draw();
+	void LoadFile();
 };
 
 class UIManager

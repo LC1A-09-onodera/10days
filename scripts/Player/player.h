@@ -61,6 +61,9 @@ private:
 	int m_s_reflector;
 	FLOAT2 m_stageSize;
 
+	//debug
+	float a = 0;
+
 public:
 	void Init();
 	void Update();
@@ -95,10 +98,12 @@ public:
 	const FLOAT2& GetPos() { return m_position; }
 	const FLOAT2& GetStageSize() { return m_stageSize; }
 	const FLOAT2& GetReflectorPos() { return m_reflector_pos; }
+	const FLOAT2& GetHalfWinSize() { return FLOAT2{ C_HALF_WID,C_HALF_HEI }; }
 	const float& GetReflectorRad() { return m_reflector_rad; }
 	const float& GetDeg() { return m_deg; }
 	const int& GetBulletNum() { return m_bulletNum; }
 	const int& GetMaxBulletNum() { return m_maxBulletNum; }
+	const int& GetStageReflectorRad() { return C_STAGE_REFLECTOR_RAD; }
 
 public:
 	const void SetStageSize(const FLOAT2& stageSize) { m_stageSize = stageSize; }

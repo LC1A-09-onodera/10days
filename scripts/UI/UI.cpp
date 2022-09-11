@@ -162,3 +162,15 @@ void UISprite::EaseMove()
 {
 	m_position = Easeing::EaseInQuad(m_position, m_endPos, easeSpeed);
 }
+
+void HPUI::Draw()
+{
+	if (m_HPs.size() > 0)
+	{
+		for (auto itr = m_HPs.begin(); itr != m_HPs.end(); ++itr)
+		{
+			DrawExtendGraph((*itr)->m_position.u - (*itr)->m_size.u / 2, (*itr)->m_position.v - (*itr)->m_size.v / 2,
+							(*itr)->m_position.u + (*itr)->m_size.u / 2, (*itr)->m_position.v + (*itr)->m_size.v / 2, m_sprite, true);
+		}
+	}
+}
