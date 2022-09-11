@@ -58,6 +58,7 @@ public:
 	static const int NormalMode = 6;
 	//攻撃時の進行モード
 	static const int ProgressMode = 5;
+	static const int FriendMode = 0;
 	//中心に向かっていくときの速度
 	static const int ToCenterSpeed = 2;
 	//サークル場を回っているときの速度
@@ -76,16 +77,27 @@ public:
 	void ReturnToCiycle();
 	void LineMove();
 	void HitShiled();
+	void BulletCollision();
 };
 
 
 class EnemyManager
 {
 public:
+	EnemyManager();
 	static std::list<BaseEnemy *> enemys;
 	static std::list<std::list<BaseEnemy*>::iterator> deleteEnemys;
+
+	static int nowTowerR;
+	static int nowCenterR;
+
+	static const int MaxR = 1500;
+
+	//static int enemyCiycle;
 	static void Init();
 	static void AddEnemy();
 	static void Update();
 	static void Draw();
+	static void CiycleInc();
+	static void CiycleDec();
 };
