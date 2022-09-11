@@ -13,12 +13,16 @@ void Player::Init()
 	m_start_pos = { 0,0 };
 	m_vec = { 0,0 };
 	m_end_pos = { 0,0 };
+	m_reflector_pos = {
+		C_HALF_WID,
+		C_HALF_HEI + C_STAGE_REFLECTOR_RAD };
 	m_stage_rad = C_STAGE_RAD;
 	m_bulletNum = C_BULLET_INIT_VAL;
 	m_maxBulletNum = m_bulletNum;
 	m_stage_rad = C_STAGE_RAD;
 	m_easeTimer = 0.0f;
 	m_deg = 0;
+	m_reflector_rad = 0;
 	m_isMove = false;
 	m_stageSize = { 504, 504 };
 	m_isReload = false;
@@ -48,7 +52,8 @@ void Player::Update()
 		FLOAT2 l_vec = { 0,0 };
 		l_vec.u = l_diff.u / l_len;
 		l_vec.v = l_diff.v / l_len;
-		m_deg = 180.0f / DX_PI_F * atan2f(-l_vec.v, -l_vec.u);
+		float l_pRad = atan2f(-l_vec.v, -l_vec.u);
+		m_deg = 180.0f / DX_PI_F * l_pRad;
 
 		//左スティックが倒されている時のみ(コントローラー以外も対応させろ！)
 		if (Input::isJoyLeftStickBottom())
@@ -73,6 +78,11 @@ void Player::Update()
 
 			m_position.u = l_nearVec.u * C_STAGE_RAD + C_HALF_WID;
 			m_position.v = l_nearVec.v * C_STAGE_RAD + C_HALF_HEI;
+
+			//リフレクター
+			m_reflector_pos.u = l_vec.u * C_STAGE_REFLECTOR_RAD + C_HALF_WID;
+			m_reflector_pos.v = l_vec.v * C_STAGE_REFLECTOR_RAD + C_HALF_HEI;
+			m_reflector_rad = l_pRad - DX_PI_F / 2.0f;
 		}
 
 		//縦断入力
@@ -126,7 +136,20 @@ void Player::Draw()
 		true
 	);
 
-	//仮ステージ
+	if (!m_isMove)
+	{
+
+		DrawRotaGraph(
+			m_reflector_pos.u + Shake::GetShake().u,
+			m_reflector_pos.v + Shake::GetShake().v,
+			1.0f,
+			m_reflector_rad,
+			m_s_reflector,
+			true
+		);
+	}
+
+	//ステージ
 	DrawExtendGraph(
 		(WindowSize::Wid / 2) + Shake::GetShake().u - m_stageSize.u / 2.0f,
 		(WindowSize::Hi / 2) + Shake::GetShake().v - m_stageSize.v / 2.0f,
@@ -144,6 +167,7 @@ void Player::LoadFile()
 {
 	m_sprite = LoadGraph("Resources/particle.png");
 	m_s_stage = LoadGraph("Resources/circle.png");
+	m_s_reflector = LoadGraph("Resources/reflector.png");
 	Init();
 }
 

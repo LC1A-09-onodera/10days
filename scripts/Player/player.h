@@ -40,6 +40,8 @@ private:
 
 private:
 	const int C_STAGE_RAD = 243;					//ステージの半径
+	const int C_STAGE_REFLECTOR_RAD = 300;			//中心から見たリフレクターの位置の半径
+	const int C_REFLECTOR_RAD = 15;					//リフレクターの半径(テクスチャ依存)
 	const int C_BULLET_INIT_VAL = 50;				//弾初期値
 	const float C_PLAYER_RAD = 20.0f;				//プレイヤーの半径
 	const float C_TOTAL_RAD =
@@ -54,16 +56,19 @@ private:
 	FLOAT2 m_start_pos;
 	FLOAT2 m_end_pos;
 	FLOAT2 m_vec;
+	FLOAT2 m_reflector_pos;
 	int m_stage_rad;
 	int m_bulletNum;
 	int m_maxBulletNum;
 	float m_easeTimer;
 	float m_deg;
+	float m_reflector_rad;
 	bool m_isMove;
 	bool m_isReload;
 
 	int m_s_player;
 	int m_s_stage;
+	int m_s_reflector;
 	FLOAT2 m_stageSize;
 
 public:
