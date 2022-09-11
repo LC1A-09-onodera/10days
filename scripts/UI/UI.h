@@ -19,7 +19,7 @@ struct UISprite
 
 class BulletUI
 {
-	std::list<UISprite *> m_bullets;
+	
 	std::list<std::list<UISprite *>::iterator> m_deleteBullets;
 	int m_sprite;
 	//trueŠï”,false‹ô”
@@ -32,6 +32,7 @@ class BulletUI
 	const int SpornR = 1500;
 	const int BulletR = 220;
 	public:
+	std::list<UISprite *> m_bullets;
 	bool m_isAllShot = false;
 	void AddBullet();
 	void AddBullet2();
