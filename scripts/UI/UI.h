@@ -30,7 +30,7 @@ class BulletUI
 	float spornAngle = 0;
 
 	const int SpornR = 1500;
-	const int BulletR = 220;
+	const int BulletR = 200;
 	public:
 	std::list<UISprite *> m_bullets;
 	bool m_isAllShot = false;

@@ -146,7 +146,11 @@ void BaseEnemy::LineMove()
 			int a = 0;
 			a++;
 			FLOAT2 size = { 18.0f, 22.0f };
-			ParticleManager::scoreParitcle.AddScore(m_position, size, size, 99, 60);
+			FLOAT2 start = {40.0f, 40.0f};
+			FLOAT2 end = {0.0f, 0.0f};
+			ParticleManager::pinkParticle.ExprotionParticle(m_position, start, end, 5, 30);
+			//ParticleManager::scoreParitcle.AddScore(m_position, size, size, 99, 60);
+			TowerHP::HP--;
 		}
 		isDelete = true;
 	}
@@ -276,4 +280,13 @@ void EnemyManager::CiycleDec()
 {
 	nowTowerR = Easeing::EaseInQuad(nowTowerR, BaseEnemy::TowerR, 0.3f);
 	nowCenterR = Easeing::EaseInQuad(nowCenterR, BaseEnemy::CenterR, 0.3f);
+
+	/*nowTowerR = Easeing::EaseOutBounce(MaxR, BaseEnemy::TowerR, 0.3f);
+	nowCenterR = Easeing::EaseOutBounce(MaxR, BaseEnemy::CenterR, 0.3f);*/
+}
+
+void EnemyManager::AllDelete()
+{
+	enemys.clear();
+	deleteEnemys.clear();
 }

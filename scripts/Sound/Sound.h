@@ -7,5 +7,6 @@ public:
 	static int shotBullet;
 	static int refrect;
 	static int addScore;
+	static int reload;
 	static void LoadFile();
 };

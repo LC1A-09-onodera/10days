@@ -2,6 +2,7 @@
 #include "../Lib/Lib.h"
 #include "../WindowsSize/WindowSize.h"
 #include "../Math/Math.h"
+#include "../Sound/Sound.h"
 
 using namespace DxLibMath;
 
@@ -18,7 +19,7 @@ void BulletUI::AddBullet2()
 {
 	UISprite* bullet = new UISprite();
 	bullet->m_position = { WindowSize::Wid / 2, WindowSize::Hi / 2 };
-	bullet ->m_endPos = { WindowSize::Wid / 2 + BulletR * Cos(spornAngle), WindowSize::Hi / 2 + BulletR * Sin(spornAngle) };
+	bullet->m_endPos = { WindowSize::Wid / 2 + BulletR * Cos(spornAngle), WindowSize::Hi / 2 + BulletR * Sin(spornAngle) };
 	float sen = 0.1f;
 	bullet->m_size = { 167.0f * sen, 70.0f * sen };
 	m_bullets.push_back(bullet);
@@ -35,14 +36,21 @@ void BulletUI::Update(int bulletNum)
 	}
 	else if (nowBullet < bulletNum)
 	{
-		AddBullet2();
+		for (int i = 0l; i < 3; i++)
+		{
+			if (nowBullet < bulletNum)
+			{
+				AddBullet2();
+				nowBullet = m_bullets.size();
+			}
+		}
 	}
 	if (nowBullet > bulletNum)
 	{
 		ShotBullet();
 		nowBullet = m_bullets.size();
 	}
-	
+
 	//Update1();
 	Update2();
 
@@ -110,7 +118,7 @@ void BulletUI::Draw()
 		for (auto itr = m_bullets.begin(); itr != m_bullets.end(); ++itr)
 		{
 			DrawExtendGraph((*itr)->m_position.u - (*itr)->m_size.u / 2, (*itr)->m_position.v - (*itr)->m_size.v / 2,
-							(*itr)->m_position.u + (*itr)->m_size.u / 2, (*itr)->m_position.v + (*itr)->m_size.v / 2, m_sprite, true);
+				(*itr)->m_position.u + (*itr)->m_size.u / 2, (*itr)->m_position.v + (*itr)->m_size.v / 2, m_sprite, true);
 		}
 	}
 }

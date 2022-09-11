@@ -40,7 +40,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	SetWindowSizeExtendRate(1.0);
 
 	// âÊñ ÇÃîwåiêFÇê›íËÇ∑ÇÈ
-	SetBackgroundColor(0x20, 0x49, 0x60);
+	SetBackgroundColor(0xF0, 0xF0, 0xF0);
 
 	// DXlibÇÃèâä˙âª
 	if (DxLib_Init() == -1) { return -1; }
@@ -101,6 +101,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			if (Input::GetKeyTrigger(KEY_INPUT_SPACE) || Input::isJoyBottomTrigger(XINPUT_BUTTON_A))
 			{
 				sceneNum = GAME;
+				TowerHP::HP = TowerHP::MaxHP;
+				bulletUI.m_isAllShot = false;
 			}
 		}
 
@@ -159,19 +161,21 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			
 			bulletUI.Update(player.GetBulletNum());
 			
-			if (bulletUI.GetIsAllShot() && bulletUI.BulletNum() <= 0)
+ 			if (bulletUI.GetIsAllShot() && bulletUI.BulletNum() <= 0)
 			{
 				sceneNum = RESULT;
 				player.Init();
 				bulletUI.m_isAllShot = false;
 				ParticleManager::AllClear();
 				ObjectManager::AllClear();
-				ResultScene::Init(0);
+				ResultScene::Init(12345);
 			}
 			
-			if (Input::GetKeyTrigger(KEY_INPUT_ESCAPE))
+			if (TowerHP::HP <= 0)
 			{
 				//player.Init();
+				bulletUI.m_isAllShot = false;
+				EnemyManager::AllDelete();
 				bulletUI.AllShotStart();
 			}
 		}
