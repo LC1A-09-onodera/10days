@@ -48,7 +48,7 @@ void GameScene::Update()
 		SceneSide::m_sidePosition[i].v -= speed;
 		if (SceneSide::m_sidePosition[i].v < -m_sideSize.u / 2)
 		{
-			SceneSide::m_sidePosition[i].v = m_sideSize.u + (m_sideSize.u / 2);
+			SceneSide::m_sidePosition[i].v = m_sideSize.u + (m_sideSize.u / 2) + dis;
 		}
 	}
 	for (int i = static_cast<int>(Direction::Left1); i <= static_cast<int>(Direction::Left2); i++)
@@ -56,7 +56,7 @@ void GameScene::Update()
 		SceneSide::m_sidePosition[i].v += speed;
 		if (SceneSide::m_sidePosition[i].v > WindowSize::Hi + m_sideSize.u / 2)
 		{
-			SceneSide::m_sidePosition[i].v = -((m_sideSize.u - WindowSize::Hi) + m_sideSize.u / 2);
+			SceneSide::m_sidePosition[i].v = -((m_sideSize.u - WindowSize::Hi) + m_sideSize.u / 2) - dis;
 		}
 	}
 }
@@ -65,7 +65,7 @@ void GameScene::Init()
 {
 	for (int i = static_cast<int>(Direction::Right1); i <= static_cast<int>(Direction::Right2); i++)
 	{
-		SceneSide::m_sidePosition[i] = { 0, WindowSize::Wid + (m_sideSize.u * i) };
+		SceneSide::m_sidePosition[i] = { 0, WindowSize::Wid + (m_sideSize.u * i)};
 	}
 	for (int i = static_cast<int>(Direction::Left1); i <= static_cast<int>(Direction::Left2); i++)
 	{
