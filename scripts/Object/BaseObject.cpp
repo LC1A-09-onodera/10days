@@ -127,7 +127,7 @@ void BaseObject::Collition(BaseObject& object)
 	if(!this->m_isShotMove) return;
 	if (Collision::CiycleCollision(this->m_position, this->m_R, object.m_position, object.m_R))
 	{
-		FLOAT2 l_shakePower = { 1.0f,1.0f };
+		FLOAT2 l_shakePower = { 2.0f,2.0f };
 		Shake::AddShakePower(l_shakePower);
 
 		this->m_isHit = true;
@@ -382,7 +382,7 @@ void InducedExplosion::Collition(BaseObject& obj)
 	}
 	if (Collision::CiycleCollision(m_position, ExplosionR, obj.m_position, obj.m_R))
 	{
-		FLOAT2 l_shakePower = { 1.0f,1.0f };
+		FLOAT2 l_shakePower = { 2.0f,2.0f };
 		Shake::AddShakePower(l_shakePower);
 
 		obj.m_isHit = true;

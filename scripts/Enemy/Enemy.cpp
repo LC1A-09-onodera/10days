@@ -41,7 +41,7 @@ void BaseEnemy::Init()
 	m_timer = MaxTimer;
 	m_easeTimer = 0.0f;
 	m_HP = MaxHP;
-	m_size = {20 , 20};
+	m_size = {50 , 50};
 }
 
 void BaseEnemy::Update()

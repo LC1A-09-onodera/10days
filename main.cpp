@@ -113,7 +113,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			static float angle = 0.0f;
 			static int time = 0;
 			EnemyManager::CiycleDec();
-			if (Input::GetKeyTrigger(KEY_INPUT_SPACE))
+			EnemyManager::CiycleDec();
+			if (Input::GetKeyTrigger(KEY_INPUT_SPACE)||Input::isJoyBottom(XINPUT_BUTTON_X))
 			{
 				EnemyManager::AddEnemy();
 			}
@@ -176,7 +177,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 					);
 
 					//â~é¸è„Ç»ÇÁ
-					const float l_checkDiff = 10.0f;
+					const float l_checkDiff = 20.0f;
 					const float l_diff = fabsf(player.GetStageReflectorRad() - l_len);
 					if (l_diff < l_checkDiff)
 					{
@@ -199,7 +200,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 						{
 							x->m_isReturn = true;
 							x->HitShiled();
-							player.ReflectorHit();
+							player.ReflectorHit(x->m_position);
 						}
 						//0~359ìxÇÃÉPÉA
 						else
@@ -214,7 +215,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 								{
 									x->m_isReturn = true;
 									x->HitShiled();
-									player.ReflectorHit();
+									player.ReflectorHit(x->m_position);
 								}
 							}
 						}
@@ -223,8 +224,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			}
 
 			bulletUI.Update(player.GetBulletNum());
-			
- 			if (bulletUI.GetIsAllShot() && bulletUI.BulletNum() <= 0)
+
+			if (bulletUI.GetIsAllShot() && bulletUI.BulletNum() <= 0)
 			{
 				sceneNum = RESULT;
 				player.Init();
@@ -233,7 +234,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 				ObjectManager::AllClear();
 				ResultScene::Init(12345);
 			}
-			
+
 			if (TowerHP::HP <= 0)
 			{
 				//player.Init();

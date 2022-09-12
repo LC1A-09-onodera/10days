@@ -11,6 +11,7 @@ void Player::Init()
 	m_gravity.v = 0.9f;
 	m_scrollStartLine = { m_winSize.u / 2, 0 };
 
+	m_hitPos = { 0,0 };
 	m_start_pos = { 0,0 };
 	m_vec = { 0,0 };
 	m_end_pos = { 0,0 };
@@ -114,7 +115,7 @@ void Player::Update()
 		//リフレクターヒット時
 		if (m_isReflectorHit)
 		{
-			FLOAT2 l_shakePower = { 1.0f,1.0f };
+			FLOAT2 l_shakePower = { 2.0f,2.0f };
 			Shake::AddShakePower(l_shakePower);
 			m_isReflectorHit = false;
 		}
@@ -164,6 +165,30 @@ void Player::Update()
 			}
 		}
 	}
+
+	//ヒット時演出
+	for (auto itr = m_effects.begin(); itr != m_effects.end(); ++itr)
+	{
+		if (itr->timer < 1.0f)
+		{
+			itr->timer += C_ADD_TIMER;
+		}
+		if (itr->timer > 0.3f)
+		{
+			itr->alpha -= 5;
+		}
+		if (itr->timer > 1.0f) { itr->timer = 1.0f; }
+		if (!itr->isDraw) { itr->isDraw = true; }
+		else { itr->isDraw = false; }
+
+		itr->r = easeInOutSine(itr->timer);
+
+		if (itr->alpha <= 0)
+		{
+			m_effects.erase(itr);
+			break;
+		}
+	}
 }
 
 void Player::Draw()
@@ -205,6 +230,24 @@ void Player::Draw()
 		true
 	);
 
+	//ヒット時演出
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
+	for (auto itr = m_effects.begin(); itr != m_effects.end(); ++itr)
+	{
+		if (itr->isDraw)
+		{
+			DrawRotaGraph(
+				itr->pos.u,
+				itr->pos.v,
+				itr->r * 0.5f,
+				0.0f,
+				m_s_reflector_hit,
+				true
+			);
+		}
+	}
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
 	//debug
 	float hoge = Shake::GetPowerX();
 	DrawFormatString(0, 40, GetColor(0, 0, 0), "ShakeX:%f", hoge);
@@ -217,6 +260,7 @@ void Player::LoadFile()
 	m_sprite = LoadGraph("Resources/particle.png");
 	m_s_stage = LoadGraph("Resources/circle.png");
 	m_s_reflector = LoadGraph("Resources/reflector.png");
+	m_s_reflector_hit = LoadGraph("Resources/hit_effect.png");
 	Init();
 }
 
@@ -235,8 +279,16 @@ void Player::AttachForce()
 
 }
 
-void Player::ReflectorHit()
+void Player::ReflectorHit(FLOAT2& hitPos)
 {
+	Effects l_effects;
+	l_effects.pos = hitPos;
+	l_effects.r = 0;
+	l_effects.alpha = 255;
+	l_effects.timer = 0.0f;
+	l_effects.isDraw = true;
+	m_effects.push_back(l_effects);
+
 	m_isReflectorHit = true;
 }
 
