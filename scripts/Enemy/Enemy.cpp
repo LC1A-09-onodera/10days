@@ -57,7 +57,7 @@ void BaseEnemy::Update()
 	else if (m_state == ToCenter)
 	{
 		LineMove();
-		HitShiled();
+		//HitShiled();
 	}
 	else if (m_state == ReturnCiycle)
 	{
@@ -120,13 +120,15 @@ void BaseEnemy::ReturnToCiycle()
 	{
 		m_position.u = BaseEnemy::CiycleCenter.u + DxLibMath::Cos(m_angle) * CenterR;
 		m_position.v = BaseEnemy::CiycleCenter.v + DxLibMath::Sin(m_angle) * CenterR;
+		m_easeTimer = 0.0f;
+		m_HP = MaxHP;
 		m_state = ToCenter;
 	}
 }
 
 void BaseEnemy::LineMove()
 {
-	m_position = Easeing::EaseInQuad(m_position, BaseEnemy::CiycleCenter, (float)ToCenterSpeed / 20.0f);
+	m_position = Easeing::EaseInQuad(m_position, BaseEnemy::CiycleCenter, (float)ToCenterSpeed / 50.0f);
 	if (Collision::Lenght(BaseEnemy::CiycleCenter, m_position) < TowerR)
 	{
 		//ƒXƒRƒA‰ÁŽZ
@@ -146,7 +148,11 @@ void BaseEnemy::LineMove()
 			int a = 0;
 			a++;
 			FLOAT2 size = { 18.0f, 22.0f };
-			ParticleManager::scoreParitcle.AddScore(m_position, size, size, 99, 60);
+			FLOAT2 start = {40.0f, 40.0f};
+			FLOAT2 end = {0.0f, 0.0f};
+			ParticleManager::pinkParticle.ExprotionParticle(m_position, start, end, 5, 30);
+			//ParticleManager::scoreParitcle.AddScore(m_position, size, size, 99, 60);
+			TowerHP::HP--;
 		}
 		isDelete = true;
 	}
@@ -155,7 +161,7 @@ void BaseEnemy::LineMove()
 
 void BaseEnemy::HitShiled()
 {
-	if (false)
+	if (true)
 	{
 		//ˆÈ‰º”½ŽË”Â‚É“–‚½‚Á‚½Žž
 		m_isReturn = true;
@@ -276,4 +282,13 @@ void EnemyManager::CiycleDec()
 {
 	nowTowerR = Easeing::EaseInQuad(nowTowerR, BaseEnemy::TowerR, 0.3f);
 	nowCenterR = Easeing::EaseInQuad(nowCenterR, BaseEnemy::CenterR, 0.3f);
+
+	/*nowTowerR = Easeing::EaseOutBounce(MaxR, BaseEnemy::TowerR, 0.3f);
+	nowCenterR = Easeing::EaseOutBounce(MaxR, BaseEnemy::CenterR, 0.3f);*/
+}
+
+void EnemyManager::AllDelete()
+{
+	enemys.clear();
+	deleteEnemys.clear();
 }

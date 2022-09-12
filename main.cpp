@@ -40,7 +40,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	SetWindowSizeExtendRate(1.0);
 
 	// 画面の背景色を設定する
-	SetBackgroundColor(0x20, 0x49, 0x60);
+	SetBackgroundColor(0xF0, 0xF0, 0xF0);
 
 	// DXlibの初期化
 	if (DxLib_Init() == -1) { return -1; }
@@ -101,6 +101,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			if (Input::GetKeyTrigger(KEY_INPUT_SPACE) || Input::isJoyBottomTrigger(XINPUT_BUTTON_A))
 			{
 				sceneNum = GAME;
+				TowerHP::HP = TowerHP::MaxHP;
+				bulletUI.m_isAllShot = false;
 			}
 		}
 
@@ -156,22 +158,84 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			//エネミーの更新
 			EnemyManager::Update();
 			GameScene::Update();
-			
+
+			//エネミーとリフレクターの判定
+			for (auto& x : EnemyManager::enemys)
+			{
+				if (!x->m_isReturn)
+				{
+					//敵と中心の距離
+					FLOAT2 l_halfWinSize = player.GetHalfWinSize();
+					FLOAT2 l_enemyPos = x->m_position;
+					float l_diffX = l_enemyPos.u - l_halfWinSize.u;
+					float l_diffY = l_enemyPos.v - l_halfWinSize.v;
+					float l_len = sqrtf(
+						powf(l_diffX, 2.0f) +
+						powf(l_diffY, 2.0f)
+					);
+
+					//円周上なら
+					const float l_checkDiff = 10.0f;
+					const float l_diff = fabsf(player.GetStageReflectorRad() - l_len);
+					if (l_diff < l_checkDiff)
+					{
+						//中心から見た敵の角度を算出
+						FLOAT2 l_vec;
+						l_vec.u = l_diffX / l_len;
+						l_vec.v = l_diffY / l_len;
+						float l_enemyDeg = atan2f(l_vec.v, l_vec.u);
+						l_enemyDeg = 180.0f / DX_PI_F * l_enemyDeg;
+
+						//中心から見た自機の角度を算出
+						float l_playerDeg = 180.0f / DX_PI_F * player.GetReflectorRad();
+
+						//何度まで当たるか
+						const float l_hitDeg = 20.0f;
+						const float l_degDiff = fabsf(l_playerDeg - 90.0f - l_enemyDeg);
+
+						//範囲内
+						if (l_degDiff < l_hitDeg)
+						{
+							x->m_isReturn = true;
+							x->HitShiled();
+						}
+						//0~359度のケア
+						else
+						{
+							if (l_playerDeg < l_hitDeg || l_enemyDeg < l_hitDeg)
+							{
+								if (l_playerDeg < l_hitDeg) { l_playerDeg += 359.9f; }
+								if (l_enemyDeg < l_hitDeg) { l_enemyDeg += 359.9f; }
+
+								//範囲内
+								if (l_degDiff < l_hitDeg)
+								{
+									x->m_isReturn = true;
+									x->HitShiled();
+								}
+							}
+						}
+					}
+				}
+			}
+
 			bulletUI.Update(player.GetBulletNum());
 			
-			if (bulletUI.GetIsAllShot() && bulletUI.BulletNum() <= 0)
+ 			if (bulletUI.GetIsAllShot() && bulletUI.BulletNum() <= 0)
 			{
 				sceneNum = RESULT;
 				player.Init();
 				bulletUI.m_isAllShot = false;
 				ParticleManager::AllClear();
 				ObjectManager::AllClear();
-				ResultScene::Init(0);
+				ResultScene::Init(12345);
 			}
 			
-			if (Input::GetKeyTrigger(KEY_INPUT_ESCAPE))
+			if (TowerHP::HP <= 0)
 			{
 				//player.Init();
+				bulletUI.m_isAllShot = false;
+				EnemyManager::AllDelete();
 				bulletUI.AllShotStart();
 			}
 		}

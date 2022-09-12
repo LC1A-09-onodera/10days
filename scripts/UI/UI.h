@@ -52,6 +52,17 @@ class BulletUI
 	bool GetIsAllShot();
 };
 
+class HPUI
+{
+	std::list<UISprite*> m_HPs;
+	std::list<std::list<UISprite*>::iterator> m_deleteHPs;
+	int m_sprite;
+	void Init();
+	void Update(int bulletNum);
+	void Draw();
+	void LoadFile();
+};
+
 class UIManager
 {
 	

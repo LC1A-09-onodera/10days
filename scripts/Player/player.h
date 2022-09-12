@@ -29,18 +29,10 @@ private:
 	FLOAT2 m_scrollStartLine = { m_winSize.u / 2, 0 };
 
 private:
-	enum SIDE
-	{
-		OUTSIDE, INSIDE
-	};
-	enum LOC
-	{
-		LOWER, UPPER
-	};
-
-private:
 	const int C_STAGE_RAD = 243;					//ステージの半径
-	const int C_BULLET_INIT_VAL = 74;				//弾初期値
+	const int C_STAGE_REFLECTOR_RAD = 300;			//中心から見たリフレクターの位置の半径
+	const int C_REFLECTOR_RAD = 15;					//リフレクターの半径(テクスチャ依存)
+	const int C_BULLET_INIT_VAL = 72;				//弾初期値
 	const float C_PLAYER_RAD = 20.0f;				//プレイヤーの半径
 	const float C_TOTAL_RAD =
 		C_STAGE_RAD + C_PLAYER_RAD;		//未使用
@@ -54,17 +46,23 @@ private:
 	FLOAT2 m_start_pos;
 	FLOAT2 m_end_pos;
 	FLOAT2 m_vec;
+	FLOAT2 m_reflector_pos;
 	int m_stage_rad;
 	int m_bulletNum;
 	int m_maxBulletNum;
 	float m_easeTimer;
 	float m_deg;
+	float m_reflector_rad;
 	bool m_isMove;
 	bool m_isReload;
 
 	int m_s_player;
 	int m_s_stage;
+	int m_s_reflector;
 	FLOAT2 m_stageSize;
+
+	//debug
+	float a = 0;
 
 public:
 	void Init();
@@ -99,9 +97,13 @@ public:
 	bool ShotBullet();
 	const FLOAT2& GetPos() { return m_position; }
 	const FLOAT2& GetStageSize() { return m_stageSize; }
-	const float GetDeg() { return m_deg; }
+	const FLOAT2& GetReflectorPos() { return m_reflector_pos; }
+	const FLOAT2& GetHalfWinSize() { return FLOAT2{ C_HALF_WID,C_HALF_HEI }; }
+	const float& GetReflectorRad() { return m_reflector_rad; }
+	const float& GetDeg() { return m_deg; }
 	const int& GetBulletNum() { return m_bulletNum; }
 	const int& GetMaxBulletNum() { return m_maxBulletNum; }
+	const int& GetStageReflectorRad() { return C_STAGE_REFLECTOR_RAD; }
 
 public:
 	const void SetStageSize(const FLOAT2& stageSize) { m_stageSize = stageSize; }

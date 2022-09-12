@@ -100,4 +100,5 @@ public:
 	static void Draw();
 	static void CiycleInc();
 	static void CiycleDec();
+	static void AllDelete();
 };
