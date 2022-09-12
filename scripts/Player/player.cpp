@@ -23,7 +23,7 @@ void Player::Init()
 	m_stage_rad = C_STAGE_RAD;
 	m_easeTimer = 0.0f;
 	m_deg = 0;
-	m_reflector_rad = 0;
+	m_reflector_rad = DX_PI_F;
 	m_isMove = false;
 	m_stageSize = { 504, 504 };
 	m_isReload = false;
@@ -81,12 +81,12 @@ void Player::Update()
 			l_nearVec.u = cosf(l_rad);
 			l_nearVec.v = sinf(l_rad);
 
-			m_position.u = l_nearVec.u * C_STAGE_RAD + C_HALF_WID;
-			m_position.v = l_nearVec.v * C_STAGE_RAD + C_HALF_HEI;
+			m_position.u = l_nearVec.u * (C_STAGE_RAD - C_PLAYER_RAD) + C_HALF_WID;
+			m_position.v = l_nearVec.v * (C_STAGE_RAD - C_PLAYER_RAD) + C_HALF_HEI;
 
 			//リフレクター
-			m_reflector_pos.u = l_vec.u * C_STAGE_REFLECTOR_RAD + C_HALF_WID;
-			m_reflector_pos.v = l_vec.v * C_STAGE_REFLECTOR_RAD + C_HALF_HEI;
+			m_reflector_pos.u = l_nearVec.u * C_STAGE_REFLECTOR_RAD + C_HALF_WID;
+			m_reflector_pos.v = l_nearVec.v * C_STAGE_REFLECTOR_RAD + C_HALF_HEI;
 			m_reflector_rad = l_pRad - DX_PI_F / 2.0f;
 			if (m_reflector_rad < 0.0f)
 			{
@@ -102,8 +102,8 @@ void Player::Update()
 			m_start_pos = m_position;
 			l_vec.u *= -1.0f;
 			l_vec.v *= -1.0f;
-			m_end_pos.u = l_vec.u * C_STAGE_RAD + C_HALF_WID;
-			m_end_pos.v = l_vec.v * C_STAGE_RAD + C_HALF_HEI;
+			m_end_pos.u = l_vec.u * (C_STAGE_RAD - C_PLAYER_RAD) + C_HALF_WID;
+			m_end_pos.v = l_vec.v * (C_STAGE_RAD - C_PLAYER_RAD) + C_HALF_HEI;
 			m_reflector_pos.u = l_vec.u * C_STAGE_REFLECTOR_RAD + C_HALF_WID;
 			m_reflector_pos.v = l_vec.v * C_STAGE_REFLECTOR_RAD + C_HALF_HEI;
 			m_vec = l_vec;
@@ -137,19 +137,18 @@ void Player::Draw()
 	DrawFormatString(0, 0, GetColor(255, 255, 255), "LEFT:%2f", left);
 	DrawFormatString(0, 20, GetColor(255, 255, 255), "RIGHT:%2f", right);
 
-	//仮自機
-	DrawCircleAA(
+	//自機
+	DrawRotaGraph(
 		m_position.u + Shake::GetShake().u,
 		m_position.v + Shake::GetShake().v,
-		C_PLAYER_RAD,
-		100,
-		GetColor(13, 13, 13),
+		0.3f,
+		m_reflector_rad - DX_PI_F,
+		m_s_player,
 		true
 	);
 
 	if (!m_isMove)
 	{
-
 		DrawRotaGraph(
 			m_reflector_pos.u + Shake::GetShake().u,
 			m_reflector_pos.v + Shake::GetShake().v,
@@ -178,6 +177,7 @@ void Player::Draw()
 
 void Player::LoadFile()
 {
+	m_s_player = LoadGraph("Resources/player.png");
 	m_sprite = LoadGraph("Resources/particle.png");
 	m_s_stage = LoadGraph("Resources/circle.png");
 	m_s_reflector = LoadGraph("Resources/reflector.png");
