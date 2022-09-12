@@ -13,7 +13,7 @@ std::list<BaseEnemy*> EnemyManager::enemys;
 std::list<std::list<BaseEnemy*>::iterator> EnemyManager::deleteEnemys;
 
 FLOAT2 BaseEnemy::CiycleCenter = { WindowSize::Wid / 2, WindowSize::Hi / 2 };
-float BaseEnemy:: TowerR = 100;
+float BaseEnemy::TowerR = 65;
 int BaseEnemy::SpornAngle = 45;
 
 int enemyCiycle;
@@ -32,7 +32,7 @@ void BaseEnemy::Init()
 	m_angle = (float)SpornAngle;
 	float cos = DxLibMath::Cos(m_angle);
 	float sin = DxLibMath::Sin(m_angle);
-	
+
 	m_position.u = BaseEnemy::CiycleCenter.u + OutsideR * cos;
 	m_position.v = BaseEnemy::CiycleCenter.v + OutsideR * sin;
 	m_endPosition.u = BaseEnemy::CiycleCenter.u + CenterR * cos;
@@ -41,7 +41,8 @@ void BaseEnemy::Init()
 	m_timer = MaxTimer;
 	m_easeTimer = 0.0f;
 	m_HP = MaxHP;
-	m_size = {20 , 20};
+	m_size = {50 , 50};
+	m_ToCenterSpeed = 2;
 }
 
 void BaseEnemy::Update()
@@ -84,14 +85,14 @@ void BaseEnemy::Update()
 void BaseEnemy::Draw()
 {
 	DrawExtendGraph(m_position.u - (m_size.u / 2), m_position.v - (m_size.v / 2),
-					m_position.u + (m_size.u / 2), m_position.v + (m_size.v / 2), m_sprite[nowSpriteNum], true);
+		m_position.u + (m_size.u / 2), m_position.v + (m_size.v / 2), m_sprite[nowSpriteNum], true);
 	//DrawCircle(m_position.u, m_position.v,10,  GetColor(13, 13, 13));
 }
 
 void BaseEnemy::ToCiycleMove()
 {
-	m_easeTimer += (float)ToCenterSpeed / 200.0f;
- 	m_position = Easeing::EaseInQuad(m_position, m_endPosition, m_easeTimer);
+	m_easeTimer += (float)m_ToCenterSpeed / 200.0f;
+	m_position = Easeing::EaseInQuad(m_position, m_endPosition, m_easeTimer);
 	if (m_easeTimer >= 1.0f)
 	{
 		m_position.u = BaseEnemy::CiycleCenter.u + DxLibMath::Cos(m_angle) * CenterR;
@@ -114,21 +115,23 @@ void BaseEnemy::CiycleMove()
 
 void BaseEnemy::ReturnToCiycle()
 {
-	m_easeTimer += (float)ToCenterSpeed / 80.0f;
+	m_easeTimer += (float)m_ToCenterSpeed / 80.0f;
 	m_position = Easeing::EaseInQuad(m_position, m_endPosition, m_easeTimer);
 	if (m_easeTimer >= 1.0f)
 	{
 		m_position.u = BaseEnemy::CiycleCenter.u + DxLibMath::Cos(m_angle) * CenterR;
 		m_position.v = BaseEnemy::CiycleCenter.v + DxLibMath::Sin(m_angle) * CenterR;
 		m_easeTimer = 0.0f;
-		m_HP = MaxHP;
+		m_HP = (MaxHP - m_returnNum) < 0 ? 1 : MaxHP - m_returnNum;
 		m_state = ToCenter;
+		m_isReturn = false;
 	}
 }
 
 void BaseEnemy::LineMove()
 {
-	m_position = Easeing::EaseInQuad(m_position, BaseEnemy::CiycleCenter, (float)ToCenterSpeed / 50.0f);
+	if (isStop) return;
+	m_position = Easeing::EaseInQuad(m_position, BaseEnemy::CiycleCenter, (float)m_ToCenterSpeed / 50.0f);
 	if (Collision::Lenght(BaseEnemy::CiycleCenter, m_position) < TowerR)
 	{
 		//スコア加算
@@ -148,15 +151,15 @@ void BaseEnemy::LineMove()
 			int a = 0;
 			a++;
 			FLOAT2 size = { 18.0f, 22.0f };
-			FLOAT2 start = {40.0f, 40.0f};
-			FLOAT2 end = {0.0f, 0.0f};
+			FLOAT2 start = { 40.0f, 40.0f };
+			FLOAT2 end = { 0.0f, 0.0f };
 			ParticleManager::pinkParticle.ExprotionParticle(m_position, start, end, 5, 30);
 			//ParticleManager::scoreParitcle.AddScore(m_position, size, size, 99, 60);
 			TowerHP::HP--;
 		}
 		isDelete = true;
 	}
-	
+
 }
 
 void BaseEnemy::HitShiled()
@@ -165,15 +168,18 @@ void BaseEnemy::HitShiled()
 	{
 		//以下反射板に当たった時
 		m_isReturn = true;
-		m_returnNum++;
+		if (m_type == Angel)
+		{
+			m_returnNum++;
+		}
 		m_timer = MaxTimer;
 		m_state = ReturnCiycle;
 		float cos = DxLibMath::Cos(m_angle);
 		float sin = DxLibMath::Sin(m_angle);
 		m_endPosition = { BaseEnemy::CiycleCenter.u + CenterR * cos , BaseEnemy::CiycleCenter.v + CenterR * sin };
 		m_easeTimer = 0.0f;
+		m_ToCenterSpeed += 0.5f;
 	}
-	
 }
 
 void BaseEnemy::BulletCollision()
@@ -191,7 +197,7 @@ void BaseEnemy::BulletCollision()
 			//スコア加算
 			Score::score++;
 			FLOAT2 size = { 10.0f, 17.0f };
-			ParticleManager::scoreParitcle.AddScore((*itr)->m_position, size , size, 1, 60);
+			ParticleManager::scoreParitcle.AddScore((*itr)->m_position, size, size, 1, 60);
 
 			if (m_HP <= 0)
 			{
@@ -235,12 +241,12 @@ EnemyManager::EnemyManager()
 
 void EnemyManager::Init()
 {
-	
+
 }
 
 void EnemyManager::AddEnemy()
 {
-	BaseEnemy *enemy = new BaseEnemy();
+	BaseEnemy* enemy = new BaseEnemy();
 	enemy->Init();
 	EnemyManager::enemys.push_back(&(*enemy));
 }
@@ -264,7 +270,7 @@ void EnemyManager::Update()
 
 void EnemyManager::Draw()
 {
-	DrawCircleAA(WindowSize::Wid / 2, WindowSize::Hi / 2, nowCenterR, 128,  GetColor(200, 13, 13), 0, 1.0f);
+	DrawCircleAA(WindowSize::Wid / 2, WindowSize::Hi / 2, nowCenterR, 128, GetColor(200, 13, 13), 0, 1.0f);
 	DrawCircleAA(WindowSize::Wid / 2, WindowSize::Hi / 2, nowTowerR, 128, GetColor(13, 200, 13), 0, 1.0f);
 	for (auto itr = enemys.begin(); itr != enemys.end(); ++itr)
 	{

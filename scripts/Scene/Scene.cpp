@@ -37,7 +37,7 @@ FLOAT2 ResultScene::m_numSize = { 700 / 5 * sent, 346 / 2 * sent };
 void GameScene::LoadFile()
 {
 	m_s_side = LoadGraph("Resources/EncanEncounter.png");
-	m_sideSize = { 1139.0f, 104.0f };
+	m_sideSize = { 1200.0f, 104.0f };
 }
 
 void GameScene::Update()
@@ -48,7 +48,7 @@ void GameScene::Update()
 		SceneSide::m_sidePosition[i].v -= speed;
 		if (SceneSide::m_sidePosition[i].v < -m_sideSize.u / 2)
 		{
-			SceneSide::m_sidePosition[i].v = m_sideSize.u + (m_sideSize.u / 2);
+			SceneSide::m_sidePosition[i].v = m_sideSize.u + (m_sideSize.u / 2) + dis;
 		}
 	}
 	for (int i = static_cast<int>(Direction::Left1); i <= static_cast<int>(Direction::Left2); i++)
@@ -56,7 +56,7 @@ void GameScene::Update()
 		SceneSide::m_sidePosition[i].v += speed;
 		if (SceneSide::m_sidePosition[i].v > WindowSize::Hi + m_sideSize.u / 2)
 		{
-			SceneSide::m_sidePosition[i].v = -((m_sideSize.u - WindowSize::Hi) + m_sideSize.u / 2);
+			SceneSide::m_sidePosition[i].v = -((m_sideSize.u - WindowSize::Hi) + m_sideSize.u / 2) - dis;
 		}
 	}
 }
@@ -65,11 +65,11 @@ void GameScene::Init()
 {
 	for (int i = static_cast<int>(Direction::Right1); i <= static_cast<int>(Direction::Right2); i++)
 	{
-		SceneSide::m_sidePosition[i] = { 0, WindowSize::Wid + (m_sideSize.u * i) };
+		SceneSide::m_sidePosition[i] = { 0, WindowSize::Wid + (m_sideSize.u * i) + (dis * i) };
 	}
 	for (int i = static_cast<int>(Direction::Left1); i <= static_cast<int>(Direction::Left2); i++)
 	{
-		SceneSide::m_sidePosition[i] = { WindowSize::Wid - m_sideSize.v, (-m_sideSize.u / 2) - (m_sideSize.u * (i - 2)) };
+		SceneSide::m_sidePosition[i] = { WindowSize::Wid - m_sideSize.v, (-m_sideSize.u / 2) - (m_sideSize.u * (i - 2) + (dis * (i - 2))) };
 	}
 }
 
@@ -99,7 +99,7 @@ void TitleScene::LoadFile()
 	//m_titleSize = {443, 118 };
 	float sen = 0.5f;
 	m_titleSize = { 872.0f * sen, 325.0f * sen };
-	m_spaceSize = { 150, 34 };
+	m_spaceSize = { 180 * 0.95f, 64 * 0.95f };
 }
 
 void TitleScene::Update()
@@ -110,7 +110,7 @@ void TitleScene::Update()
 		SceneSide::m_sidePosition[i].v -= speed;
 		if (SceneSide::m_sidePosition[i].v < -m_sideSize.u / 2)
 		{
-			SceneSide::m_sidePosition[i].v = m_sideSize.u + (m_sideSize.u / 2);
+			SceneSide::m_sidePosition[i].v = m_sideSize.u + (m_sideSize.u / 2) + GameScene::dis;
 		}
 	}
 	for (int i = static_cast<int>(Direction::Left1); i <= static_cast<int>(Direction::Left2); i++)
@@ -118,7 +118,7 @@ void TitleScene::Update()
 		SceneSide::m_sidePosition[i].v += speed;
 		if (SceneSide::m_sidePosition[i].v > WindowSize::Hi + m_sideSize.u / 2)
 		{
-			SceneSide::m_sidePosition[i].v = -((m_sideSize.u - WindowSize::Hi) + m_sideSize.u / 2);
+			SceneSide::m_sidePosition[i].v = -((m_sideSize.u - WindowSize::Hi) + m_sideSize.u / 2) - GameScene::dis;
 		}
 	}
 }
@@ -127,11 +127,11 @@ void TitleScene::Init()
 {
 	for (int i = static_cast<int>(Direction::Right1); i <= static_cast<int>(Direction::Right2); i++)
 	{
-		SceneSide::m_sidePosition[i] = { 0, WindowSize::Wid + (m_sideSize.u * i) };
+		SceneSide::m_sidePosition[i] = { 0, WindowSize::Wid + (m_sideSize.u * i) + (GameScene::dis * i) };
 	}
 	for (int i = static_cast<int>(Direction::Left1); i <= static_cast<int>(Direction::Left2); i++)
 	{
-		SceneSide::m_sidePosition[i] = { WindowSize::Wid - m_sideSize.v, (-m_sideSize.u / 2) - (m_sideSize.u * (i - 2)) };
+		SceneSide::m_sidePosition[i] = { WindowSize::Wid - m_sideSize.v, (-m_sideSize.u / 2) - (m_sideSize.u * (i - 2) + (GameScene::dis * (i - 2))) };
 	}
 }
 
@@ -155,7 +155,7 @@ void TitleScene::Draw()
 	float win = WindowSize::Wid / 2;
 	float hi = WindowSize::Hi / 2;
 	DrawExtendGraph(win - m_titleSize.u / 2, hi - 0 - m_titleSize.v / 2, win + m_titleSize.u / 2, hi - 0 + m_titleSize.v / 2, m_s_title, true);
-	DrawExtendGraph(win - m_spaceSize.u / 2, hi + 100 - m_spaceSize.v / 2, win + m_spaceSize.u / 2, hi + 100 + m_spaceSize.v / 2, m_s_space, true);
+	DrawExtendGraph(win - m_spaceSize.u / 2, hi + 120 - m_spaceSize.v / 2, win + m_spaceSize.u / 2, hi + 120 + m_spaceSize.v / 2, m_s_space, true);
 }
 
 void ResultScene::Draw()
@@ -168,8 +168,8 @@ void ResultScene::Draw()
 	
 	if (!isToTitle)
 	{
-		DrawExtendGraph(WindowSize::Wid / 2 - (340 / 2 * 0.7f) - 200, WindowSize::Hi / 2 - (75 / 2 * 0.7f),
-						WindowSize::Wid / 2 + (340 / 2 * 0.7f) - 200, WindowSize::Hi / 2 + (75 / 2 * 0.7f), s_score, true);
+		DrawExtendGraph(WindowSize::Wid / 2 - (340 / 2 * 0.5f) - 200, WindowSize::Hi / 2 - (75 / 2 * 0.5f),
+						WindowSize::Wid / 2 + (340 / 2 * 0.5f) - 200, WindowSize::Hi / 2 + (75 / 2 * 0.5f), s_score, true);
 		float x = -32;
 		int score[6] = { m_score / 100000 % 10,m_score / 10000 % 10,m_score / 1000 % 10,m_score / 100 % 10,m_score / 10 % 10, m_score % 10};
 		for (int i = 0; i < 6; i++)
@@ -178,8 +178,8 @@ void ResultScene::Draw()
 							WindowSize::Wid / 2 + (m_numSize.u / 2) + x, WindowSize::Hi / 2 + (m_numSize.v / 2), s_number[score[i]], true);
 			x += m_numSize.u;
 		}
-		DrawExtendGraph(WindowSize::Wid / 2 - (340 / 2 * 0.7f), WindowSize::Hi / 2 - (75 / 2 * 0.75f) + 100,
-						WindowSize::Wid / 2 + (340 / 2 * 0.7f), WindowSize::Hi / 2 + (75 / 2 * 0.75f) + 100, s_space, true);
+		DrawExtendGraph(WindowSize::Wid / 2 - (180 / 2 * 0.9f), WindowSize::Hi / 2 - (64 / 2 * 0.9f) + 150,
+						WindowSize::Wid / 2 + (180 / 2 * 0.9f), WindowSize::Hi / 2 + (64 / 2 * 0.9f) + 150, s_space, true);
 	}
 
 }

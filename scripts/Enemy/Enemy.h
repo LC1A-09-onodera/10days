@@ -48,22 +48,24 @@ public:
 
 	bool isDelete = false;
 
+	bool isStop = false;
+
 	//中心からの停止用距離
-	static const int CenterR = 450;
+	static const int CenterR = 470;
 	//出現時の
 	static const int OutsideR = 1000;
 	//最大HP
-	static const int MaxHP = 5;
+	static const int MaxHP = 3;
 	//円周上を回っているとき
 	static const int NormalMode = 6;
 	//攻撃時の進行モード
 	static const int ProgressMode = 5;
 	static const int FriendMode = 0;
 	//中心に向かっていくときの速度
-	static const int ToCenterSpeed = 2;
+	float m_ToCenterSpeed = 2;
 	//サークル場を回っているときの速度
 	static const int OnCiycleSpeed = 1;
-	static const int MaxTimer = 600;
+	static const int MaxTimer = 120;
 	static FLOAT2 CiycleCenter;
 	//ダメージ食らうゾーン
 	static float TowerR;

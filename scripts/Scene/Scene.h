@@ -51,6 +51,7 @@ public:
 	//static FLOAT2 m_backSize;
 	static FLOAT2 m_sideSize;
 	static int sceneTimer;
+	static const int dis = 50;
 	static void LoadFile();
 	static void Update();
 	static void Init();
@@ -67,6 +68,7 @@ public:
 	static int s_number[10];
 	static int m_score;
 	static bool isToTitle;
+	
 	static FLOAT2 m_numSize;
 	static void LoadFile();
 	static void Init(int f_score);

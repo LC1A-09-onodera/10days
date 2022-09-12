@@ -12,5 +12,9 @@ class TowerHP
 	static int HP;
 	static const int MaxHP = 3;
 	static int s_HP;
+	static int s_hart[4];
+	static float nowAngle;
+	//static float startAngle;
+	static float endAngle;
 	static void Draw();
 };
