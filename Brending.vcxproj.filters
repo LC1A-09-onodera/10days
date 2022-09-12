@@ -14,6 +14,7 @@
     <ClCompile Include="scripts\UI\UI.cpp" />
     <ClCompile Include="scripts\Enemy\Enemy.cpp" />
     <ClCompile Include="scripts\Score\Score.cpp" />
+    <ClCompile Include="scripts\Wave\Wave.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="scripts\Input\Input.h" />
@@ -30,5 +31,6 @@
     <ClInclude Include="scripts\Enemy\Enemy.h" />
     <ClInclude Include="scripts\WindowsSize\WindowSize.h" />
     <ClInclude Include="scripts\Score\Score.h" />
+    <ClInclude Include="scripts\Wave\Wave.h" />
   </ItemGroup>
 </Project>

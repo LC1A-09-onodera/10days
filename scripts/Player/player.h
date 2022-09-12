@@ -2,6 +2,7 @@
 #include "DxLib.h"
 #include "../Particle/Particle.h"
 #include "../WindowsSize/WindowSize.h"
+#include <vector>
 
 class Player
 {
@@ -31,18 +32,30 @@ private:
 private:
 	const int C_STAGE_RAD = 243;					//ステージの半径
 	const int C_STAGE_REFLECTOR_RAD = 300;			//中心から見たリフレクターの位置の半径
-	const int C_REFLECTOR_RAD = 15;					//リフレクターの半径(テクスチャ依存)
+	const int C_REFLECTOR_RAD = 12;					//リフレクターの半径(テクスチャ依存)
 	const int C_BULLET_INIT_VAL = 72;				//弾初期値
-	const float C_PLAYER_RAD = 20.0f;				//プレイヤーの半径
+	const float C_PLAYER_RAD = 50.0f;				//プレイヤーの半径
 	const float C_TOTAL_RAD =
 		C_STAGE_RAD + C_PLAYER_RAD;		//未使用
 	const float C_HALF_WID = WindowSize::Wid / 2;	//ウィンドウサイズ横半分
 	const float C_HALF_HEI = WindowSize::Hi / 2;	//ウィンドウサイズ縦半分
-	const float C_ADD_TIMER = 0.02f;	//イージング加算タイマー
+	const float C_ADD_TIMER = 0.04f;	//イージング加算タイマー
 	const float C_SUB_RAD = 2.0f;		//仮自機の半径の減算用
 	const float C_LINE_WID = 7.0f;		//ステージの線の幅
 
 private:
+	struct  Effects
+	{
+		FLOAT2 pos;
+		int alpha;
+		float r;
+		float timer;
+		bool isDraw;
+	};
+
+private:
+	std::vector<Effects> m_effects;
+	FLOAT2 m_hitPos;
 	FLOAT2 m_start_pos;
 	FLOAT2 m_end_pos;
 	FLOAT2 m_vec;
@@ -50,15 +63,19 @@ private:
 	int m_stage_rad;
 	int m_bulletNum;
 	int m_maxBulletNum;
+	float m_rad;
 	float m_easeTimer;
 	float m_deg;
 	float m_reflector_rad;
 	bool m_isMove;
 	bool m_isReload;
+	bool m_isChange;
+	bool m_isReflectorHit;
 
 	int m_s_player;
 	int m_s_stage;
 	int m_s_reflector;
+	int m_s_reflector_hit;
 	FLOAT2 m_stageSize;
 
 	//debug
@@ -80,6 +97,10 @@ private:
 	{
 		return -(cosf(3.14f * x) - 1) / 2;
 	}
+	float easeOutQuint(float x)
+	{
+		return 1 - powf(1.0f - x, 5.0f);
+	}
 	float RotateEarliestArc(float NowAngle, float EndAngle)
 	{
 		if (fabsf(EndAngle - NowAngle) > 180.0f) {
@@ -94,6 +115,7 @@ private:
 	}
 
 public:
+	void ReflectorHit(FLOAT2& hitPos);
 	bool ShotBullet();
 	const FLOAT2& GetPos() { return m_position; }
 	const FLOAT2& GetStageSize() { return m_stageSize; }

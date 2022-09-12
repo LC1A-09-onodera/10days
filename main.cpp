@@ -10,7 +10,7 @@
 #include "scripts/WindowsSize/WindowSize.h"
 #include "scripts/Enemy/Enemy.h"
 #include "scripts/Score/Score.h"
-
+#include "scripts/Wave/Wave.h"
 
 // ウィンドウのタイトルに表示する文字列
 const char TITLE[] = "10days";
@@ -84,6 +84,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	BaseEnemy::LoadFile();
 	ResultScene::LoadFile();
 	TowerHP::s_HP = LoadGraph("Resources/hp.png");
+	WaveManager::LoadFile();
 	// ゲームループ
 	while (1)
 	{
@@ -104,11 +105,13 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 				sceneNum = GAME;
 				TowerHP::HP = TowerHP::MaxHP;
 				bulletUI.m_isAllShot = false;
+				WaveManager::WaveInit(0);
 			}
 		}
 
 		else if (sceneNum == GAME)
 		{
+			WaveManager::Update();
 			player.Update();
 			static float angle = 0.0f;
 			static int time = 0;
@@ -176,7 +179,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 					);
 
 					//円周上なら
-					const float l_checkDiff = 10.0f;
+					const float l_checkDiff = 20.0f;
 					const float l_diff = fabsf(player.GetStageReflectorRad() - l_len);
 					if (l_diff < l_checkDiff)
 					{
@@ -199,6 +202,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 						{
 							x->m_isReturn = true;
 							x->HitShiled();
+							player.ReflectorHit(x->m_position);
 						}
 						//0~359度のケア
 						else
@@ -213,16 +217,18 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 								{
 									x->m_isReturn = true;
 									x->HitShiled();
+									player.ReflectorHit(x->m_position);
 								}
 							}
 						}
 					}
 				}
 			}
-
-			bulletUI.Update(player.GetBulletNum());
-			
- 			if (bulletUI.GetIsAllShot() && bulletUI.BulletNum() <= 0)
+			if (WaveManager::isAllEnd)
+			{
+				bulletUI.Update(player.GetBulletNum());
+			}
+			if (bulletUI.GetIsAllShot() && bulletUI.BulletNum() <= 0)
 			{
 				sceneNum = RESULT;
 				player.Init();
@@ -231,7 +237,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 				ObjectManager::AllClear();
 				ResultScene::Init(12345);
 			}
-			
+
 			if (TowerHP::HP <= 0)
 			{
 				//player.Init();
@@ -254,6 +260,11 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 		else if (sceneNum == GAME)
 		{
+			if (WaveManager::isAllEnd)
+			{
+				TowerHP::Draw();
+			}
+			bulletUI.Draw();
 			player.Draw();
 			ObjectManager::Draw();
 			GameScene::Draw();
@@ -262,8 +273,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			DrawFormatString(0, 100, GetColor(0, 0, 0), "BulletNum:%d", player.GetBulletNum());
 			DrawFormatString(0, 120, GetColor(0, 0, 0), "BulletNum:%d", player.GetMaxBulletNum());
 			DrawFormatString(400, 100, GetColor(0, 0, 0), "Score:%d", Score::GetScore());
-			bulletUI.Draw();
-			TowerHP::Draw();
+			WaveManager::Draw();
 		}
 		else if (sceneNum == RESULT)
 		{

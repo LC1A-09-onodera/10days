@@ -11,6 +11,7 @@ void Player::Init()
 	m_gravity.v = 0.9f;
 	m_scrollStartLine = { m_winSize.u / 2, 0 };
 
+	m_hitPos = { 0,0 };
 	m_start_pos = { 0,0 };
 	m_vec = { 0,0 };
 	m_end_pos = { 0,0 };
@@ -21,12 +22,15 @@ void Player::Init()
 	m_bulletNum = C_BULLET_INIT_VAL;
 	m_maxBulletNum = m_bulletNum;
 	m_stage_rad = C_STAGE_RAD;
+	m_rad = 1.0f;
 	m_easeTimer = 0.0f;
 	m_deg = 0;
-	m_reflector_rad = 0;
+	m_reflector_rad = DX_PI_F;
 	m_isMove = false;
 	m_stageSize = { 504, 504 };
 	m_isReload = false;
+	m_isChange = false;
+	m_isReflectorHit = false;
 }
 
 void Player::Update()
@@ -81,12 +85,12 @@ void Player::Update()
 			l_nearVec.u = cosf(l_rad);
 			l_nearVec.v = sinf(l_rad);
 
-			m_position.u = l_nearVec.u * C_STAGE_RAD + C_HALF_WID;
-			m_position.v = l_nearVec.v * C_STAGE_RAD + C_HALF_HEI;
+			m_position.u = l_nearVec.u * (C_STAGE_RAD - C_PLAYER_RAD) + C_HALF_WID;
+			m_position.v = l_nearVec.v * (C_STAGE_RAD - C_PLAYER_RAD) + C_HALF_HEI;
 
 			//リフレクター
-			m_reflector_pos.u = l_vec.u * C_STAGE_REFLECTOR_RAD + C_HALF_WID;
-			m_reflector_pos.v = l_vec.v * C_STAGE_REFLECTOR_RAD + C_HALF_HEI;
+			m_reflector_pos.u = l_nearVec.u * C_STAGE_REFLECTOR_RAD + C_HALF_WID;
+			m_reflector_pos.v = l_nearVec.v * C_STAGE_REFLECTOR_RAD + C_HALF_HEI;
 			m_reflector_rad = l_pRad - DX_PI_F / 2.0f;
 			if (m_reflector_rad < 0.0f)
 			{
@@ -102,12 +106,18 @@ void Player::Update()
 			m_start_pos = m_position;
 			l_vec.u *= -1.0f;
 			l_vec.v *= -1.0f;
-			m_end_pos.u = l_vec.u * C_STAGE_RAD + C_HALF_WID;
-			m_end_pos.v = l_vec.v * C_STAGE_RAD + C_HALF_HEI;
-			m_reflector_pos.u = l_vec.u * C_STAGE_REFLECTOR_RAD + C_HALF_WID;
-			m_reflector_pos.v = l_vec.v * C_STAGE_REFLECTOR_RAD + C_HALF_HEI;
+			m_end_pos.u = l_vec.u * (C_STAGE_RAD - C_PLAYER_RAD) + C_HALF_WID;
+			m_end_pos.v = l_vec.v * (C_STAGE_RAD - C_PLAYER_RAD) + C_HALF_HEI;
 			m_vec = l_vec;
 			m_isMove = true;
+		}
+
+		//リフレクターヒット時
+		if (m_isReflectorHit)
+		{
+			FLOAT2 l_shakePower = { 2.0f,2.0f };
+			Shake::AddShakePower(l_shakePower);
+			m_isReflectorHit = false;
 		}
 	}
 
@@ -125,6 +135,59 @@ void Player::Update()
 			m_easeTimer = 0.0f;
 			m_isMove = false;
 		}
+
+		//自機拡縮処理
+		if (!m_isChange)
+		{
+			if (m_rad > 0.0f)
+			{
+				m_rad -= C_ADD_TIMER * 4.0f;
+			}
+			if (m_rad < 0.0f) { m_rad = 0.0f; }
+			if (m_easeTimer >= 0.5f)
+			{
+				m_reflector_pos.u = m_vec.u * C_STAGE_REFLECTOR_RAD + C_HALF_WID;
+				m_reflector_pos.v = m_vec.v * C_STAGE_REFLECTOR_RAD + C_HALF_HEI;
+				m_reflector_rad -= DX_PI_F;
+				m_isChange = true;
+			}
+		}
+		else
+		{
+			if (m_rad < 1.0f)
+			{
+				m_rad += C_ADD_TIMER * 4.0f;
+			}
+			if (m_rad > 1.0f) { m_rad = 1.0f; }
+			if (!m_isMove)
+			{
+				m_isChange = false;
+			}
+		}
+	}
+
+	//ヒット時演出
+	for (auto itr = m_effects.begin(); itr != m_effects.end(); ++itr)
+	{
+		if (itr->timer < 1.0f)
+		{
+			itr->timer += C_ADD_TIMER;
+		}
+		if (itr->timer > 0.3f)
+		{
+			itr->alpha -= 5;
+		}
+		if (itr->timer > 1.0f) { itr->timer = 1.0f; }
+		if (!itr->isDraw) { itr->isDraw = true; }
+		else { itr->isDraw = false; }
+
+		itr->r = easeInOutSine(itr->timer);
+
+		if (itr->alpha <= 0)
+		{
+			m_effects.erase(itr);
+			break;
+		}
 	}
 }
 
@@ -137,28 +200,25 @@ void Player::Draw()
 	DrawFormatString(0, 0, GetColor(255, 255, 255), "LEFT:%2f", left);
 	DrawFormatString(0, 20, GetColor(255, 255, 255), "RIGHT:%2f", right);
 
-	//仮自機
-	DrawCircleAA(
+	//自機
+	DrawRotaGraph(
 		m_position.u + Shake::GetShake().u,
 		m_position.v + Shake::GetShake().v,
-		C_PLAYER_RAD,
-		100,
-		GetColor(13, 13, 13),
+		m_rad * 0.3f,
+		m_reflector_rad - DX_PI_F,
+		m_s_player,
 		true
 	);
 
-	if (!m_isMove)
-	{
-
-		DrawRotaGraph(
-			m_reflector_pos.u + Shake::GetShake().u,
-			m_reflector_pos.v + Shake::GetShake().v,
-			1.0f,
-			m_reflector_rad,
-			m_s_reflector,
-			true
-		);
-	}
+	//リフレクター
+	DrawRotaGraph(
+		m_reflector_pos.u + Shake::GetShake().u,
+		m_reflector_pos.v + Shake::GetShake().v,
+		m_rad,
+		m_reflector_rad,
+		m_s_reflector,
+		true
+	);
 
 	//ステージ
 	DrawExtendGraph(
@@ -170,17 +230,37 @@ void Player::Draw()
 		true
 	);
 
+	//ヒット時演出
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
+	for (auto itr = m_effects.begin(); itr != m_effects.end(); ++itr)
+	{
+		if (itr->isDraw)
+		{
+			DrawRotaGraph(
+				itr->pos.u,
+				itr->pos.v,
+				itr->r * 0.5f,
+				0.0f,
+				m_s_reflector_hit,
+				true
+			);
+		}
+	}
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
 	//debug
 	float hoge = Shake::GetPowerX();
 	DrawFormatString(0, 40, GetColor(0, 0, 0), "ShakeX:%f", hoge);
-	DrawFormatString(0, 60, GetColor(0, 0, 0), "RefRad:%f", m_reflector_rad);
+	DrawFormatString(0, 60, GetColor(0, 0, 0), "RefRad:%f", m_rad);
 }
 
 void Player::LoadFile()
 {
+	m_s_player = LoadGraph("Resources/player.png");
 	m_sprite = LoadGraph("Resources/particle.png");
 	m_s_stage = LoadGraph("Resources/circle.png");
 	m_s_reflector = LoadGraph("Resources/reflector.png");
+	m_s_reflector_hit = LoadGraph("Resources/hit_effect.png");
 	Init();
 }
 
@@ -197,6 +277,19 @@ void Player::AddForce()
 void Player::AttachForce()
 {
 
+}
+
+void Player::ReflectorHit(FLOAT2& hitPos)
+{
+	Effects l_effects;
+	l_effects.pos = hitPos;
+	l_effects.r = 0;
+	l_effects.alpha = 255;
+	l_effects.timer = 0.0f;
+	l_effects.isDraw = true;
+	m_effects.push_back(l_effects);
+
+	m_isReflectorHit = true;
 }
 
 bool Player::ShotBullet()
