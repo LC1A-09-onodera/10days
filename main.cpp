@@ -11,6 +11,7 @@
 #include "scripts/Enemy/Enemy.h"
 #include "scripts/Score/Score.h"
 #include "scripts/Wave/Wave.h"
+#include <string>
 
 // ウィンドウのタイトルに表示する文字列
 const char TITLE[] = "10days";
@@ -85,6 +86,11 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	BaseEnemy::LoadFile();
 	ResultScene::LoadFile();
 	TowerHP::s_HP = LoadGraph("Resources/hp.png");
+	for (int i = 0; i < 4; i++)
+	{
+		std::string path = "Resources/heart" + std::to_string(i) + ".png";
+		TowerHP::s_hart[i] = LoadGraph(path.c_str());
+	}
 	WaveManager::LoadFile();
 	// ゲームループ
 	while (1)
