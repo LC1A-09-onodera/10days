@@ -74,16 +74,19 @@ void WaveManager::Update()
 				m_backEndSize = {WindowSize::Wid, 0.0f};
 			}
 		}
-		//else if (isWaveDirectionEnd && isBackEnd)
-		//{
-		//	//‚Ù‚ñ‚Æ‚ÌI‚í‚è
-		//	isAllEnd = true;
-		//}
 	}
 
 	if (Score::score > WaveBorader[waveNumber])
 	{
 		WaveInit(waveNumber + 1);
+		EnemyManager::AddEnemy();
+	}
+	else
+	{
+		if (rand() % 600 == 0)
+		{
+			EnemyManager::AddEnemy();
+		}
 	}
 }
 
