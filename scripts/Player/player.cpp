@@ -21,12 +21,15 @@ void Player::Init()
 	m_bulletNum = C_BULLET_INIT_VAL;
 	m_maxBulletNum = m_bulletNum;
 	m_stage_rad = C_STAGE_RAD;
+	m_rad = 1.0f;
 	m_easeTimer = 0.0f;
 	m_deg = 0;
 	m_reflector_rad = DX_PI_F;
 	m_isMove = false;
 	m_stageSize = { 504, 504 };
 	m_isReload = false;
+	m_isChange = false;
+	m_isReflectorHit = false;
 }
 
 void Player::Update()
@@ -104,10 +107,16 @@ void Player::Update()
 			l_vec.v *= -1.0f;
 			m_end_pos.u = l_vec.u * (C_STAGE_RAD - C_PLAYER_RAD) + C_HALF_WID;
 			m_end_pos.v = l_vec.v * (C_STAGE_RAD - C_PLAYER_RAD) + C_HALF_HEI;
-			m_reflector_pos.u = l_vec.u * C_STAGE_REFLECTOR_RAD + C_HALF_WID;
-			m_reflector_pos.v = l_vec.v * C_STAGE_REFLECTOR_RAD + C_HALF_HEI;
 			m_vec = l_vec;
 			m_isMove = true;
+		}
+
+		//リフレクターヒット時
+		if (m_isReflectorHit)
+		{
+			FLOAT2 l_shakePower = { 1.0f,1.0f };
+			Shake::AddShakePower(l_shakePower);
+			m_isReflectorHit = false;
 		}
 	}
 
@@ -125,6 +134,35 @@ void Player::Update()
 			m_easeTimer = 0.0f;
 			m_isMove = false;
 		}
+
+		//自機拡縮処理
+		if (!m_isChange)
+		{
+			if (m_rad > 0.0f)
+			{
+				m_rad -= C_ADD_TIMER * 4.0f;
+			}
+			if (m_rad < 0.0f) { m_rad = 0.0f; }
+			if (m_easeTimer >= 0.5f)
+			{
+				m_reflector_pos.u = m_vec.u * C_STAGE_REFLECTOR_RAD + C_HALF_WID;
+				m_reflector_pos.v = m_vec.v * C_STAGE_REFLECTOR_RAD + C_HALF_HEI;
+				m_reflector_rad -= DX_PI_F;
+				m_isChange = true;
+			}
+		}
+		else
+		{
+			if (m_rad < 1.0f)
+			{
+				m_rad += C_ADD_TIMER * 4.0f;
+			}
+			if (m_rad > 1.0f) { m_rad = 1.0f; }
+			if (!m_isMove)
+			{
+				m_isChange = false;
+			}
+		}
 	}
 }
 
@@ -141,23 +179,21 @@ void Player::Draw()
 	DrawRotaGraph(
 		m_position.u + Shake::GetShake().u,
 		m_position.v + Shake::GetShake().v,
-		0.3f,
+		m_rad * 0.3f,
 		m_reflector_rad - DX_PI_F,
 		m_s_player,
 		true
 	);
 
-	if (!m_isMove)
-	{
-		DrawRotaGraph(
-			m_reflector_pos.u + Shake::GetShake().u,
-			m_reflector_pos.v + Shake::GetShake().v,
-			1.0f,
-			m_reflector_rad,
-			m_s_reflector,
-			true
-		);
-	}
+	//リフレクター
+	DrawRotaGraph(
+		m_reflector_pos.u + Shake::GetShake().u,
+		m_reflector_pos.v + Shake::GetShake().v,
+		m_rad,
+		m_reflector_rad,
+		m_s_reflector,
+		true
+	);
 
 	//ステージ
 	DrawExtendGraph(
@@ -172,7 +208,7 @@ void Player::Draw()
 	//debug
 	float hoge = Shake::GetPowerX();
 	DrawFormatString(0, 40, GetColor(0, 0, 0), "ShakeX:%f", hoge);
-	DrawFormatString(0, 60, GetColor(0, 0, 0), "RefRad:%f", m_reflector_rad);
+	DrawFormatString(0, 60, GetColor(0, 0, 0), "RefRad:%f", m_rad);
 }
 
 void Player::LoadFile()
@@ -197,6 +233,11 @@ void Player::AddForce()
 void Player::AttachForce()
 {
 
+}
+
+void Player::ReflectorHit()
+{
+	m_isReflectorHit = true;
 }
 
 bool Player::ShotBullet()

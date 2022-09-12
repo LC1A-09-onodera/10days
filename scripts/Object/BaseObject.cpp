@@ -293,14 +293,7 @@ void ObjectManager::Update(FLOAT2& f_playerPos, bool f_playerIsOutside)
 
 	if (Shake::GetPower().u > 0.0f)
 	{
-		FLOAT2 l_shakePower = { -0.1f,-0.1f };
-		Shake::AddShakePower(l_shakePower);
-	}
-	if (Shake::GetPower().u < 0.0f)
-	{
-		FLOAT2 l_shakePower = Shake::GetPower();
-		l_shakePower.u *= -1.0f;
-		l_shakePower.v *= -1.0f;
+		FLOAT2 l_shakePower = { -0.01f,-0.01f };
 		Shake::AddShakePower(l_shakePower);
 	}
 }

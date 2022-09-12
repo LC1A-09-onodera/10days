@@ -198,6 +198,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 						{
 							x->m_isReturn = true;
 							x->HitShiled();
+							player.ReflectorHit();
 						}
 						//0~359“x‚ÌƒPƒA
 						else
@@ -212,6 +213,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 								{
 									x->m_isReturn = true;
 									x->HitShiled();
+									player.ReflectorHit();
 								}
 							}
 						}

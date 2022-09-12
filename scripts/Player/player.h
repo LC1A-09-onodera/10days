@@ -38,7 +38,7 @@ private:
 		C_STAGE_RAD + C_PLAYER_RAD;		//未使用
 	const float C_HALF_WID = WindowSize::Wid / 2;	//ウィンドウサイズ横半分
 	const float C_HALF_HEI = WindowSize::Hi / 2;	//ウィンドウサイズ縦半分
-	const float C_ADD_TIMER = 0.02f;	//イージング加算タイマー
+	const float C_ADD_TIMER = 0.04f;	//イージング加算タイマー
 	const float C_SUB_RAD = 2.0f;		//仮自機の半径の減算用
 	const float C_LINE_WID = 7.0f;		//ステージの線の幅
 
@@ -50,11 +50,14 @@ private:
 	int m_stage_rad;
 	int m_bulletNum;
 	int m_maxBulletNum;
+	float m_rad;
 	float m_easeTimer;
 	float m_deg;
 	float m_reflector_rad;
 	bool m_isMove;
 	bool m_isReload;
+	bool m_isChange;
+	bool m_isReflectorHit;
 
 	int m_s_player;
 	int m_s_stage;
@@ -94,6 +97,7 @@ private:
 	}
 
 public:
+	void ReflectorHit();
 	bool ShotBullet();
 	const FLOAT2& GetPos() { return m_position; }
 	const FLOAT2& GetStageSize() { return m_stageSize; }
