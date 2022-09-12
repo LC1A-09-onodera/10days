@@ -140,6 +140,7 @@
     <ClCompile Include="scripts\Scroll\Scroll.cpp" />
     <ClCompile Include="scripts\Sound\Sound.cpp" />
     <ClCompile Include="scripts\UI\UI.cpp" />
+    <ClCompile Include="scripts\Wave\Wave.cpp" />
     <ClCompile Include="scripts\WindowFrame\WindowFrame.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -155,6 +156,7 @@
     <ClInclude Include="scripts\Scroll\Scroll.h" />
     <ClInclude Include="scripts\Sound\Sound.h" />
     <ClInclude Include="scripts\UI\UI.h" />
+    <ClInclude Include="scripts\Wave\Wave.h" />
     <ClInclude Include="scripts\WindowFrame\WindowFrame.h" />
     <ClInclude Include="scripts\WindowsSize\WindowSize.h" />
   </ItemGroup>
