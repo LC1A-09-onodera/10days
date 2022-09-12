@@ -195,7 +195,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 						//‰½“x‚Ü‚Å“–‚½‚é‚©
 						const float l_hitDeg = 20.0f;
-						const float l_degDiff = fabsf(l_playerDeg - 90.0f - l_enemyDeg);
+						float l_degDiff = fabsf(l_playerDeg - 90.0f - l_enemyDeg);
 
 						//”ÍˆÍ“à
 						if (l_degDiff < l_hitDeg)
@@ -211,6 +211,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 							{
 								if (l_playerDeg < l_hitDeg) { l_playerDeg += 359.9f; }
 								if (l_enemyDeg < l_hitDeg) { l_enemyDeg += 359.9f; }
+								l_degDiff = fabsf(l_playerDeg - 90.0f - l_enemyDeg);
 
 								//”ÍˆÍ“à
 								if (l_degDiff < l_hitDeg)
