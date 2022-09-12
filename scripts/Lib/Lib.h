@@ -18,4 +18,7 @@ namespace Easeing
 	float EaseInOutBounce(float startPos, float endPos, float time);
 	FLOAT2 EaseInOutBounce(FLOAT2 startPos, FLOAT2 endPos, float time);
 	float EaseOutElastic(float startPos, float endPos, float time);
+	float InQuad(float time);
+	float EaseInQuad(float start, float end, float time);
+	FLOAT2 EaseInQuad(FLOAT2 start, FLOAT2 end, float time);
 }

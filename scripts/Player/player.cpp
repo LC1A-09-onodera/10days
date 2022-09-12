@@ -4,21 +4,29 @@
 
 void Player::Init()
 {
+	//位置,変
 	m_position = {
 		C_HALF_WID,
 		C_HALF_HEI + C_STAGE_RAD - C_PLAYER_RAD };
 	m_gravity.v = 0.9f;
 	m_scrollStartLine = { m_winSize.u / 2, 0 };
 
-	m_outside_pos = { C_HALF_WID,0 };
-	m_spaceCount = 2;
+	m_start_pos = { 0,0 };
+	m_vec = { 0,0 };
+	m_end_pos = { 0,0 };
+	m_reflector_pos = {
+		C_HALF_WID,
+		C_HALF_HEI + C_STAGE_REFLECTOR_RAD };
+	m_stage_rad = C_STAGE_RAD;
+	m_bulletNum = C_BULLET_INIT_VAL;
+	m_maxBulletNum = m_bulletNum;
+	m_stage_rad = C_STAGE_RAD;
 	m_easeTimer = 0.0f;
-	m_outside_rad = 0.0f;
-	m_side = OUTSIDE;
-	m_loc = LOWER;
+	m_deg = 0;
+	m_reflector_rad = 0;
 	m_isMove = false;
-	m_stageSize = {504, 504};
-	m_isChange = false;
+	m_stageSize = { 504, 504 };
+	m_isReload = false;
 }
 
 void Player::Update()
@@ -27,105 +35,95 @@ void Player::Update()
 
 	AttachForce();
 
-	//内外移動の処理
+	if (m_bulletNum == 0)
+	{
+		m_bulletNum = m_maxBulletNum;
+	}
+
+	//通常時
 	if (!m_isMove)
 	{
-		if (Input::GetKeyTrigger(KEY_INPUT_SPACE) || Input::isJoyBottomTrigger(XINPUT_BUTTON_A))
+		//自機の方向ベクトルを計算
+		FLOAT2 l_diff = { 0,0 };
+		l_diff.u = m_position.u - C_HALF_WID;
+		l_diff.v = m_position.v - C_HALF_HEI;
+		float l_len = sqrtf(
+			powf(l_diff.u, 2.0f) +
+			powf(l_diff.v, 2.0f));
+		FLOAT2 l_vec = { 0,0 };
+		l_vec.u = l_diff.u / l_len;
+		l_vec.v = l_diff.v / l_len;
+		float l_pRad = atan2f(-l_vec.v, -l_vec.u);
+		if (l_pRad < 0.0f)
 		{
-			//縦移動
-			if (m_spaceCount >= 2)
+			l_pRad += DX_PI_F * 2;
+		}
+		m_deg = 180.0f / DX_PI_F * l_pRad;
+
+		//左スティックが倒されている時のみ(コントローラー以外も対応させろ！)
+		if (Input::isJoyLeftStickBottom())
+		{
+			//自機の位置算出正規化
+			m_vec = Input::GetJoyLeftStick();
+			float l_len = sqrtf(powf(m_vec.u, 2.0f) + powf(m_vec.v, 2.0f));
+			m_vec.u /= l_len;
+			m_vec.v /= l_len * -1;
+
+			float l_pAngle = 180.0f / DX_PI_F * atan2f(l_vec.v, l_vec.u);
+			float l_sAngle = 180.0f / DX_PI_F * atan2f(m_vec.v, m_vec.u);
+			if (l_pAngle < 0.0f) { l_pAngle += 360.0f; }
+			if (l_sAngle < 0.0f) { l_sAngle += 360.0f; }
+			float l_nearArc = RotateEarliestArc(l_pAngle, l_sAngle);
+
+			FLOAT2 l_nearVec = { 0,0 };
+			//要修正
+			float l_rad = (l_pAngle + (l_nearArc / 30.0f)) * DX_PI_F / 180.0f;
+			l_nearVec.u = cosf(l_rad);
+			l_nearVec.v = sinf(l_rad);
+
+			m_position.u = l_nearVec.u * C_STAGE_RAD + C_HALF_WID;
+			m_position.v = l_nearVec.v * C_STAGE_RAD + C_HALF_HEI;
+
+			//リフレクター
+			m_reflector_pos.u = l_vec.u * C_STAGE_REFLECTOR_RAD + C_HALF_WID;
+			m_reflector_pos.v = l_vec.v * C_STAGE_REFLECTOR_RAD + C_HALF_HEI;
+			m_reflector_rad = l_pRad - DX_PI_F / 2.0f;
+			if (m_reflector_rad < 0.0f)
 			{
-				m_spaceCount = 0;
-				m_isMove = true;
+				m_reflector_rad += DX_PI_F * 2.0f;
 			}
-			//内外移動
-			else
-			{
-				//内外移動演出用
-				m_isChange = true;
+		}
 
-				if (m_side == OUTSIDE)
-				{
-					//下で内から外の場合
-					if (m_loc == LOWER)
-					{
-						//m_position.v += C_PLAYER_RAD * 2;
-
-						//LOWERの座標指定
-						m_outside_pos.v = m_position.v + C_PLAYER_RAD * 2;
-
-					}
-					//上で内から外の場合
-					else
-					{
-						//m_position.v -= C_PLAYER_RAD * 2;
-
-						//UPPERの座標指定
-						m_outside_pos.v = m_position.v - C_PLAYER_RAD * 2;
-					}
-					m_side = INSIDE;
-				}
-				else
-				{
-					//下で外から内の場合
-					//if (m_loc == LOWER) { m_position.v -= C_PLAYER_RAD * 0; }
-					//上で外から内の場合
-					//else { m_position.v += C_PLAYER_RAD * 0; }
-					m_side = OUTSIDE;
-				}
-				m_spaceCount++;
-			}
+		//縦断入力
+		if (Input::GetKeyTrigger(KEY_INPUT_SPACE) ||
+			Input::isJoyBottomTrigger(XINPUT_BUTTON_A))
+		{
+			m_bulletNum = m_maxBulletNum;
+			m_start_pos = m_position;
+			l_vec.u *= -1.0f;
+			l_vec.v *= -1.0f;
+			m_end_pos.u = l_vec.u * C_STAGE_RAD + C_HALF_WID;
+			m_end_pos.v = l_vec.v * C_STAGE_RAD + C_HALF_HEI;
+			m_reflector_pos.u = l_vec.u * C_STAGE_REFLECTOR_RAD + C_HALF_WID;
+			m_reflector_pos.v = l_vec.v * C_STAGE_REFLECTOR_RAD + C_HALF_HEI;
+			m_vec = l_vec;
+			m_isMove = true;
 		}
 	}
 
-	//縦移動中の処理
+	//縦断移動中
 	else
 	{
-		//加算処理
+		//タイマー加算
 		if (m_easeTimer < 1.0f) { m_easeTimer += C_ADD_TIMER; }
 
-		//下から上
-		if (m_loc == LOWER)
+		//移動処理
+		m_position.u = (m_end_pos.u - m_start_pos.u) * easeInOutSine(m_easeTimer) + m_start_pos.u;
+		m_position.v = (m_end_pos.v - m_start_pos.v) * easeInOutSine(m_easeTimer) + m_start_pos.v;
+		if (m_easeTimer >= 1.0f)
 		{
-			const float l_start = C_HALF_HEI + C_STAGE_RAD - C_PLAYER_RAD;
-			const float l_end = C_HALF_HEI - C_STAGE_RAD + C_PLAYER_RAD;
-			m_position.v = (l_end - l_start) * easeInOutSine(m_easeTimer) + l_start;
-			if (m_easeTimer >= 1.0f)
-			{
-				m_easeTimer = 0.0f;
-				m_isMove = false;
-				m_loc = UPPER;
-			}
-		}
-		//上から下
-		else
-		{
-			const float l_start = C_HALF_HEI - C_STAGE_RAD + C_PLAYER_RAD;
-			const float l_end = C_HALF_HEI + C_STAGE_RAD - C_PLAYER_RAD;
-			m_position.v = (l_end - l_start) * easeInOutSine(m_easeTimer) + l_start;
-			if (m_easeTimer >= 1.0f)
-			{
-				m_easeTimer = 0.0f;
-				m_isMove = false;
-				m_loc = LOWER;
-			}
-		}
-	}
-
-	//内外移動演出用
-	if (m_isChange)
-	{
-		//内から外
-		if (m_side == OUTSIDE)
-		{
-			m_outside_rad -= C_SUB_RAD;
-			if (m_outside_rad == 0) { m_isChange = false; }
-		}
-		//外から内
-		else
-		{
-			m_outside_rad += C_SUB_RAD;
-			if (m_outside_rad == C_PLAYER_RAD) { m_isChange = false; }
+			m_easeTimer = 0.0f;
+			m_isMove = false;
 		}
 	}
 }
@@ -143,51 +141,52 @@ void Player::Draw()
 	DrawCircleAA(
 		m_position.u + Shake::GetShake().u,
 		m_position.v + Shake::GetShake().v,
-		C_PLAYER_RAD - m_outside_rad,
-		100,
-		GetColor(13, 13, 13),
-		true
-	);
-	//外側用
-	DrawCircleAA(
-		m_outside_pos.u + Shake::GetShake().u,
-		m_outside_pos.v + Shake::GetShake().v,
-		m_outside_rad,
+		C_PLAYER_RAD,
 		100,
 		GetColor(13, 13, 13),
 		true
 	);
 
-	//仮ステージ
+	if (!m_isMove)
+	{
+
+		DrawRotaGraph(
+			m_reflector_pos.u + Shake::GetShake().u,
+			m_reflector_pos.v + Shake::GetShake().v,
+			1.0f,
+			m_reflector_rad,
+			m_s_reflector,
+			true
+		);
+	}
+
+	//ステージ
+	DrawExtendGraph(
+		(WindowSize::Wid / 2) + Shake::GetShake().u - m_stageSize.u / 2.0f,
+		(WindowSize::Hi / 2) + Shake::GetShake().v - m_stageSize.v / 2.0f,
+		(WindowSize::Wid / 2) + Shake::GetShake().u + m_stageSize.u / 2.0f,
+		(WindowSize::Hi / 2) + Shake::GetShake().v + m_stageSize.v / 2.0f,
+		m_s_stage,
+		true
+	);
+
+	//debug
 	float hoge = Shake::GetPowerX();
-	DrawExtendGraph(640 + Shake::GetShake().u - m_stageSize.u / 2.0f, 360 + Shake::GetShake().v - m_stageSize.v / 2.0f,
-					640 + Shake::GetShake().u + m_stageSize.u / 2.0f, 360 + Shake::GetShake().v + m_stageSize.v / 2.0f,
-					m_s_stage, true);
-	DrawFormatString(0, 40, GetColor(255, 255, 255), "ShakeX:%f", hoge);
-	/*DrawCircle(
-		640 + Shake::GetShake().u,
-		360 + Shake::GetShake().v,
-		C_STAGE_RAD,
-		GetColor(255, 255, 255),
-		false
-	);*/
+	DrawFormatString(0, 40, GetColor(0, 0, 0), "ShakeX:%f", hoge);
+	DrawFormatString(0, 60, GetColor(0, 0, 0), "RefRad:%f", m_reflector_rad);
 }
 
 void Player::LoadFile()
 {
 	m_sprite = LoadGraph("Resources/particle.png");
 	m_s_stage = LoadGraph("Resources/circle.png");
+	m_s_reflector = LoadGraph("Resources/reflector.png");
 	Init();
 }
 
 bool Player::GetIsMove()
 {
 	return m_isMove;
-}
-
-bool Player::GetIsSide()
-{
-	return m_side;
 }
 
 void Player::AddForce()
@@ -198,4 +197,14 @@ void Player::AddForce()
 void Player::AttachForce()
 {
 
+}
+
+bool Player::ShotBullet()
+{
+	if (m_bulletNum > 0)
+	{
+		m_bulletNum--;
+		return true;
+	}
+	return false;
 }

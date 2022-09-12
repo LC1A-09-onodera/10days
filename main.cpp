@@ -5,6 +5,12 @@
 #include "scripts/Particle/Particle.h"
 #include "scripts/Object/BaseObject.h"
 #include "scripts/Scene/Scene.h"
+#include "scripts/Sound/Sound.h"
+#include "scripts//UI/UI.h"
+#include "scripts/WindowsSize/WindowSize.h"
+#include "scripts/Enemy/Enemy.h"
+#include "scripts/Score/Score.h"
+
 
 // ウィンドウのタイトルに表示する文字列
 const char TITLE[] = "10days";
@@ -28,13 +34,13 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	SetMainWindowText(TITLE);
 
 	// 画面サイズの最大サイズ、カラービット数を設定(モニターの解像度に合わせる)
-	SetGraphMode(WIN_WIDTH, WIN_HEIGHT, 32);
+	SetGraphMode(WindowSize::Wid, WindowSize::Hi, 32);
 
 	// 画面サイズを設定(解像度との比率で設定)
 	SetWindowSizeExtendRate(1.0);
 
 	// 画面の背景色を設定する
-	SetBackgroundColor(0x20, 0x49, 0x60);
+	SetBackgroundColor(0xF0, 0xF0, 0xF0);
 
 	// DXlibの初期化
 	if (DxLib_Init() == -1) { return -1; }
@@ -52,14 +58,32 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	// ゲームループで使う変数の宣言
 	int mouse_x;
 	int mouse_y;
+	FLOAT2 mousePos;
 	Player player;
 	player.LoadFile();
-	Particle par;
-	par.LoadFile("Resources/particle.png");
 	ObjectManager::LoadFile();
 	ParticleManager::LoadFile();
 	GameScene::LoadFile();
 	GameScene::Init();
+	TitleScene::LoadFile();
+	TitleScene::Init();
+	SoundManager::LoadFile();
+
+	enum SceneNum
+	{
+		TITLE,
+		GAME,
+		RESULT,
+	};
+
+	SceneNum sceneNum = TITLE;
+
+	BulletUI bulletUI;
+	bulletUI.LoadFile();
+	bulletUI.AddBullet();
+	BaseEnemy::LoadFile();
+	ResultScene::LoadFile();
+	TowerHP::s_HP = LoadGraph("Resources/hp.png");
 	// ゲームループ
 	while (1)
 	{
@@ -70,61 +94,196 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 		//---------  ここからプログラムを記述  ----------//
 		GetMousePoint(&mouse_x, &mouse_y);
+		mousePos = { (float)mouse_x, (float)mouse_y };
 
 		// 更新処理
-		player.Update();
-		par.Update();
-		// 描画処理
-		//player.Draw();
-		par.Draw();
-		static float angle = 0.0f;
-		static int time = 0;
-		if (player.GetIsMove())
+		if (sceneNum == TITLE)
 		{
-			time++;
-			if (time > 2)
+			if (Input::GetKeyTrigger(KEY_INPUT_SPACE) || Input::isJoyBottomTrigger(XINPUT_BUTTON_A))
 			{
-				time = 0;
-				angle = rand() % 360;
-				if (angle >= 360.0f)
-				{
-					angle = 0.0f;
-				}
-				//FLOAT2 winSizeHalf = { mouse_x,  mouse_y };
-				FLOAT2 winSizeHalf = { player.GetPos().u,  player.GetPos().v };
-				FLOAT2 spriteSize = { 30.0f, 30.0f };
-				float l_leftStickDeg = Input::GetJoyLeftStickAngle();
-				l_leftStickDeg = 180.0f / DX_PI_F * l_leftStickDeg;
-
-				if (rand() % 2 == 0)
-				{
-					//ObjectManager::object1.Shot(winSizeHalf, spriteSize, angle, 18.0f, BaseObject::ObjectType::ORANGE);
-					ObjectManager::object1.Shot(winSizeHalf, spriteSize, l_leftStickDeg, 18.0f, BaseObject::ObjectType::ORANGE);
-				}
-				else
-				{
-					//ObjectManager::object2.Shot(winSizeHalf, spriteSize, angle, 18.0f, BaseObject::ObjectType::PINK);
-					ObjectManager::object2.Shot(winSizeHalf, spriteSize, l_leftStickDeg, 18.0f, BaseObject::ObjectType::PINK);
-				}
+				sceneNum = GAME;
+				TowerHP::HP = TowerHP::MaxHP;
+				bulletUI.m_isAllShot = false;
 			}
 		}
-		FLOAT2 pos = player.GetPos();
-		ObjectManager::Update(pos, player.GetIsSide());
 
-		ParticleManager::Update();
+		else if (sceneNum == GAME)
+		{
+			player.Update();
+			static float angle = 0.0f;
+			static int time = 0;
+			EnemyManager::CiycleDec();
+			if (Input::GetKeyTrigger(KEY_INPUT_SPACE))
+			{
+				EnemyManager::AddEnemy();
+			}
+			int nowBullet = bulletUI.m_bullets.size();
+			if (!player.GetIsMove() && nowBullet >= player.GetBulletNum())
+			{
+				time++;
+				if (time > 2)
+				{
+					time = 0;
+					angle = rand() % 360;
+					if (angle >= 360.0f)
+					{
+						angle = 0.0f;
+					}
+					FLOAT2 winSizeHalf = { player.GetPos().u,  player.GetPos().v };
+					FLOAT2 spriteSize = { 30.0f, 30.0f };
 
+					//弾が残ってるかの判定
+					bool isShot = player.ShotBullet();
+					if (isShot && !bulletUI.m_isAllShot)
+					{
+						if (rand() % 2 == 0)
+						{
+							ObjectManager::object1.Shot(winSizeHalf, spriteSize, player.GetDeg(), 18.0f, BaseObject::ObjectType::ORANGE);
+						}
+						else
+						{
+							ObjectManager::object2.Shot(winSizeHalf, spriteSize, player.GetDeg(), 18.0f, BaseObject::ObjectType::PINK);
+						}
+						StopSoundMem(SoundManager::shotBullet);
+						PlaySoundMem(SoundManager::shotBullet, DX_PLAYTYPE_BACK);
+					}
+				}
+				BaseObject::ResetSpeed();
+			}
+			BaseObject::SetIsMove(player.GetIsMove());
+			FLOAT2 pos = player.GetPos();
+			//各オブジェクトの更新
+			ObjectManager::Update(pos, true);
+			//パーティクルの更新
+			ParticleManager::Update();
+			//エネミーの更新
+			EnemyManager::Update();
+			GameScene::Update();
 
+			//エネミーとリフレクターの判定
+			for (auto& x : EnemyManager::enemys)
+			{
+				if (!x->m_isReturn)
+				{
+					//敵と中心の距離
+					FLOAT2 l_halfWinSize = player.GetHalfWinSize();
+					FLOAT2 l_enemyPos = x->m_position;
+					float l_diffX = l_enemyPos.u - l_halfWinSize.u;
+					float l_diffY = l_enemyPos.v - l_halfWinSize.v;
+					float l_len = sqrtf(
+						powf(l_diffX, 2.0f) +
+						powf(l_diffY, 2.0f)
+					);
 
+					//円周上なら
+					const float l_checkDiff = 10.0f;
+					const float l_diff = fabsf(player.GetStageReflectorRad() - l_len);
+					if (l_diff < l_checkDiff)
+					{
+						//中心から見た敵の角度を算出
+						FLOAT2 l_vec;
+						l_vec.u = l_diffX / l_len;
+						l_vec.v = l_diffY / l_len;
+						float l_enemyDeg = atan2f(l_vec.v, l_vec.u);
+						l_enemyDeg = 180.0f / DX_PI_F * l_enemyDeg;
+
+						//中心から見た自機の角度を算出
+						float l_playerDeg = 180.0f / DX_PI_F * player.GetReflectorRad();
+
+						//何度まで当たるか
+						const float l_hitDeg = 20.0f;
+						const float l_degDiff = fabsf(l_playerDeg - 90.0f - l_enemyDeg);
+
+						//範囲内
+						if (l_degDiff < l_hitDeg)
+						{
+							x->m_isReturn = true;
+							x->HitShiled();
+						}
+						//0~359度のケア
+						else
+						{
+							if (l_playerDeg < l_hitDeg || l_enemyDeg < l_hitDeg)
+							{
+								if (l_playerDeg < l_hitDeg) { l_playerDeg += 359.9f; }
+								if (l_enemyDeg < l_hitDeg) { l_enemyDeg += 359.9f; }
+
+								//範囲内
+								if (l_degDiff < l_hitDeg)
+								{
+									x->m_isReturn = true;
+									x->HitShiled();
+								}
+							}
+						}
+					}
+				}
+			}
+
+			bulletUI.Update(player.GetBulletNum());
+			
+ 			if (bulletUI.GetIsAllShot() && bulletUI.BulletNum() <= 0)
+			{
+				sceneNum = RESULT;
+				player.Init();
+				bulletUI.m_isAllShot = false;
+				ParticleManager::AllClear();
+				ObjectManager::AllClear();
+				ResultScene::Init(12345);
+			}
+			
+			if (TowerHP::HP <= 0)
+			{
+				//player.Init();
+				bulletUI.m_isAllShot = false;
+				EnemyManager::AllDelete();
+				bulletUI.AllShotStart();
+			}
+		}
 		// 描画処理
-		DrawGraph(0, 0, BackGraund, true);
-
-		player.Draw();
-		ObjectManager::Draw();
-
+		DrawExtendGraph(0, 0, WindowSize::Wid, WindowSize::Hi, BackGraund, true);
 		ParticleManager::Draw();
-		GameScene::Update();
-		GameScene::Draw();
 
+		if (sceneNum == TITLE)
+		{
+			player.Draw();
+			TitleScene::Update();
+			TitleScene::Draw();
+			EnemyManager::Draw();
+		}
+
+		else if (sceneNum == GAME)
+		{
+			player.Draw();
+			ObjectManager::Draw();
+			GameScene::Draw();
+
+			EnemyManager::Draw();
+			DrawFormatString(0, 100, GetColor(0, 0, 0), "BulletNum:%d", player.GetBulletNum());
+			DrawFormatString(0, 120, GetColor(0, 0, 0), "BulletNum:%d", player.GetMaxBulletNum());
+			DrawFormatString(400, 100, GetColor(0, 0, 0), "Score:%d", Score::GetScore());
+			bulletUI.Draw();
+			TowerHP::Draw();
+		}
+		else if (sceneNum == RESULT)
+		{
+			if (Input::GetKeyTrigger(KEY_INPUT_SPACE))
+			{
+				ResultScene::isToTitle = true;
+			}
+			player.Draw();
+			ObjectManager::Draw();
+			GameScene::Draw();
+			TitleScene::Update();
+			EnemyManager::Draw();
+			bulletUI.Draw();
+			ResultScene::Update();
+			if (ResultScene::ciycleR < 2)
+			{
+				sceneNum = TITLE;
+			}
+			ResultScene::Draw();
+		}
 		//---------  ここまでにプログラムを記述  ---------//
 		// (ダブルバッファ)裏面
 		ScreenFlip();
@@ -139,10 +298,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		}
 
 		// ESCキーが押されたらループから抜ける
-		if (CheckHitKey(KEY_INPUT_ESCAPE) == 1)
+		/*if (CheckHitKey(KEY_INPUT_ESCAPE) == 1)
 		{
 			break;
-		}
+		}*/
 	}
 	// Dxライブラリ終了処理
 	DxLib_End();

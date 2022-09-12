@@ -9,6 +9,9 @@ char Input::oldkeys[256] = { 0 };
 XINPUT_STATE Input::joypad;
 XINPUT_STATE Input::oldjoypad;
 
+float Input::JoyLeftDeadLine = 5000.0f;		//最大32767.0f
+float Input::JoyRightDeadLine = 5000.0f;	//最大32767.0f
+
 void Input::Update()
 {
 	// 最新のキーボード情報だったものは1フレーム前のキーボード情報として保存
@@ -39,14 +42,14 @@ FLOAT2 Input::GetJoyRightStick()
 {
 	FLOAT2 stick;
 	//デッドラインを設けてX軸方向の傾き具合を取得する。
-	if (fabs(joypad.ThumbRX) <= 3000) {
+	if (fabs(joypad.ThumbRX) <= JoyRightDeadLine) {
 		stick.u = 0;
 	}
 	else {
 		stick.u = joypad.ThumbRX / 32767;
 	}
 	//デッドラインを設けてY軸方向の傾き具合を取得する。
-	if (fabs(joypad.ThumbRY) <= 3000) {
+	if (fabs(joypad.ThumbRY) <= JoyRightDeadLine) {
 		stick.v = 0;
 	}
 	else {
@@ -58,14 +61,14 @@ FLOAT2 Input::GetJoyRightStick()
 float Input::GetJoyRightStickAngle() {
 	FLOAT2 stick;
 	//デッドラインを設けてX軸方向の傾き具合を取得する。
-	if (fabs(joypad.ThumbRX) <= 1000) {
+	if (fabs(joypad.ThumbRX) <= JoyRightDeadLine) {
 		stick.u = 0;
 	}
 	else {
 		stick.u = joypad.ThumbRX / 32767.0f;
 	}
 	//デッドラインを設けてY軸方向の傾き具合を取得する。
-	if (fabs(joypad.ThumbRY) <= 1000) {
+	if (fabs(joypad.ThumbRY) <= JoyRightDeadLine) {
 		stick.v = 0;
 	}
 	else {
@@ -86,18 +89,38 @@ float Input::GetJoyRightTrigger() {
 	return trigger;
 }
 
+bool Input::isJoyRightStickBottom()
+{
+	bool isX = false;
+	//デッドラインを設けてX軸方向の傾き具合を取得する。
+	if (fabs(joypad.ThumbRX) <= JoyRightDeadLine)
+	{
+		isX = true;
+	}
+	//デッドラインを設けてY軸方向の傾き具合を取得する。
+	if (isX)
+	{
+		if (fabs(joypad.ThumbRY) <= JoyRightDeadLine)
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
 FLOAT2 Input::GetJoyLeftStick()
 {
 	FLOAT2 stick;
 	//デッドラインを設けてX軸方向の傾き具合を取得する。
-	if (fabs(joypad.ThumbLX) <= 3000) {
+	if (fabs(joypad.ThumbLX) <= JoyLeftDeadLine) {
 		stick.u = 0;
 	}
 	else {
 		stick.u = joypad.ThumbLX / 32767.0f;
 	}
 	//デッドラインを設けてY軸方向の傾き具合を取得する。
-	if (fabs(joypad.ThumbLY) <= 3000) {
+	if (fabs(joypad.ThumbLY) <= JoyLeftDeadLine) {
 		stick.v = 0;
 	}
 	else {
@@ -109,14 +132,14 @@ FLOAT2 Input::GetJoyLeftStick()
 float Input::GetJoyLeftStickAngle() {
 	FLOAT2 stick;
 	//デッドラインを設けてX軸方向の傾き具合を取得する。
-	if (fabs(joypad.ThumbLX) <= 1000) {
+	if (fabs(joypad.ThumbLX) <= JoyLeftDeadLine) {
 		stick.u = 0;
 	}
 	else {
 		stick.u = joypad.ThumbLX / 32767.0f;
 	}
 	//デッドラインを設けてY軸方向の傾き具合を取得する。
-	if (fabs(joypad.ThumbLY) <= 1000) {
+	if (fabs(joypad.ThumbLY) <= JoyLeftDeadLine) {
 		stick.v = 0;
 	}
 	else {
@@ -135,6 +158,26 @@ float Input::GetJoyLeftTrigger() {
 		trigger = joypad.LeftTrigger / 255.0f;
 	}
 	return trigger;
+}
+
+bool Input::isJoyLeftStickBottom()
+{
+	bool isX = false;
+	//デッドラインを設けてX軸方向の傾き具合を取得する。
+	if (fabs(joypad.ThumbLX) <= JoyLeftDeadLine)
+	{
+		isX = true;
+	}
+	//デッドラインを設けてY軸方向の傾き具合を取得する。
+	if (isX)
+	{
+		if (fabs(joypad.ThumbLY) <= JoyLeftDeadLine)
+		{
+			return false;
+		}
+	}
+
+	return true;
 }
 
 bool Input::isJoyBottom(int JoyBottom) {

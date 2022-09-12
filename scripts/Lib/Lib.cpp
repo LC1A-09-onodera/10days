@@ -138,3 +138,21 @@ float Easeing::EaseOutElastic(float startPos, float endPos, float time)
 	//return time == = 0 ? 0 : time == = 1 ? 1 : pow(2, -10 * time) * sin((time * 10 - 0.75) * c4) + 1;
 	return float();
 }
+
+float Easeing::InQuad(float time)
+{
+	return time * time;
+}
+
+float Easeing::EaseInQuad(float start, float end, float time)
+{
+	float sub = end - start;
+	return start + (InQuad(time) * sub);
+}
+
+FLOAT2 Easeing::EaseInQuad(FLOAT2 start, FLOAT2 end, float time)
+{
+	FLOAT2 sub = {end.u - start.u, end.v - start.v };
+	FLOAT2 result = { EaseInQuad(start.u, end.u, time),  EaseInQuad(start.v, end.v, time) };
+	return result;
+}
