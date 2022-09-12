@@ -196,24 +196,25 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 							//中心から見た自機の角度を算出
 							float l_playerDeg = 180.0f / DX_PI_F * player.GetReflectorRad();
 
-							//何度まで当たるか
-							const float l_hitDeg = 20.0f;
-							const float l_degDiff = fabsf(l_playerDeg - 90.0f - l_enemyDeg);
+						//何度まで当たるか
+						const float l_hitDeg = 20.0f;
+						float l_degDiff = fabsf(l_playerDeg - 90.0f - l_enemyDeg);
 
-							//範囲内
-							if (l_degDiff < l_hitDeg)
+						//範囲内
+						if (l_degDiff < l_hitDeg)
+						{
+							x->m_isReturn = true;
+							x->HitShiled();
+							player.ReflectorHit(x->m_position);
+						}
+						//0~359度のケア
+						else
+						{
+							if (l_playerDeg < l_hitDeg || l_enemyDeg < l_hitDeg)
 							{
-								x->m_isReturn = true;
-								x->HitShiled();
-								player.ReflectorHit(x->m_position);
-							}
-							//0~359度のケア
-							else
-							{
-								if (l_playerDeg < l_hitDeg || l_enemyDeg < l_hitDeg)
-								{
-									if (l_playerDeg < l_hitDeg) { l_playerDeg += 359.9f; }
-									if (l_enemyDeg < l_hitDeg) { l_enemyDeg += 359.9f; }
+								if (l_playerDeg < l_hitDeg) { l_playerDeg += 359.9f; }
+								if (l_enemyDeg < l_hitDeg) { l_enemyDeg += 359.9f; }
+								l_degDiff = fabsf(l_playerDeg - 90.0f - l_enemyDeg);
 
 									//範囲内
 									if (l_degDiff < l_hitDeg)

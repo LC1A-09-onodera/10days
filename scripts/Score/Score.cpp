@@ -19,5 +19,5 @@ void TowerHP::Draw()
 {
 	endAngle = 100.0f * ((float)HP / (float)MaxHP);
 	nowAngle = Easeing::EaseInQuad(nowAngle, endAngle, 0.25f);
-	DrawCircleGauge(WindowSize::Wid / 2, WindowSize::Hi / 2, nowAngle, s_HP, 0.0, 0.5f);
+	DrawCircleGauge(WindowSize::Wid / 2, WindowSize::Hi / 2, nowAngle, s_HP, 0.0, 0.3f);
 }
