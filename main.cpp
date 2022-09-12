@@ -116,10 +116,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			static float angle = 0.0f;
 			static int time = 0;
 			EnemyManager::CiycleDec();
-			/*if (Input::GetKeyTrigger(KEY_INPUT_SPACE))
+			if (Input::GetKeyTrigger(KEY_INPUT_SPACE))
 			{
 				EnemyManager::AddEnemy();
-			}*/
+			}
 			int nowBullet = bulletUI.m_bullets.size();
 			if (!player.GetIsMove() && nowBullet >= player.GetBulletNum())
 			{
@@ -179,7 +179,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 					);
 
 					//â~é¸è„Ç»ÇÁ
-					const float l_checkDiff = 10.0f;
+					const float l_checkDiff = 20.0f;
 					const float l_diff = fabsf(player.GetStageReflectorRad() - l_len);
 					if (l_diff < l_checkDiff)
 					{
@@ -202,6 +202,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 						{
 							x->m_isReturn = true;
 							x->HitShiled();
+							player.ReflectorHit(x->m_position);
 						}
 						//0~359ìxÇÃÉPÉA
 						else
@@ -216,6 +217,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 								{
 									x->m_isReturn = true;
 									x->HitShiled();
+									player.ReflectorHit(x->m_position);
 								}
 							}
 						}
