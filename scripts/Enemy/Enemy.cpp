@@ -115,7 +115,7 @@ void BaseEnemy::CiycleMove()
 
 void BaseEnemy::ReturnToCiycle()
 {
-	m_easeTimer += (float)m_ToCenterSpeed / 80.0f;
+	m_easeTimer += (float)m_ToCenterSpeed / 50.0f;
 	m_position = Easeing::EaseInQuad(m_position, m_endPosition, m_easeTimer);
 	if (m_easeTimer >= 1.0f)
 	{
