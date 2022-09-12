@@ -54,6 +54,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	float easeTime = 0;
 
 	int BackGraund = LoadGraph("Resources/back.png");
+	int vignette = LoadGraph("Resources/vignette.png");
 
 	// ゲームループで使う変数の宣言
 	int mouse_x;
@@ -164,7 +165,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			GameScene::Update();
 
 			//エネミーとリフレクターの判定
-			for (auto& x : EnemyManager::enemys)
+			for (auto &x : EnemyManager::enemys)
 			{
 				if (!x->m_isReturn)
 				{
@@ -294,6 +295,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			}
 			ResultScene::Draw();
 		}
+
+		DrawGraph(0, 0, vignette, true);
+
 		//---------  ここまでにプログラムを記述  ---------//
 		// (ダブルバッファ)裏面
 		ScreenFlip();
