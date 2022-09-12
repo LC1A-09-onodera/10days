@@ -123,6 +123,7 @@ void BaseEnemy::ReturnToCiycle()
 		m_easeTimer = 0.0f;
 		m_HP = MaxHP;
 		m_state = ToCenter;
+		m_isReturn = false;
 	}
 }
 
