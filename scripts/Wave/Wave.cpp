@@ -3,6 +3,7 @@
 #include "../Lib/Lib.h"
 #include "../Enemy/Enemy.h"
 #include "../Score/Score.h"
+#include <string>
 
 int WaveManager::waveNumber = 0;
 int WaveManager::s_waves[WaveManager::MaxWaveNum];
@@ -25,7 +26,11 @@ bool WaveManager::isAllEnd = false;
 
 void WaveManager::LoadFile()
 {
-	s_waves[0] = LoadGraph("Resources/wave_1.png");
+	for (int i = 1; i <= 10; i++)
+	{
+		std::string path = "Resources/wave_" + std::to_string(i) + ".png";
+		s_waves[i - 1] = LoadGraph(path.c_str());
+	}
 }
 
 void WaveManager::WaveInit(int waveNum)
@@ -38,7 +43,7 @@ void WaveManager::WaveInit(int waveNum)
 	m_position = { WindowSize::Wid + m_size.u / 2, WindowSize::Hi / 2 };
 	m_endPosition = { WindowSize::Wid / 2, WindowSize::Hi / 2 };
 	m_backSize = { WindowSize::Wid, 0 };
-	m_backEndSize = {WindowSize::Wid, 200};
+	m_backEndSize = { WindowSize::Wid, 200 };
 	m_backEaseTimer = 0.0f;
 	isAllEnd = false;
 	isStopEnd = false;
@@ -71,7 +76,7 @@ void WaveManager::Update()
 				isWaveDirectionStart = false;
 				isWaveDirectionEnd = true;
 				m_backEaseTimer = 0;
-				m_backEndSize = {WindowSize::Wid, 0.0f};
+				m_backEndSize = { WindowSize::Wid, 0.0f };
 			}
 		}
 	}
@@ -79,22 +84,32 @@ void WaveManager::Update()
 	if (Score::score > WaveBorader[waveNumber])
 	{
 		WaveInit(waveNumber + 1);
-		EnemyManager::AddEnemy();
 	}
 	else
 	{
-		if (rand() % 600 == 0)
+		if (waveNumber == 0)
 		{
-			EnemyManager::AddEnemy();
+			if (EnemyManager::enemys.size() <= 0)
+			{
+				EnemyManager::AddEnemy();
+			}
+		}
+		else
+		{
+			if (rand() % (300 / waveNumber) == 0)
+			{
+				EnemyManager::AddEnemy();
+				EnemyManager::AddEnemy();
+			}
 		}
 	}
 }
 
 void WaveManager::Draw()
 {
-	DrawBox(0, WindowSize::Hi / 2 - m_backSize.v / 2, WindowSize::Wid, WindowSize::Hi / 2 +  m_backSize.v / 2, GetColor(123, 204, 41), true);
+	DrawBox(0, WindowSize::Hi / 2 - m_backSize.v / 2, WindowSize::Wid, WindowSize::Hi / 2 + m_backSize.v / 2, GetColor(123, 204, 41), true);
 	DrawExtendGraph(m_position.u - m_size.u / 2, m_position.v - m_size.v / 2, m_position.u + m_size.u / 2, m_position.v + m_size.v / 2,
-					s_waves[waveNumber], true);
+		s_waves[waveNumber], true);
 }
 
 void WaveManager::Wave1()
