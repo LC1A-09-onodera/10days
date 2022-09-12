@@ -48,6 +48,8 @@ public:
 
 	bool isDelete = false;
 
+	bool isStop = false;
+
 	//’†S‚©‚ç‚Ì’â~—p‹——£
 	static const int CenterR = 470;
 	//oŒ»‚Ì
