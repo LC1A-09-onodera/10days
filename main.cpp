@@ -119,10 +119,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 				static float angle = 0.0f;
 				static int time = 0;
 				EnemyManager::CiycleDec();
-				if (Input::GetKeyTrigger(KEY_INPUT_SPACE))
-				{
-					EnemyManager::AddEnemy();
-				}
 				int nowBullet = bulletUI.m_bullets.size();
 				if (!player.GetIsMove() && nowBullet >= player.GetBulletNum())
 				{
@@ -282,7 +278,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		}
 		else if (sceneNum == RESULT)
 		{
-			if (Input::GetKeyTrigger(KEY_INPUT_SPACE))
+			if (Input::GetKeyTrigger(KEY_INPUT_SPACE) || Input::isJoyBottomTrigger(XINPUT_BUTTON_A))
 			{
 				ResultScene::isToTitle = true;
 			}
