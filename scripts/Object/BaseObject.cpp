@@ -69,7 +69,7 @@ void ObjectSample::Update(FLOAT2& f_playerPos, bool f_playerIsOutside)
 	for (auto itr = m_objects.begin(); itr != m_objects.end(); ++itr)
 	{
 		(*itr)->Update();
-		if ((*itr)->m_position.u < -20 || (*itr)->m_position.u > WindowSize::Wid + 20 || (*itr)->m_position.v > WindowSize::Hi + 20 || (*itr)->m_position.u < -20)
+		if ((*itr)->m_position.u < -20 || (*itr)->m_position.u > WindowSize::Wid + 20 || (*itr)->m_position.v > WindowSize::Hi + 20 || (*itr)->m_position.v < -20)
 		{
 			m_deleteObject.push_back(itr);
 		}

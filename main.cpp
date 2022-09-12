@@ -83,6 +83,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	bulletUI.AddBullet();
 	BaseEnemy::LoadFile();
 	ResultScene::LoadFile();
+	TowerHP::s_HP = LoadGraph("Resources/hp.png");
 	// ÉQÅ[ÉÄÉãÅ[Év
 	while (1)
 	{
@@ -264,6 +265,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			DrawFormatString(0, 120, GetColor(0, 0, 0), "BulletNum:%d", player.GetMaxBulletNum());
 			DrawFormatString(400, 100, GetColor(0, 0, 0), "Score:%d", Score::GetScore());
 			bulletUI.Draw();
+			TowerHP::Draw();
 		}
 		else if (sceneNum == RESULT)
 		{
