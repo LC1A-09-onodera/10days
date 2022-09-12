@@ -13,7 +13,7 @@ std::list<BaseEnemy*> EnemyManager::enemys;
 std::list<std::list<BaseEnemy*>::iterator> EnemyManager::deleteEnemys;
 
 FLOAT2 BaseEnemy::CiycleCenter = { WindowSize::Wid / 2, WindowSize::Hi / 2 };
-float BaseEnemy::TowerR = 100;
+float BaseEnemy::TowerR = 65;
 int BaseEnemy::SpornAngle = 45;
 
 int enemyCiycle;
@@ -42,6 +42,7 @@ void BaseEnemy::Init()
 	m_easeTimer = 0.0f;
 	m_HP = MaxHP;
 	m_size = {50 , 50};
+	m_ToCenterSpeed = 2;
 }
 
 void BaseEnemy::Update()
@@ -90,7 +91,7 @@ void BaseEnemy::Draw()
 
 void BaseEnemy::ToCiycleMove()
 {
-	m_easeTimer += (float)ToCenterSpeed / 200.0f;
+	m_easeTimer += (float)m_ToCenterSpeed / 200.0f;
 	m_position = Easeing::EaseInQuad(m_position, m_endPosition, m_easeTimer);
 	if (m_easeTimer >= 1.0f)
 	{
@@ -114,14 +115,14 @@ void BaseEnemy::CiycleMove()
 
 void BaseEnemy::ReturnToCiycle()
 {
-	m_easeTimer += (float)ToCenterSpeed / 80.0f;
+	m_easeTimer += (float)m_ToCenterSpeed / 80.0f;
 	m_position = Easeing::EaseInQuad(m_position, m_endPosition, m_easeTimer);
 	if (m_easeTimer >= 1.0f)
 	{
 		m_position.u = BaseEnemy::CiycleCenter.u + DxLibMath::Cos(m_angle) * CenterR;
 		m_position.v = BaseEnemy::CiycleCenter.v + DxLibMath::Sin(m_angle) * CenterR;
 		m_easeTimer = 0.0f;
-		m_HP = MaxHP;
+		m_HP = (MaxHP - m_returnNum) < 0 ? 1 : MaxHP - m_returnNum;
 		m_state = ToCenter;
 		m_isReturn = false;
 	}
@@ -129,7 +130,7 @@ void BaseEnemy::ReturnToCiycle()
 
 void BaseEnemy::LineMove()
 {
-	m_position = Easeing::EaseInQuad(m_position, BaseEnemy::CiycleCenter, (float)ToCenterSpeed / 50.0f);
+	m_position = Easeing::EaseInQuad(m_position, BaseEnemy::CiycleCenter, (float)m_ToCenterSpeed / 50.0f);
 	if (Collision::Lenght(BaseEnemy::CiycleCenter, m_position) < TowerR)
 	{
 		//ƒXƒRƒA‰ÁŽZ
@@ -176,8 +177,8 @@ void BaseEnemy::HitShiled()
 		float sin = DxLibMath::Sin(m_angle);
 		m_endPosition = { BaseEnemy::CiycleCenter.u + CenterR * cos , BaseEnemy::CiycleCenter.v + CenterR * sin };
 		m_easeTimer = 0.0f;
+		m_ToCenterSpeed += 0.5f;
 	}
-
 }
 
 void BaseEnemy::BulletCollision()
