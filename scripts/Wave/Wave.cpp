@@ -34,10 +34,14 @@ void WaveManager::WaveInit(int waveNum)
 	isWaveDirectionStart = true;
 	isWaveDirectionEnd = false;
 	easeTimer = 0.0f;
+	stopTimer = 0;
+	m_position = { WindowSize::Wid + m_size.u / 2, WindowSize::Hi / 2 };
 	m_endPosition = { WindowSize::Wid / 2, WindowSize::Hi / 2 };
 	m_backSize = { WindowSize::Wid, 0 };
 	m_backEndSize = {WindowSize::Wid, 200};
 	m_backEaseTimer = 0.0f;
+	isAllEnd = false;
+	isStopEnd = false;
 }
 
 void WaveManager::Update()
@@ -70,16 +74,19 @@ void WaveManager::Update()
 				m_backEndSize = {WindowSize::Wid, 0.0f};
 			}
 		}
-		//else if (isWaveDirectionEnd && isBackEnd)
-		//{
-		//	//‚Ù‚ñ‚Æ‚ÌI‚í‚è
-		//	isAllEnd = true;
-		//}
 	}
 
 	if (Score::score > WaveBorader[waveNumber])
 	{
 		WaveInit(waveNumber + 1);
+		EnemyManager::AddEnemy();
+	}
+	else
+	{
+		if (rand() % 600 == 0)
+		{
+			EnemyManager::AddEnemy();
+		}
 	}
 }
 
