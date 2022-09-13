@@ -72,10 +72,10 @@ void BaseEnemy::Update()
 		LineMove();
 		//HitShiled();
 	}
-	else if (m_state == ReturnCiycle)
+	/*else if (m_state == ReturnCiycle)
 	{
 		ReturnToCiycle();
-	}
+	}*/
 
 	BulletCollision();
 
@@ -179,6 +179,13 @@ void BaseEnemy::HitShiled()
 {
 	if (true)
 	{
+		m_HP = 0;
+		isDelete = true;
+		float addScore = 10;
+		Score::score += addScore;
+		FLOAT2 size = { 18.0f, 22.0f };
+		//int score = 10 * (m_returnNum + 1);
+		ParticleManager::scoreParitcle.AddScore(m_position, size, size, addScore, 60);
 		//ˆÈ‰º”½ŽË”Â‚É“–‚½‚Á‚½Žž
 		m_isReturn = true;
 		if (m_type == Angel)
