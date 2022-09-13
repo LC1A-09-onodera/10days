@@ -225,7 +225,7 @@ void Player::Draw()
 		DrawRotaGraph(
 			static_cast<int>(m_position.u + Shake::GetShake().u),
 			static_cast<int>(m_position.v + Shake::GetShake().v),
-			static_cast<double>(m_rad) * 0.3,
+			static_cast<double>(m_rad) * 0.2,
 			static_cast<double>(m_reflector_rad) - DX_PI_F / 2.0,
 			m_s_player,
 			true
