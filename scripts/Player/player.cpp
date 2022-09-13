@@ -288,8 +288,7 @@ void Player::Draw()
 
 	float left = Input::GetJoyLeftTrigger();
 	float right = Input::GetJoyRightTrigger();
-	DrawFormatString(0, 0, GetColor(255, 255, 255), "LEFT:%2f", left);
-	DrawFormatString(0, 20, GetColor(255, 255, 255), "RIGHT:%2f", right);
+	
 
 	//Ž©‹@
 	float l_addRad = 0;
@@ -365,8 +364,6 @@ void Player::Draw()
 
 	//debug
 	float hoge = Shake::GetPowerX();
-	DrawFormatString(50, 40, GetColor(0, 0, 0), "ShakeX:%f", hoge);
-	DrawFormatString(50, 60, GetColor(0, 0, 0), "RefRad:%f", m_reflector_rad);
 }
 
 void Player::LoadFile()
