@@ -4,7 +4,7 @@
 FLOAT2 Scroll::m_scrollValue = { 0, 0 };
 FLOAT2 Shake::m_shakeValue = { 0, 0 };
 FLOAT2 Shake::m_randPower = { 0,0 };
-float Shake::m_maxPower = 5.0f;
+float Shake::m_maxPower = 10.0f;
 bool Shake::m_isAddPowerTrigger = false;
 
 void Scroll::AddSCroll(FLOAT2 f_addValue)

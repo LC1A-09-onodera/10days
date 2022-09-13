@@ -25,7 +25,7 @@ const int WIN_HEIGHT = 720;
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
 {
-	srand((unsigned int) time(NULL));
+	srand((unsigned int)time(NULL));
 	// ウィンドウモードに設定
 	ChangeWindowMode(TRUE);
 
@@ -172,19 +172,27 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 				//エネミーとリフレクターの判定
 				for (auto& x : EnemyManager::enemys)
 				{
+					//敵と中心の距離
+					FLOAT2 l_halfWinSize = player.GetHalfWinSize();
+					FLOAT2 l_enemyPos = x->m_position;
+					float l_diffX = l_enemyPos.u - l_halfWinSize.u;
+					float l_diffY = l_enemyPos.v - l_halfWinSize.v;
+					float l_len = sqrtf(
+						powf(l_diffX, 2.0f) +
+						powf(l_diffY, 2.0f)
+					);
+
+					if (player.IsShotBomb())
+					{
+						if (l_len < player.GetBombLength())
+						{
+							x->HitShiled();
+						}
+					}
+
 					//決め打ち(内側に向かってる途中)
 					if (x->m_state == 2)
 					{
-						//敵と中心の距離
-						FLOAT2 l_halfWinSize = player.GetHalfWinSize();
-						FLOAT2 l_enemyPos = x->m_position;
-						float l_diffX = l_enemyPos.u - l_halfWinSize.u;
-						float l_diffY = l_enemyPos.v - l_halfWinSize.v;
-						float l_len = sqrtf(
-							powf(l_diffX, 2.0f) +
-							powf(l_diffY, 2.0f)
-						);
-
 						//中心から見た敵の角度を算出
 						FLOAT2 l_vec;
 						l_vec.u = l_diffX / l_len;
