@@ -111,7 +111,7 @@ void WaveManager::Update()
 
 void WaveManager::Draw()
 {
-	DrawBox(0, WindowSize::Hi / 2 - m_backSize.v / 2, WindowSize::Wid, WindowSize::Hi / 2 + m_backSize.v / 2, GetColor(123, 204, 41), true);
+	//DrawBox(0, WindowSize::Hi / 2 - m_backSize.v / 2, WindowSize::Wid, WindowSize::Hi / 2 + m_backSize.v / 2, GetColor(123, 204, 41), true);
 	DrawExtendGraph(m_position.u - m_size.u / 2, m_position.v - m_size.v / 2, m_position.u + m_size.u / 2, m_position.v + m_size.v / 2,
 		s_waves[waveNumber], true);
 }

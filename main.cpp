@@ -148,14 +148,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 						bool isShot = player.ShotBullet();
 						if (isShot && !bulletUI.m_isAllShot)
 						{
-							if (rand() % 2 == 0)
-							{
-								ObjectManager::object1.Shot(winSizeHalf, spriteSize, player.GetDeg(), 18.0f, BaseObject::ObjectType::ORANGE);
-							}
-							else
-							{
-								ObjectManager::object2.Shot(winSizeHalf, spriteSize, player.GetDeg(), 18.0f, BaseObject::ObjectType::PINK);
-							}
+
+							ObjectManager::object1.Shot(winSizeHalf, spriteSize, player.GetDeg(), 18.0f, BaseObject::ObjectType::ORANGE);
+
 							StopSoundMem(SoundManager::shotBullet);
 							PlaySoundMem(SoundManager::shotBullet, DX_PLAYTYPE_BACK);
 						}
@@ -330,13 +325,13 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			GameScene::Draw();
 
 			EnemyManager::Draw();
-			
+
 
 			ParticleManager::scoreParitcle.Draw();
 			DrawFormatString(0, 100, GetColor(0, 0, 0), "BulletNum:%d", player.GetBulletNum());
 			DrawFormatString(0, 120, GetColor(0, 0, 0), "BulletNum:%d", player.GetMaxBulletNum());
 			DrawFormatString(400, 100, GetColor(0, 0, 0), "Score:%d", Score::GetScore());
-			
+
 		}
 		else if (sceneNum == RESULT)
 		{

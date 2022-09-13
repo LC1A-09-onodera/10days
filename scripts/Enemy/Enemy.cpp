@@ -8,7 +8,7 @@
 #include "../Particle/Particle.h"
 #include "../Sound/Sound.h"
 
-int BaseEnemy::m_sprite[7];
+int BaseEnemy::m_sprite[3];
 std::list<BaseEnemy*> EnemyManager::enemys;
 std::list<std::list<BaseEnemy*>::iterator> EnemyManager::deleteEnemys;
 
@@ -22,9 +22,9 @@ int EnemyManager::nowTowerR = MaxR;
 int EnemyManager::nowCenterR = MaxR;
 void BaseEnemy::LoadFile()
 {
-	m_sprite[FriendMode] = LoadGraph("Resources/score_enemy.png");
-	m_sprite[ProgressMode] = LoadGraph("Resources/enemy.png");
-	m_sprite[NormalMode] = LoadGraph("Resources/enemy.png");
+	m_sprite[Normal] = LoadGraph("Resources/enemy_0.png");
+	m_sprite[Midl] = LoadGraph("Resources/enemy_1.png");
+	m_sprite[Hi] = LoadGraph("Resources/enemy_2.png");
 }
 
 void BaseEnemy::Init(SpeedType type)
@@ -96,9 +96,19 @@ void BaseEnemy::Update()
 
 void BaseEnemy::Draw()
 {
-	DrawExtendGraph(m_position.u - (m_size.u / 2), m_position.v - (m_size.v / 2),
-		m_position.u + (m_size.u / 2), m_position.v + (m_size.v / 2), m_sprite[nowSpriteNum], true);
+	/*DrawExtendGraph(m_position.u - (m_size.u / 2), m_position.v - (m_size.v / 2),
+		m_position.u + (m_size.u / 2), m_position.v + (m_size.v / 2), m_sprite[speedType], true);*/
 	//DrawCircle(m_position.u, m_position.v,10,  GetColor(13, 13, 13));
+	FLOAT2 vec = { 0 };
+	vec.u = WindowSize::Wid / 2 - m_position.u;
+	vec.v = WindowSize::Hi / 2 - m_position.v;
+	vec = Collision::Normalize(vec);
+	float angle = atan2(vec.v, vec.u);
+	if (speedType == SpeedType::Hi)
+	{
+		angle += 3.141582f / 2.0f;
+	}
+	DrawRotaGraph(m_position.u, m_position.v, 0.1f, angle, m_sprite[speedType], true);
 }
 
 void BaseEnemy::ToCiycleMove()
@@ -230,6 +240,7 @@ void BaseEnemy::BulletCollision()
 			if (m_HP <= 0)
 			{
 				m_type = Angel;
+				isDelete = true;
 			}
 
 			StopSoundMem(SoundManager::shotHitSound);
@@ -254,6 +265,7 @@ void BaseEnemy::BulletCollision()
 			if (m_HP <= 0)
 			{
 				m_type = Angel;
+				isDelete = true;
 			}
 
 			StopSoundMem(SoundManager::shotHitSound);
@@ -275,7 +287,7 @@ void EnemyManager::Init()
 void EnemyManager::AddEnemy()
 {
 	BaseEnemy* enemy = new BaseEnemy();
-	enemy->Init();
+	enemy->Init(BaseEnemy::SpeedType::Normal);
 	EnemyManager::enemys.push_back(&(*enemy));
 }
 

@@ -52,7 +52,7 @@ public:
 	int m_returnNum = 0;
 	bool m_isReturn = false;
 
-	static int m_sprite[7];
+	static int m_sprite[3];
 	int nowSpriteNum = NormalMode;
 	
 	static int SpornAngle;
