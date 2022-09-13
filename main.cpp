@@ -12,6 +12,7 @@
 #include "scripts/Score/Score.h"
 #include "scripts/Wave/Wave.h"
 #include <string>
+#include <time.h>
 
 // ウィンドウのタイトルに表示する文字列
 const char TITLE[] = "10days";
@@ -24,6 +25,7 @@ const int WIN_HEIGHT = 720;
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
 {
+	srand(time(NULL));
 	// ウィンドウモードに設定
 	ChangeWindowMode(TRUE);
 
@@ -276,7 +278,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 					}
 				}
 
-				if (WaveManager::isAllEnd)
+				//if (WaveManager::isAllEnd)
 				{
 					bulletUI.Update(player.GetBulletNum());
 				}

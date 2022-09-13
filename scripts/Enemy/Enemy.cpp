@@ -287,7 +287,19 @@ void EnemyManager::Init()
 void EnemyManager::AddEnemy()
 {
 	BaseEnemy* enemy = new BaseEnemy();
-	enemy->Init(BaseEnemy::SpeedType::Normal);
+	int a = rand() % 3;
+	if (a == 0)
+	{
+		enemy->Init(BaseEnemy::SpeedType::Normal);
+	}
+	else if (a == 1)
+	{
+		enemy->Init(BaseEnemy::SpeedType::Midl);
+	}
+	else
+	{
+		enemy->Init(BaseEnemy::SpeedType::Hi);
+	}
 	EnemyManager::enemys.push_back(&(*enemy));
 }
 
