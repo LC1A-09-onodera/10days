@@ -25,7 +25,7 @@ const int WIN_HEIGHT = 720;
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
 {
-	srand(time(NULL));
+	srand((unsigned int) time(NULL));
 	// ウィンドウモードに設定
 	ChangeWindowMode(TRUE);
 
@@ -88,7 +88,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	BaseEnemy::LoadFile();
 	ResultScene::LoadFile();
 	TowerHP::s_HP = LoadGraph("Resources/hp.png");
-	for (int i = 0; i < 4; i++)
+	for (int i = 1; i < 4; i++)
 	{
 		std::string path = "Resources/heart" + std::to_string(i) + ".png";
 		TowerHP::s_hart[i] = LoadGraph(path.c_str());

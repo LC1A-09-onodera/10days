@@ -70,8 +70,9 @@ public:
 	static int s_numbers[10];
 	static int nowScore;
 	static float ext;
-	
-	static const int R = 50;
+	static FLOAT2 scorePos[5];
+	static int s_score[5];
+	static const int R = 80;
 
 	static void LoadFile();
 	static void Init();
