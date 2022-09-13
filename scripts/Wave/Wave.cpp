@@ -26,6 +26,9 @@ float WaveManager::m_backEaseTimer;
 FLOAT2 WaveManager::m_backEndSize;
 bool WaveManager::isAllEnd = false;
 
+int WaveManager::s_rule;
+int WaveManager::alpha;
+
 void WaveManager::LoadFile()
 {
 	for (int i = 1; i <= 10; i++)
@@ -33,6 +36,7 @@ void WaveManager::LoadFile()
 		std::string path = "Resources/wave_" + std::to_string(i) + ".png";
 		s_waves[i - 1] = LoadGraph(path.c_str());
 	}
+	s_rule = LoadGraph("Resources/rule_guide.png");
 }
 
 void WaveManager::WaveInit(int waveNum)
@@ -51,7 +55,7 @@ void WaveManager::WaveInit(int waveNum)
 	isStopEnd = false;
 	ScoreUI::isIncDec = false;
 	TowerHP::isIncDec = false;
-
+	alpha = 250;
 }
 
 void WaveManager::Update()
@@ -121,6 +125,21 @@ void WaveManager::Draw()
 	//DrawBox(0, WindowSize::Hi / 2 - m_backSize.v / 2, WindowSize::Wid, WindowSize::Hi / 2 + m_backSize.v / 2, GetColor(123, 204, 41), true);
 	DrawExtendGraph(m_position.u - m_size.u / 2, m_position.v - m_size.v / 2, m_position.u + m_size.u / 2, m_position.v + m_size.v / 2,
 		s_waves[waveNumber], true);
+	if (waveNumber == 0)
+	{
+		alpha -= 1;
+		if (alpha <= 0)
+		{
+			alpha = 0;
+		}
+		float sens = 0.3f;
+		FLOAT2 size = { 933.0f * sens , 174.0f * sens };
+		float y = 300;
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
+		DrawExtendGraph(WindowSize::Wid / 2 - size.u, WindowSize::Hi / 2 - size.v + y, WindowSize::Wid / 2 + size.u, WindowSize::Hi / 2 + size.v + y
+						, s_rule, TRUE);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	}
 }
 
 void WaveManager::Wave1()

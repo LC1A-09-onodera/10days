@@ -30,6 +30,9 @@ public:
 
 	static int WaveBorader[MaxWaveNum];
 
+	static int s_rule;
+	static int alpha;
+
 	static FLOAT2 m_size;
 	static FLOAT2 m_position;
 	static FLOAT2 m_endPosition;
