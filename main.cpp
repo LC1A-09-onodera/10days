@@ -92,6 +92,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		TowerHP::s_hart[i] = LoadGraph(path.c_str());
 	}
 	WaveManager::LoadFile();
+
+	ScoreUI::LoadFile();
+	ScoreUI::Init();
+
 	// ゲームループ
 	while (1)
 	{
@@ -167,7 +171,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 				//エネミーの更新
 				EnemyManager::Update();
 				GameScene::Update();
-
+				ScoreUI::Update(Score::GetScore());
 				//エネミーとリフレクターの判定
 				for (auto& x : EnemyManager::enemys)
 				{
@@ -277,6 +281,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			GameScene::Draw();
 
 			EnemyManager::Draw();
+			ScoreUI::Draw();
+
+			ParticleManager::scoreParitcle.Draw();
 			DrawFormatString(0, 100, GetColor(0, 0, 0), "BulletNum:%d", player.GetBulletNum());
 			DrawFormatString(0, 120, GetColor(0, 0, 0), "BulletNum:%d", player.GetMaxBulletNum());
 			DrawFormatString(400, 100, GetColor(0, 0, 0), "Score:%d", Score::GetScore());

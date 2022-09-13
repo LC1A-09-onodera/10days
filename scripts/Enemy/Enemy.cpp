@@ -142,6 +142,7 @@ void BaseEnemy::LineMove()
 			FLOAT2 size = { 18.0f, 22.0f };
 			int score = 10 * (m_returnNum + 1);
 			ParticleManager::scoreParitcle.AddScore(m_position, size, size, score, 60);
+			Score::score += score;
 			StopSoundMem(SoundManager::addScore);
 			PlaySoundMem(SoundManager::addScore, DX_PLAYTYPE_BACK);
 		}

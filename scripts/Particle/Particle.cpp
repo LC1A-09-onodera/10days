@@ -150,7 +150,6 @@ void ParticleManager::Draw()
 	smpParticle.Draw();
 	pinkParticle.Draw();
 	orangeParticle.Draw();
-	scoreParitcle.Draw();
 }
 
 void ParticleManager::AllClear()
