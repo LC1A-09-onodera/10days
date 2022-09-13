@@ -18,6 +18,7 @@ void Player::Init()
 	m_reflector_pos = {
 		C_HALF_WID,
 		C_HALF_HEI + C_STAGE_REFLECTOR_RAD };
+	m_mode = SHOT;
 	m_stage_rad = C_STAGE_RAD;
 	m_bulletNum = C_BULLET_INIT_VAL;
 	m_maxBulletNum = m_bulletNum;
@@ -25,7 +26,7 @@ void Player::Init()
 	m_rad = 1.0f;
 	m_easeTimer = 0.0f;
 	m_deg = 0;
-	m_reflector_rad = DX_PI_F;
+	m_reflector_rad = DX_PI_F / 2.0f;
 	m_isMove = false;
 	m_stageSize = { 504, 504 };
 	m_isReload = false;
@@ -38,11 +39,6 @@ void Player::Update()
 	AddForce();
 
 	AttachForce();
-
-	if (m_bulletNum == 0)
-	{
-		m_bulletNum = m_maxBulletNum;
-	}
 
 	//通常時
 	if (!m_isMove)
@@ -91,7 +87,7 @@ void Player::Update()
 			//リフレクター
 			m_reflector_pos.u = l_nearVec.u * C_STAGE_REFLECTOR_RAD + C_HALF_WID;
 			m_reflector_pos.v = l_nearVec.v * C_STAGE_REFLECTOR_RAD + C_HALF_HEI;
-			m_reflector_rad = l_pRad - DX_PI_F / 2.0f;
+			m_reflector_rad = l_pRad - DX_PI_F;
 			if (m_reflector_rad < 0.0f)
 			{
 				m_reflector_rad += DX_PI_F * 2.0f;
@@ -99,8 +95,8 @@ void Player::Update()
 		}
 
 		//縦断入力
-		if (Input::GetKeyTrigger(KEY_INPUT_SPACE) ||
-			Input::isJoyBottomTrigger(XINPUT_BUTTON_A))
+		if (Input::GetKeyTrigger(KEY_INPUT_Z) ||
+			Input::isJoyBottomTrigger(XINPUT_BUTTON_B))
 		{
 			m_bulletNum = m_maxBulletNum;
 			m_start_pos = m_position;
@@ -112,12 +108,35 @@ void Player::Update()
 			m_isMove = true;
 		}
 
+		//モード変更
+		if (Input::GetKeyTrigger(KEY_INPUT_Z) ||
+			Input::isJoyBottomTrigger(XINPUT_BUTTON_A))
+		{
+			if (m_mode == SHOT) { m_mode = REFLECTION; }
+			else { m_mode = SHOT; }
+		}
+
 		//リフレクターヒット時
 		if (m_isReflectorHit)
 		{
 			FLOAT2 l_shakePower = { 2.0f,2.0f };
 			Shake::AddShakePower(l_shakePower);
 			m_isReflectorHit = false;
+		}
+
+		//射撃モード
+		if (m_mode == SHOT)
+		{
+			//自動リロード
+			if (m_bulletNum == 0)
+			{
+				m_bulletNum = m_maxBulletNum;
+			}
+		}
+		//反射モード
+		else
+		{
+
 		}
 	}
 
@@ -201,24 +220,30 @@ void Player::Draw()
 	DrawFormatString(0, 20, GetColor(255, 255, 255), "RIGHT:%2f", right);
 
 	//自機
-	DrawRotaGraph(
-		m_position.u + Shake::GetShake().u,
-		m_position.v + Shake::GetShake().v,
-		m_rad * 0.3f,
-		m_reflector_rad - DX_PI_F,
-		m_s_player,
-		true
-	);
+	if (m_mode == SHOT)
+	{
+		DrawRotaGraph(
+			static_cast<int>(m_position.u + Shake::GetShake().u),
+			static_cast<int>(m_position.v + Shake::GetShake().v),
+			static_cast<double>(m_rad) * 0.3,
+			static_cast<double>(m_reflector_rad) - DX_PI_F / 2.0,
+			m_s_player,
+			true
+		);
+	}
 
 	//リフレクター
-	DrawRotaGraph(
-		m_reflector_pos.u + Shake::GetShake().u,
-		m_reflector_pos.v + Shake::GetShake().v,
-		m_rad,
-		m_reflector_rad,
-		m_s_reflector,
-		true
-	);
+	else
+	{
+		DrawRotaGraph(
+			static_cast<int>(m_reflector_pos.u + Shake::GetShake().u),
+			static_cast<int>(m_reflector_pos.v + Shake::GetShake().v),
+			static_cast<double>(m_rad),
+			static_cast<double>(m_reflector_rad),
+			m_s_reflector,
+			true
+		);
+	}
 
 	//ステージ
 	DrawExtendGraph(
@@ -239,7 +264,7 @@ void Player::Draw()
 			DrawRotaGraph(
 				itr->pos.u,
 				itr->pos.v,
-				itr->r * 0.5f,
+				static_cast<double>(itr->r) * 0.5,
 				0.0f,
 				m_s_reflector_hit,
 				true

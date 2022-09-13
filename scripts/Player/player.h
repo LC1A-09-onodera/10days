@@ -31,7 +31,7 @@ private:
 
 private:
 	const int C_STAGE_RAD = 243;					//ステージの半径
-	const int C_STAGE_REFLECTOR_RAD = 300;			//中心から見たリフレクターの位置の半径
+	const int C_STAGE_REFLECTOR_RAD = 360;			//中心から見たリフレクターの位置の半径
 	const int C_REFLECTOR_RAD = 12;					//リフレクターの半径(テクスチャ依存)
 	const int C_BULLET_INIT_VAL = 72;				//弾初期値
 	const float C_PLAYER_RAD = 50.0f;				//プレイヤーの半径
@@ -53,6 +53,12 @@ private:
 		bool isDraw;
 	};
 
+public:
+	enum Mode
+	{
+		SHOT, REFLECTION
+	};
+
 private:
 	std::vector<Effects> m_effects;
 	FLOAT2 m_hitPos;
@@ -71,6 +77,7 @@ private:
 	bool m_isReload;
 	bool m_isChange;
 	bool m_isReflectorHit;
+	bool m_mode;
 
 	int m_s_player;
 	int m_s_stage;
@@ -126,6 +133,9 @@ public:
 	const int& GetBulletNum() { return m_bulletNum; }
 	const int& GetMaxBulletNum() { return m_maxBulletNum; }
 	const int& GetStageReflectorRad() { return C_STAGE_REFLECTOR_RAD; }
+
+	//enum Mode(SHOT,REFLECTION)
+	const bool& GetMode() { return m_mode; }
 
 public:
 	const void SetStageSize(const FLOAT2& stageSize) { m_stageSize = stageSize; }

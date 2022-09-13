@@ -130,7 +130,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 				static int time = 0;
 				EnemyManager::CiycleDec();
 				int nowBullet = bulletUI.m_bullets.size();
-				if (!player.GetIsMove() && nowBullet >= player.GetBulletNum())
+				if (!player.GetIsMove() && nowBullet >= player.GetBulletNum() && player.GetMode() == player.SHOT)
 				{
 					time++;
 					if (time > 2)
@@ -175,7 +175,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 				//エネミーとリフレクターの判定
 				for (auto& x : EnemyManager::enemys)
 				{
-					if (!x->m_isReturn)
+					//決め打ち(内側に向かってる途中)
+					if (x->m_state == 2)
 					{
 						//敵と中心の距離
 						FLOAT2 l_halfWinSize = player.GetHalfWinSize();
@@ -187,53 +188,99 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 							powf(l_diffY, 2.0f)
 						);
 
-						//円周上なら
-						const float l_checkDiff = 20.0f;
-						const float l_diff = fabsf(player.GetStageReflectorRad() - l_len);
-						if (l_diff < l_checkDiff)
-						{
-							//中心から見た敵の角度を算出
-							FLOAT2 l_vec;
-							l_vec.u = l_diffX / l_len;
-							l_vec.v = l_diffY / l_len;
-							float l_enemyDeg = atan2f(l_vec.v, l_vec.u);
-							l_enemyDeg = 180.0f / DX_PI_F * l_enemyDeg;
+						//中心から見た敵の角度を算出
+						FLOAT2 l_vec;
+						l_vec.u = l_diffX / l_len;
+						l_vec.v = l_diffY / l_len;
+						float l_enemyDeg = atan2f(l_vec.v, l_vec.u);
+						l_enemyDeg = 180.0f / DX_PI_F * l_enemyDeg;
 
+						/*-----敵停止処理-----*/
+						if (player.GetMode() == player.SHOT)
+						{
 							//中心から見た自機の角度を算出
-							float l_playerDeg = 180.0f / DX_PI_F * player.GetReflectorRad();
+							float l_playerDeg = player.GetDeg();
 
-						//何度まで当たるか
-						const float l_hitDeg = 20.0f;
-						float l_degDiff = fabsf(l_playerDeg - 90.0f - l_enemyDeg);
+							//何度まで当たるか
+							const float l_hitDeg = 30.0f;
+							float l_degDiff = fabsf(l_playerDeg - l_enemyDeg);
 
-						//範囲内
-						if (l_degDiff < l_hitDeg)
-						{
-							x->m_isReturn = true;
-							x->HitShiled();
-							player.ReflectorHit(x->m_position);
-						}
-						//0~359度のケア
-						else
-						{
-							if (l_playerDeg < l_hitDeg || l_enemyDeg < l_hitDeg)
+							//範囲内
+							if (l_degDiff < l_hitDeg)
 							{
-								if (l_playerDeg < l_hitDeg) { l_playerDeg += 359.9f; }
-								if (l_enemyDeg < l_hitDeg) { l_enemyDeg += 359.9f; }
-								l_degDiff = fabsf(l_playerDeg - 90.0f - l_enemyDeg);
+								x->isStop = true;
+							}
+							//0~359度のケア
+							else
+							{
+								if (l_playerDeg < l_hitDeg || l_enemyDeg < l_hitDeg)
+								{
+									if (l_playerDeg < l_hitDeg) { l_playerDeg += 359.9f; }
+									if (l_enemyDeg < l_hitDeg) { l_enemyDeg += 359.9f; }
+									l_degDiff = fabsf(l_playerDeg - l_enemyDeg);
 
 									//範囲内
 									if (l_degDiff < l_hitDeg)
 									{
-										x->m_isReturn = true;
-										x->HitShiled();
-										player.ReflectorHit(x->m_position);
+										x->isStop = true;
+									}
+									else
+									{
+										x->isStop = false;
+									}
+								}
+								else
+								{
+									x->isStop = false;
+								}
+							}
+						}
+
+						/*-----敵殺す処理-----*/
+						else
+						{
+							//判定を入れる距離
+							const float l_checkDiff = 100.0f;
+							const float l_diff = fabsf(player.GetStageReflectorRad() - l_len);
+							if (l_diff < l_checkDiff)
+							{
+								//中心から見た自機の角度を算出
+								float l_playerDeg = 180.0f / DX_PI_F * player.GetReflectorRad();
+
+								//何度まで当たるか
+								const float l_hitDeg = 5.0f;
+								float l_degDiff = fabsf(l_playerDeg - l_enemyDeg);
+
+								//範囲内
+								if (l_degDiff < l_hitDeg)
+								{
+									x->m_isReturn = true;
+									x->HitShiled();
+									player.ReflectorHit(x->m_position);
+								}
+								//0~359度のケア
+								else
+								{
+									if (l_playerDeg < l_hitDeg || l_enemyDeg < l_hitDeg)
+									{
+										if (l_playerDeg < l_hitDeg) { l_playerDeg += 359.9f; }
+										if (l_enemyDeg < l_hitDeg) { l_enemyDeg += 359.9f; }
+										l_degDiff = fabsf(l_playerDeg - l_enemyDeg);
+
+										//範囲内
+										if (l_degDiff < l_hitDeg)
+										{
+											x->m_isReturn = true;
+											x->HitShiled();
+											player.ReflectorHit(x->m_position);
+										}
 									}
 								}
 							}
 						}
 					}
 				}
+
 				if (WaveManager::isAllEnd)
 				{
 					bulletUI.Update(player.GetBulletNum());
