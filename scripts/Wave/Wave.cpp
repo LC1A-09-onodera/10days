@@ -3,6 +3,8 @@
 #include "../Lib/Lib.h"
 #include "../Enemy/Enemy.h"
 #include "../Score/Score.h"
+#include "../UI/UI.h"
+
 #include <string>
 
 int WaveManager::waveNumber = 0;
@@ -47,6 +49,9 @@ void WaveManager::WaveInit(int waveNum)
 	m_backEaseTimer = 0.0f;
 	isAllEnd = false;
 	isStopEnd = false;
+	ScoreUI::isIncDec = false;
+	TowerHP::isIncDec = false;
+
 }
 
 void WaveManager::Update()
@@ -82,6 +87,8 @@ void WaveManager::Update()
 		if (m_backSize.v < 1)
 		{
 			m_backSize.v = 0;
+			ScoreUI::isIncDec = true;
+			TowerHP::isIncDec = true;
 		}
 	}
 

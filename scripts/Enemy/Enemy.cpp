@@ -20,6 +20,7 @@ int enemyCiycle;
 
 int EnemyManager::nowTowerR = MaxR;
 int EnemyManager::nowCenterR = MaxR;
+
 void BaseEnemy::LoadFile()
 {
 	m_sprite[Normal] = LoadGraph("Resources/enemy_0.png");
@@ -108,7 +109,7 @@ void BaseEnemy::Draw()
 	{
 		angle += 3.141582f / 2.0f;
 	}
-	DrawRotaGraph(m_position.u, m_position.v, 0.2f, angle, m_sprite[speedType], true);
+	DrawRotaGraph(m_position.u + shakePower.u, m_position.v + shakePower.v, 0.2f, angle, m_sprite[speedType], true);
 }
 
 void BaseEnemy::ToCiycleMove()
@@ -132,6 +133,10 @@ void BaseEnemy::CiycleMove()
 	if (m_timer <= 0)
 	{
 		m_state = ToCenter;
+	}
+	if (m_timer <= ShakeStartTime)
+	{
+		shakePower = {rand() % 6 - 2.0f, rand() % 6 - 2.0f };
 	}
 }
 

@@ -77,6 +77,10 @@ public:
 	//サークル場を回っているときの速度
 	static const int OnCiycleSpeed = 1;
 	static const int MaxTimer = 120;
+	static const int ShakeStartTime = 45;
+
+	FLOAT2 shakePower;
+
 	static FLOAT2 CiycleCenter;
 	//ダメージ食らうゾーン
 	static float TowerR;

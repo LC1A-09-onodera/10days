@@ -13,6 +13,12 @@ int ScoreUI::nowScore;
 float ScoreUI::ext = 0.1f;
 FLOAT2 ScoreUI::scorePos[5];
 int ScoreUI::s_score[5];
+bool ScoreUI::isIncDec = false;
+float ScoreUI::nowR = 0;
+
+float ScoreUI::scoreExt;
+float ScoreUI::MaxExt = 0.1f;
+float ScoreUI::MaxScoreExt = 0.3f;
 
 void BulletUI::AddBullet()
 {
@@ -183,6 +189,20 @@ void HPUI::Draw()
 	}
 }
 
+void ScoreUI::Increase()
+{
+	nowR = Easeing::EaseInQuad(nowR, R, 0.3f);
+	ext = Easeing::EaseInQuad(ext, MaxExt, 0.3f);
+	scoreExt = Easeing::EaseInQuad(scoreExt, MaxScoreExt, 0.3f);
+}
+
+void ScoreUI::Decrease()
+{
+	nowR = Easeing::EaseInQuad(nowR, 0, 0.3f);
+	ext = Easeing::EaseInQuad(ext, 0, 0.3f);
+	scoreExt = Easeing::EaseInQuad(scoreExt, 0, 0.3f);
+}
+
 void ScoreUI::LoadFile()
 {
 	LoadDivGraph("Resources/numbers_alpha.png", 10, 5, 2, 690 / 5, 368 / 2, s_numbers);
@@ -208,8 +228,8 @@ void ScoreUI::Update(int score)
 	nowScore = score;
 	for (auto itr = m_scores.begin(); itr != m_scores.end(); ++itr)
 	{
-		(*itr)->m_position.u = WindowSize::Wid / 2 + (R * DxLibMath::Cos(startAngle));
-		(*itr)->m_position.v = WindowSize::Hi / 2 + (R * DxLibMath::Sin(startAngle));
+		(*itr)->m_position.u = WindowSize::Wid / 2 + (nowR * DxLibMath::Cos(startAngle));
+		(*itr)->m_position.v = WindowSize::Hi / 2 + (nowR * DxLibMath::Sin(startAngle));
 		//(*itr)->angle = startAngle - 180.0f;
 		startAngle -= 18;
 	}
@@ -217,10 +237,18 @@ void ScoreUI::Update(int score)
 	float scoreStart = 230;
 	for (int i = 0; i < 5; i++)
 	{
-		scorePos[i].u = WindowSize::Wid / 2 + (R * DxLibMath::Cos(scoreStart));
-		scorePos[i].v = WindowSize::Hi / 2 + (R * DxLibMath::Sin(scoreStart));
+		scorePos[i].u = WindowSize::Wid / 2 + (nowR * DxLibMath::Cos(scoreStart));
+		scorePos[i].v = WindowSize::Hi / 2 + (nowR * DxLibMath::Sin(scoreStart));
 		//(*itr)->angle = startAngle - 180.0f;
 		scoreStart += 20;
+	}
+	if (isIncDec)
+	{
+		Increase();
+	}
+	else
+	{
+		Decrease();
 	}
 }
 
@@ -278,6 +306,6 @@ void ScoreUI::Draw()
 		vec = Collision::Normalize(vec);
 		angle = atan2(vec.v, vec.u);
 		angle -= 3.141592f / 2.0f;
-		DrawRotaGraph(scorePos[i].u, scorePos[i].v, 0.3f, angle, s_score[i], true);
+		DrawRotaGraph(scorePos[i].u, scorePos[i].v, scoreExt, angle, s_score[i], true);
 	}
 }

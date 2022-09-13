@@ -324,11 +324,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		else if (sceneNum == GAME)
 		{
 			WaveManager::Draw();
-			if (WaveManager::isAllEnd)
-			{
-				TowerHP::Draw();
-				ScoreUI::Draw();
-			}
+			
+			TowerHP::Draw();
+			ScoreUI::Draw();
+			
 			bulletUI.Draw();
 			player.Draw();
 			ObjectManager::Draw();
