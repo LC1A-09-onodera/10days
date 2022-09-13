@@ -108,7 +108,7 @@ void BaseEnemy::Draw()
 	{
 		angle += 3.141582f / 2.0f;
 	}
-	DrawRotaGraph(m_position.u, m_position.v, 0.1f, angle, m_sprite[speedType], true);
+	DrawRotaGraph(m_position.u, m_position.v, 0.2f, angle, m_sprite[speedType], true);
 }
 
 void BaseEnemy::ToCiycleMove()
@@ -226,7 +226,7 @@ void BaseEnemy::BulletCollision()
 	{
 		if (m_HP <= 0)continue;
 		if ((*itr)->m_isHit) continue;
-		if (Collision::CiycleCollision(m_position, 10, (*itr)->m_position, 10))
+		if (Collision::CiycleCollision(m_position, 20, (*itr)->m_position, 10))
 		{
 			(*itr)->m_isHit = true;
 			ObjectManager::object1.m_deleteObject.push_back(itr);
