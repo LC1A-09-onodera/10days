@@ -226,7 +226,8 @@ void BaseEnemy::BulletCollision()
 	{
 		if (m_HP <= 0)continue;
 		if ((*itr)->m_isHit) continue;
-		if (Collision::CiycleCollision(m_position, 10, (*itr)->m_position, 10))
+		if (Collision::CiycleCollision(m_position, 14, (*itr)->m_position, 14))
+		if (Collision::CiycleCollision(m_position, 14, (*itr)->m_position, 14))
 		{
 			(*itr)->m_isHit = true;
 			ObjectManager::object1.m_deleteObject.push_back(itr);

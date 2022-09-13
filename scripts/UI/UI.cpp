@@ -11,6 +11,8 @@ std::list<UISprite*> ScoreUI::m_scores;
 int ScoreUI::s_numbers[10];
 int ScoreUI::nowScore;
 float ScoreUI::ext = 0.1f;
+FLOAT2 ScoreUI::scorePos[5];
+int ScoreUI::s_score[5];
 
 void BulletUI::AddBullet()
 {
@@ -197,14 +199,23 @@ void ScoreUI::Init()
 
 void ScoreUI::Update(int score)
 {
-	float startAngle = 160;
+	float startAngle = 135;
 	nowScore = score;
 	for (auto itr = m_scores.begin(); itr != m_scores.end(); ++itr)
 	{
 		(*itr)->m_position.u = WindowSize::Wid / 2 + (R * DxLibMath::Cos(startAngle));
 		(*itr)->m_position.v = WindowSize::Hi / 2 + (R * DxLibMath::Sin(startAngle));
 		//(*itr)->angle = startAngle - 180.0f;
-		startAngle -= 28;
+		startAngle -= 18;
+	}
+
+	float scoreStart = 230;
+	for (int i = 0; i < 5; i++)
+	{
+		scorePos[i].u = WindowSize::Wid / 2 + (R * DxLibMath::Cos(scoreStart));
+		scorePos[i].v = WindowSize::Hi / 2 + (R * DxLibMath::Sin(scoreStart));
+		//(*itr)->angle = startAngle - 180.0f;
+		startAngle -= 20;
 	}
 }
 
@@ -254,4 +265,13 @@ void ScoreUI::Draw()
 	angle = atan2(vec.v, vec.u);
 	angle += 3.141592f / 2.0f;
 	DrawRotaGraph((*itr)->m_position.u, (*itr)->m_position.v, ext, angle, s_numbers[nowScore / 1 % 10], true);
+
+	for (int i = 0; i < 5; i++)
+	{
+		vec.u = WindowSize::Wid / 2 - scorePos[i].u;
+		vec.v = WindowSize::Hi / 2 - scorePos[i].v;
+		vec = Collision::Normalize(vec);
+		angle = atan2(vec.v, vec.u);
+		DrawRotaGraph(scorePos[i].u, scorePos[i].v, ext, angle, s_score[i], true);
+	}
 }

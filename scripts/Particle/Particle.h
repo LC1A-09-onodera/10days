@@ -87,6 +87,8 @@ public:
 	static Particle pinkParticle;
 	static Particle orangeParticle;
 	static ScoreParticle scoreParitcle;
+	static Particle circleParticle;
+	static Particle cubeParticle;
 	static void LoadFile();
 	static void Update();
 	static void Draw();

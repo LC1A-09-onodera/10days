@@ -7,6 +7,10 @@ Particle ParticleManager::smpParticle;
 Particle ParticleManager::pinkParticle;
 Particle ParticleManager::orangeParticle;
 ScoreParticle ParticleManager::scoreParitcle;
+
+Particle ParticleManager::circleParticle;
+Particle ParticleManager::cubeParticle;
+
 void Particle::AddParitcle(FLOAT2& f_pos, FLOAT2& f_vec, FLOAT2& f_acc, FLOAT2& f_startSize, FLOAT2& f_endSize, int f_life)
 {
 	ParticleEach *each = new ParticleEach();
@@ -134,6 +138,8 @@ void ParticleManager::LoadFile()
 	smpParticle.LoadFile("Resources/particle_b.png");
 	pinkParticle.LoadFile("Resources/ParticlePink.png");
 	orangeParticle.LoadFile("Resources/ParticleOrange.png");
+	circleParticle.LoadFile("Resources/particle_cr.png");
+	cubeParticle.LoadFile("Resources/particle_sq.png");
 	scoreParitcle.LoadFile();
 }
 
@@ -143,6 +149,8 @@ void ParticleManager::Update()
 	pinkParticle.Update();
 	orangeParticle.Update();
 	scoreParitcle.Update();
+	circleParticle.Update();
+	cubeParticle.Update();
 }
 
 void ParticleManager::Draw()
@@ -150,6 +158,8 @@ void ParticleManager::Draw()
 	smpParticle.Draw();
 	pinkParticle.Draw();
 	orangeParticle.Draw();
+	circleParticle.Draw();
+	cubeParticle.Draw();
 }
 
 void ParticleManager::AllClear()
@@ -158,6 +168,8 @@ void ParticleManager::AllClear()
 	pinkParticle.Clear();
 	orangeParticle.Clear();
 	scoreParitcle.Clear();
+	circleParticle.Clear();
+	cubeParticle.Clear();
 }
 
 void ScoreParticle::AddParitcle(FLOAT2& f_pos, FLOAT2& f_vec, FLOAT2& f_acc, FLOAT2& f_startSize, FLOAT2& f_endSize, int f_life)
