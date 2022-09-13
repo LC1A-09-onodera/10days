@@ -18,6 +18,8 @@ public:
 	//円周上を回っていられる残り時間
 	int m_timer;
 
+	int m_stopTimer;
+	static const int StopTime = 30;
 	enum State
 	{
 		//サイクル上を目指す

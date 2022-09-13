@@ -142,7 +142,15 @@ void BaseEnemy::ReturnToCiycle()
 
 void BaseEnemy::LineMove()
 {
-	if (isStop) return;
+	if (isStop)
+	{
+		m_stopTimer++;
+		if (m_stopTimer < StopTime)
+		{
+			return;
+		}
+		isStop = false;
+	}
 	m_position = Easeing::EaseInQuad(m_position, BaseEnemy::CiycleCenter, (float)m_ToCenterSpeed / 50.0f);
 	if (Collision::Lenght(BaseEnemy::CiycleCenter, m_position) < TowerR)
 	{

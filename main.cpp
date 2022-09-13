@@ -123,7 +123,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		else if (sceneNum == GAME)
 		{
 			WaveManager::Update();
-			if (WaveManager::isAllEnd)
+			//if (WaveManager::isAllEnd)
 			{
 				player.Update();
 				static float angle = 0.0f;
@@ -318,9 +318,11 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 		else if (sceneNum == GAME)
 		{
+			WaveManager::Draw();
 			if (WaveManager::isAllEnd)
 			{
 				TowerHP::Draw();
+				ScoreUI::Draw();
 			}
 			bulletUI.Draw();
 			player.Draw();
@@ -328,19 +330,20 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			GameScene::Draw();
 
 			EnemyManager::Draw();
-			ScoreUI::Draw();
+			
 
 			ParticleManager::scoreParitcle.Draw();
 			DrawFormatString(0, 100, GetColor(0, 0, 0), "BulletNum:%d", player.GetBulletNum());
 			DrawFormatString(0, 120, GetColor(0, 0, 0), "BulletNum:%d", player.GetMaxBulletNum());
 			DrawFormatString(400, 100, GetColor(0, 0, 0), "Score:%d", Score::GetScore());
-			WaveManager::Draw();
+			
 		}
 		else if (sceneNum == RESULT)
 		{
 			if (Input::GetKeyTrigger(KEY_INPUT_SPACE) || Input::isJoyBottomTrigger(XINPUT_BUTTON_A))
 			{
 				ResultScene::isToTitle = true;
+				ScoreUI::Init();
 			}
 			player.Draw();
 			ObjectManager::Draw();
