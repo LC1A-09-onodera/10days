@@ -236,7 +236,7 @@ void BaseObject::Update()
 	{
 		FLOAT2 startSize = { 10.0f, 10.0f };
 		FLOAT2 endSize = { 1.0f, 1.0f };
-		//ParticleManager::smpParticle.StayParticle(m_position, startSize, endSize, 1, 60);
+		ParticleManager::smpParticle.StayParticle(m_position, startSize, endSize, 1, 60);
 	}
 	//‰~Žüã‚És‚Á‚½‚Æ‚«‚É‰ñ“]‚µŽn‚ß‚é
 	/*if (m_nowR >= BaseObject::InsideR)
@@ -294,7 +294,7 @@ void ObjectManager::Update(FLOAT2& f_playerPos, bool f_playerIsOutside)
 
 	if (Shake::GetPower().u > 0.0f)
 	{
-		FLOAT2 l_shakePower = { -0.01f,-0.01f };
+		FLOAT2 l_shakePower = { -0.1f,-0.1f };
 		Shake::AddShakePower(l_shakePower);
 	}
 }

@@ -66,7 +66,7 @@ public:
 	//出現時の
 	static const int OutsideR = 1000;
 	//最大HP
-	static const int MaxHP = 3;
+	static const int MaxHP = 1;
 	//円周上を回っているとき
 	static const int NormalMode = 6;
 	//攻撃時の進行モード
