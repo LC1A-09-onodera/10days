@@ -131,7 +131,7 @@ void BulletUI::Draw()
 
 void BulletUI::LoadFile()
 {
-	m_sprite = LoadGraph("Resources/bullet_sq.png");
+	m_sprite = LoadGraph("Resources/new_bullet_alpha.png");
 }
 
 void BulletUI::ShotBullet()
@@ -220,7 +220,7 @@ void ScoreUI::Draw()
 	itr++;
 	DrawRotaGraph((*itr)->m_position.u, (*itr)->m_position.v, ext, 0, s_numbers[nowScore / 100 % 10], true);
 	itr++;
-	DrawRotaGraph((*itr)->m_position.u, (*itr)->m_position.v, ext, -48, s_numbers[nowScore / 10 % 10], true);
+	DrawRotaGraph((*itr)->m_position.u, (*itr)->m_position.v, ext, - (48 - 180), s_numbers[nowScore / 10 % 10], true);
 	itr++;
 	DrawRotaGraph((*itr)->m_position.u, (*itr)->m_position.v, ext, -20, s_numbers[nowScore / 1 % 10], true);
 }

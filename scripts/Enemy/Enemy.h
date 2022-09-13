@@ -38,6 +38,15 @@ public:
 	};
 	int m_type = Devil;
 
+	enum SpeedType
+	{
+		Normal,
+		Midl,
+		Hi,
+	};
+
+	int speedType;
+
 	int m_returnNum = 0;
 	bool m_isReturn = false;
 
@@ -70,8 +79,9 @@ public:
 	//ダメージ食らうゾーン
 	static float TowerR;
 
+
 	static void LoadFile();
-	void Init();
+	void Init(SpeedType type = SpeedType::Normal);
 	void Update();
 	void Draw();
 	void ToCiycleMove();
