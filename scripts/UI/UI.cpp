@@ -185,7 +185,12 @@ void HPUI::Draw()
 
 void ScoreUI::LoadFile()
 {
-	LoadDivGraph("Resources/numbers.png", 10, 5, 2, 700 / 5, 346 / 2, s_numbers);
+	LoadDivGraph("Resources/numbers_alpha.png", 10, 5, 2, 690 / 5, 368 / 2, s_numbers);
+	s_score[0] = LoadGraph("Resources/s.png");
+	s_score[1] = LoadGraph("Resources/c.png");
+	s_score[2] = LoadGraph("Resources/o.png");
+	s_score[3] = LoadGraph("Resources/r.png");
+	s_score[4] = LoadGraph("Resources/e.png");
 }
 
 void ScoreUI::Init()
@@ -215,7 +220,7 @@ void ScoreUI::Update(int score)
 		scorePos[i].u = WindowSize::Wid / 2 + (R * DxLibMath::Cos(scoreStart));
 		scorePos[i].v = WindowSize::Hi / 2 + (R * DxLibMath::Sin(scoreStart));
 		//(*itr)->angle = startAngle - 180.0f;
-		startAngle -= 20;
+		scoreStart += 20;
 	}
 }
 
@@ -272,6 +277,7 @@ void ScoreUI::Draw()
 		vec.v = WindowSize::Hi / 2 - scorePos[i].v;
 		vec = Collision::Normalize(vec);
 		angle = atan2(vec.v, vec.u);
-		DrawRotaGraph(scorePos[i].u, scorePos[i].v, ext, angle, s_score[i], true);
+		angle -= 3.141592f / 2.0f;
+		DrawRotaGraph(scorePos[i].u, scorePos[i].v, 0.3f, angle, s_score[i], true);
 	}
 }
