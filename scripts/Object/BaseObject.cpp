@@ -102,8 +102,9 @@ void ObjectSample::Draw()
 	for (auto itr = m_objects.begin(); itr != m_objects.end(); ++itr)
 	{
 		//DrawGraph((*itr)->m_position.u, (*itr)->m_position.v, m_sprite, true);
-		DrawExtendGraph((*itr)->m_position.u - ((*itr)->m_spriteSize.u / 2.0f), (*itr)->m_position.v - ((*itr)->m_spriteSize.v / 2.0f),
-			(*itr)->m_position.u + ((*itr)->m_spriteSize.u / 2.0f), (*itr)->m_position.v + ((*itr)->m_spriteSize.v / 2.0f), m_sprite, true);
+		/*DrawExtendGraph((*itr)->m_position.u - ((*itr)->m_spriteSize.u / 2.0f), (*itr)->m_position.v - ((*itr)->m_spriteSize.v / 2.0f),
+			(*itr)->m_position.u + ((*itr)->m_spriteSize.u / 2.0f), (*itr)->m_position.v + ((*itr)->m_spriteSize.v / 2.0f), m_sprite, true);*/
+		DrawCircle((*itr)->m_position.u, (*itr)->m_position.v, (*itr)->m_R - 10.0f, GetColor(30, 30, 30));
 	}
 }
 
@@ -235,7 +236,7 @@ void BaseObject::Update()
 	{
 		FLOAT2 startSize = { 10.0f, 10.0f };
 		FLOAT2 endSize = { 1.0f, 1.0f };
-		ParticleManager::smpParticle.StayParticle(m_position, startSize, endSize, 1, 60);
+		//ParticleManager::smpParticle.StayParticle(m_position, startSize, endSize, 1, 60);
 	}
 	//‰~Žüã‚És‚Á‚½‚Æ‚«‚É‰ñ“]‚µŽn‚ß‚é
 	/*if (m_nowR >= BaseObject::InsideR)

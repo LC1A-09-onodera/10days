@@ -27,7 +27,7 @@ void BaseEnemy::LoadFile()
 	m_sprite[NormalMode] = LoadGraph("Resources/enemy.png");
 }
 
-void BaseEnemy::Init()
+void BaseEnemy::Init(SpeedType type)
 {
 	m_angle = (float)SpornAngle;
 	float cos = DxLibMath::Cos(m_angle);
@@ -42,7 +42,19 @@ void BaseEnemy::Init()
 	m_easeTimer = 0.0f;
 	m_HP = MaxHP;
 	m_size = {50 , 50};
-	m_ToCenterSpeed = 2;
+	speedType = type;
+	if (type == SpeedType::Normal)
+	{
+		m_ToCenterSpeed = 3.0f;
+	}
+	else if (type == SpeedType::Midl)
+	{
+		m_ToCenterSpeed = 4.0f;
+	}
+	else if (type == SpeedType::Hi)
+	{
+		m_ToCenterSpeed = 5.0f;
+	}
 }
 
 void BaseEnemy::Update()
@@ -115,7 +127,7 @@ void BaseEnemy::CiycleMove()
 
 void BaseEnemy::ReturnToCiycle()
 {
-	m_easeTimer += (float)m_ToCenterSpeed / 80.0f;
+	m_easeTimer += (float)m_ToCenterSpeed / 50.0f;
 	m_position = Easeing::EaseInQuad(m_position, m_endPosition, m_easeTimer);
 	if (m_easeTimer >= 1.0f)
 	{
@@ -142,6 +154,7 @@ void BaseEnemy::LineMove()
 			FLOAT2 size = { 18.0f, 22.0f };
 			int score = 10 * (m_returnNum + 1);
 			ParticleManager::scoreParitcle.AddScore(m_position, size, size, score, 60);
+			Score::score += score;
 			StopSoundMem(SoundManager::addScore);
 			PlaySoundMem(SoundManager::addScore, DX_PLAYTYPE_BACK);
 		}
@@ -271,7 +284,7 @@ void EnemyManager::Update()
 void EnemyManager::Draw()
 {
 	DrawCircleAA(WindowSize::Wid / 2, WindowSize::Hi / 2, nowCenterR, 128, GetColor(200, 13, 13), 0, 1.0f);
-	DrawCircleAA(WindowSize::Wid / 2, WindowSize::Hi / 2, nowTowerR, 128, GetColor(13, 200, 13), 0, 1.0f);
+	DrawCircleAA(WindowSize::Wid / 2, WindowSize::Hi / 2, nowTowerR, 128, GetColor(13, 200, 13), 0, 2.0f);
 	for (auto itr = enemys.begin(); itr != enemys.end(); ++itr)
 	{
 		(*itr)->Draw();

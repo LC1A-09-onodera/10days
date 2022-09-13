@@ -6,6 +6,12 @@
 
 using namespace DxLibMath;
 
+
+std::list<UISprite*> ScoreUI::m_scores;
+int ScoreUI::s_numbers[10];
+int ScoreUI::nowScore;
+float ScoreUI::ext = 0.1f;
+
 void BulletUI::AddBullet()
 {
 	UISprite* bullet = new UISprite();
@@ -125,7 +131,7 @@ void BulletUI::Draw()
 
 void BulletUI::LoadFile()
 {
-	m_sprite = LoadGraph("Resources/bullet_sq.png");
+	m_sprite = LoadGraph("Resources/new_bullet_alpha.png");
 }
 
 void BulletUI::ShotBullet()
@@ -170,7 +176,51 @@ void HPUI::Draw()
 		for (auto itr = m_HPs.begin(); itr != m_HPs.end(); ++itr)
 		{
 			DrawExtendGraph((*itr)->m_position.u - (*itr)->m_size.u / 2, (*itr)->m_position.v - (*itr)->m_size.v / 2,
-							(*itr)->m_position.u + (*itr)->m_size.u / 2, (*itr)->m_position.v + (*itr)->m_size.v / 2, m_sprite, true);
+				(*itr)->m_position.u + (*itr)->m_size.u / 2, (*itr)->m_position.v + (*itr)->m_size.v / 2, m_sprite, true);
 		}
 	}
+}
+
+void ScoreUI::LoadFile()
+{
+	LoadDivGraph("Resources/numbers.png", 10, 5, 2, 700 / 5, 346 / 2, s_numbers);
+}
+
+void ScoreUI::Init()
+{
+	for (int i = 0; i < 6; i++)
+	{
+		UISprite* ui = new UISprite();
+		m_scores.push_back(ui);
+	}
+}
+
+void ScoreUI::Update(int score)
+{
+	float startAngle = 160;
+	nowScore = score;
+	for (auto itr = m_scores.begin(); itr != m_scores.end(); ++itr)
+	{
+		(*itr)->m_position.u = WindowSize::Wid / 2 + (R * DxLibMath::Cos(startAngle));
+		(*itr)->m_position.v = WindowSize::Hi / 2 + (R * DxLibMath::Sin(startAngle));
+		//(*itr)->angle = startAngle - 180.0f;
+		startAngle -= 28;
+	}
+}
+
+void ScoreUI::Draw()
+{
+	int hoge = 100000;
+	auto itr = m_scores.begin();
+	DrawRotaGraph((*itr)->m_position.u, (*itr)->m_position.v, ext, 20, s_numbers[nowScore / 100000 % 10], true);
+	itr++;
+	DrawRotaGraph((*itr)->m_position.u, (*itr)->m_position.v, ext, 48, s_numbers[nowScore / 10000 % 10], true);
+	itr++;
+	DrawRotaGraph((*itr)->m_position.u, (*itr)->m_position.v, ext, 0, s_numbers[nowScore / 1000 % 10], true);
+	itr++;
+	DrawRotaGraph((*itr)->m_position.u, (*itr)->m_position.v, ext, 0, s_numbers[nowScore / 100 % 10], true);
+	itr++;
+	DrawRotaGraph((*itr)->m_position.u, (*itr)->m_position.v, ext, - (48 - 180), s_numbers[nowScore / 10 % 10], true);
+	itr++;
+	DrawRotaGraph((*itr)->m_position.u, (*itr)->m_position.v, ext, -20, s_numbers[nowScore / 1 % 10], true);
 }

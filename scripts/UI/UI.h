@@ -63,6 +63,22 @@ class HPUI
 	void LoadFile();
 };
 
+class ScoreUI
+{
+public:
+	static std::list<UISprite *> m_scores;
+	static int s_numbers[10];
+	static int nowScore;
+	static float ext;
+	
+	static const int R = 50;
+
+	static void LoadFile();
+	static void Init();
+	static void Update(int score);
+	static void Draw();
+};
+
 class UIManager
 {
 	

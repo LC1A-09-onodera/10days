@@ -53,7 +53,7 @@ void WaveManager::Update()
 {
 	m_backEaseTimer += 0.01f;
 	m_backSize = Easeing::EaseInQuad(m_backSize, m_backEndSize, m_backEaseTimer);
-	if (m_backEaseTimer > 1.0f)
+	if (m_backEaseTimer > 1.0f || (m_backSize.v < 1 && isWaveDirectionEnd) || (m_backSize.v > 198 && !isWaveDirectionEnd))
 	{
 		easeTimer += 0.05f;
 		m_position = Easeing::EaseInQuad(m_position, m_endPosition, easeTimer);
@@ -78,6 +78,10 @@ void WaveManager::Update()
 				m_backEaseTimer = 0;
 				m_backEndSize = { WindowSize::Wid, 0.0f };
 			}
+		}
+		if (m_backSize.v < 1)
+		{
+			m_backSize.v = 0;
 		}
 	}
 
