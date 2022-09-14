@@ -331,7 +331,7 @@ void Player::Draw()
 	}
 
 	//リフレクター(薄い)
-	const float l_reflectorSize = 0.28f;
+	const float l_reflectorSize = 0.22f;
 
 	DrawRotaGraph(
 		static_cast<int>(m_reflector_pos.u + Shake::GetShake().u),
@@ -395,8 +395,8 @@ void Player::Draw()
 
 	//debug
 	float hoge = Shake::GetPowerX();
+	float hoge2 = Shake::GetPowerY();
 	DrawFormatString(50, 20, GetColor(0, 0, 0), "ShakeX:%f", hoge);
-	float hoge2 = Shake::GetPowerX();
 	DrawFormatString(50, 40, GetColor(0, 0, 0), "ShakeY:%f", hoge2);
 	DrawFormatString(50, 60, GetColor(0, 0, 0), "RefRad:%f", m_reflector_rad);
 }
