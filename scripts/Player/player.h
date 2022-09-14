@@ -31,7 +31,7 @@ private:
 
 private:
 	const int C_STAGE_RAD = 243;					//ステージの半径
-	const int C_STAGE_REFLECTOR_RAD = 360;			//中心から見たリフレクターの位置の半径
+	const int C_STAGE_REFLECTOR_RAD = 340;			//中心から見たリフレクターの位置の半径
 	const int C_REFLECTOR_RAD = 12;					//リフレクターの半径(テクスチャ依存)
 	const int C_BULLET_INIT_VAL = 72;				//弾初期値
 	const int C_BOMB_INIT_VAL = 3;					//ボム初期値
@@ -74,7 +74,7 @@ private:
 	int m_stage_rad;
 	int m_bulletNum;
 	int m_maxBulletNum;
-	int m_bomb;
+	static int m_bomb;
 	float m_rad;
 	float m_easeTimer;
 	float m_deg;
@@ -87,7 +87,7 @@ private:
 	bool m_isReflectorHit;
 	bool m_mode;
 	bool m_isChangeMode;
-	bool m_isShotBomb;
+	static bool m_isShotBomb;
 
 	int m_s_player;
 	int m_s_stage;
@@ -135,7 +135,8 @@ private:
 
 public:
 	void ReflectorHit(FLOAT2& hitPos);
-	bool IsShotBomb();
+	static void AddBomb() { m_bomb++; }
+	static bool IsShotBomb();
 	bool ShotBullet();
 	const FLOAT2& GetPos() { return m_position; }
 	const FLOAT2& GetStageSize() { return m_stageSize; }
@@ -147,6 +148,7 @@ public:
 	const int& GetBulletNum() { return m_bulletNum; }
 	const int& GetMaxBulletNum() { return m_maxBulletNum; }
 	const int& GetStageReflectorRad() { return C_STAGE_REFLECTOR_RAD; }
+	static const int& GetBombCount() { return m_bomb; }
 
 	//enum Mode(SHOT,REFLECTION)
 	const bool& GetMode() { return m_mode; }

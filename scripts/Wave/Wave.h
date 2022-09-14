@@ -28,10 +28,36 @@ public:
 	static int stopTimer;
 	static bool isStopEnd;
 
-	static int WaveBorader[MaxWaveNum];
+	static int WaveBorader[MaxWaveNum - 1];
 
 	static int s_rule;
-	static int alpha;
+	static int ruleAlpha;
+	static float ruleEaseTimer;
+	static bool isRuleEnd;
+	static FLOAT2 nowRuleSize;
+	static FLOAT2 MaxRuleSize;
+
+	static int s_change;
+	static int changeAlpha;
+	static float changeEaseTimer;
+	static bool isChangeEnd;
+	static FLOAT2 nowChangeSize;
+	static FLOAT2 MaxChangeSize;
+
+	static int s_transe;
+	static int transeAlpha;
+	static float transeEaseTimer;
+	static bool isTranseEnd;
+	static FLOAT2 nowTranseSize;
+	static FLOAT2 MaxTranseSize;
+
+	static int s_bomb;
+	static int bombAlpha;
+	static float bombEaseTimer;
+	static bool isBombEnd;
+	static FLOAT2 nowBombSize;
+	static FLOAT2 MaxBombSize;
+
 
 	static FLOAT2 m_size;
 	static FLOAT2 m_position;

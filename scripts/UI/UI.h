@@ -89,6 +89,9 @@ public:
 	static float bombExt;
 	static float MaxBomb;
 
+	static bool oldBomb;
+	static bool isNowBomb;
+
 	static void Increase();
 	static void Decrease();
 	static void LoadFile();
