@@ -54,6 +54,9 @@ bool WaveManager::isBombEnd;
 FLOAT2 WaveManager::nowBombSize;
 FLOAT2 WaveManager::MaxBombSize;
 
+bool WaveManager::isBombHit = false;
+int WaveManager::bombTimer = 0;
+
 void WaveManager::LoadFile()
 {
 	for (int i = 1; i <= 10; i++)

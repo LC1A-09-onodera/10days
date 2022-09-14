@@ -54,11 +54,11 @@ void BaseEnemy::Init(SpeedType type)
 	}
 	else if (type == SpeedType::Midl)
 	{
-		m_ToCenterSpeed = 4.0f;
+		m_ToCenterSpeed = 4.5f;
 	}
 	else if (type == SpeedType::Hi)
 	{
-		m_ToCenterSpeed = 5.0f;
+		m_ToCenterSpeed = 6.0f;
 	}
 	else if (type == SpeedType::Bomb)
 	{
@@ -162,7 +162,16 @@ void BaseEnemy::CiycleMove()
 			isBombErase = true;
 		}
 	}
-	if (m_timer <= ShakeStartTime)
+	int shake = ShakeStartTime;
+	if (speedType == SpeedType::Midl)
+	{
+		shake += 15;
+	}
+	else if (speedType == SpeedType::Hi)
+	{
+		shake += 30;
+	}
+	if (m_timer <= shake)
 	{
 		shakePower = { rand() % 6 - 2.0f, rand() % 6 - 2.0f };
 	}
@@ -204,9 +213,9 @@ void BaseEnemy::LineMove()
 			a++;
 
 			TowerHP::HP--;
-			FLOAT2 start = { 30.0f, 30.0f };
+			FLOAT2 start = { 50.0f, 50.0f };
 			FLOAT2 end = { 0, 0 };
-			ParticleManager::heart.ExprotionParticle(m_position, start, end, 10, 50);
+			ParticleManager::heart.ExprotionParticle(m_position, start, end, 10, 40);
 			StopSoundMem(SoundManager::damage);
 			PlaySoundMem(SoundManager::damage, DX_PLAYTYPE_BACK);
 		}
@@ -218,9 +227,9 @@ void BaseEnemy::LineMove()
 			//ParticleManager::pinkParticle.ExprotionParticle(m_position, start, end, 5, 30);
 			//ParticleManager::scoreParitcle.AddScore(m_position, size, size, 99, 60);
 			TowerHP::HP--;
-			FLOAT2 start = { 30.0f, 30.0f };
+			FLOAT2 start = { 50.0f, 50.0f };
 			FLOAT2 end = { 0, 0 };
-			ParticleManager::heart.ExprotionParticle(m_position, start, end, 10, 50);
+			ParticleManager::heart.ExprotionParticle(m_position, start, end, 10, 40);
 			StopSoundMem(SoundManager::damage);
 			PlaySoundMem(SoundManager::damage, DX_PLAYTYPE_BACK);
 

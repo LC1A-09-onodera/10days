@@ -34,7 +34,7 @@ private:
 	const int C_STAGE_REFLECTOR_RAD = 340;			//中心から見たリフレクターの位置の半径
 	const int C_REFLECTOR_RAD = 12;					//リフレクターの半径(テクスチャ依存)
 	const int C_BULLET_INIT_VAL = 72;				//弾初期値
-	const int C_BOMB_INIT_VAL = 3;					//ボム初期値
+	const int C_BOMB_INIT_VAL = 2;					//ボム初期値
 
 	const float C_PLAYER_RAD = 25.0f;				//プレイヤーの半径
 	const float C_TOTAL_RAD =
