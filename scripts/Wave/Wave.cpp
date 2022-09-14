@@ -399,7 +399,7 @@ void WaveManager::Draw()
 		}
 		else if (!isChangeEnd)
 		{
-			changeEaseTimer += 0.01f;
+			changeEaseTimer += 0.005f;
 			if (changeEaseTimer >= 1.0f)
 			{
 				changeAlpha -= 2;
@@ -408,9 +408,9 @@ void WaveManager::Draw()
 					changeAlpha = 0;
 					changeEaseTimer = 0;
 					isChangeEnd = true;
-					isTranseEnd = false;
-					transeAlpha = 250;
-					transeEaseTimer = 0;
+					isBombEnd = false;
+					bombAlpha = 250;
+					bombEaseTimer = 0;
 				}
 			}
 			float sens = 0.3f;
@@ -421,7 +421,7 @@ void WaveManager::Draw()
 				, s_change, TRUE);
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		}
-		else if (!isTranseEnd)
+		/*else if (!isTranseEnd)
 		{
 			transeEaseTimer += 0.01f;
 			if (transeEaseTimer >= 1.0f)
@@ -444,10 +444,10 @@ void WaveManager::Draw()
 			DrawExtendGraph(WindowSize::Wid / 2 - size.u, WindowSize::Hi / 2 - size.v + y, WindowSize::Wid / 2 + size.u, WindowSize::Hi / 2 + size.v + y
 				, s_transe, TRUE);
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-		}
+		}*/
 		else if (!isBombEnd)
 		{
-			bombEaseTimer += 0.01f;
+			bombEaseTimer += 0.005f;
 			if (bombEaseTimer >= 1.0f)
 			{
 				bombAlpha -= 2;
