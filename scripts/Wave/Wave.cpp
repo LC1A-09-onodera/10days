@@ -19,7 +19,7 @@ FLOAT2 WaveManager::m_endPosition;
 int WaveManager::stopTimer = 0;
 bool WaveManager::isStopEnd = false;
 
-int WaveManager::WaveBorader[WaveManager::MaxWaveNum - 1] = { 100, 300, 800, 1800, 2500, 3000, 4000, 5000, 8000 };
+int WaveManager::WaveBorader[WaveManager::MaxWaveNum - 1] = { 1000, 3000, 5000, 7000, 9000, 11000, 13000, 15000, 17000 };
 int WaveManager::s_back;
 FLOAT2 WaveManager::m_backSize;
 float WaveManager::m_backEaseTimer;
