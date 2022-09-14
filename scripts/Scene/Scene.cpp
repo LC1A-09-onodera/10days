@@ -34,6 +34,12 @@ bool ResultScene::isToTitle = false;
 float sent = 0.45f;
 FLOAT2 ResultScene::m_numSize = { 700 / 5 * sent, 346 / 2 * sent };
 
+float TitleScene::spaceAlpha = 255;
+bool TitleScene::isDec = true;
+
+float ResultScene::spaceAlpha = 255;
+bool ResultScene::isDec = true;
+
 void GameScene::LoadFile()
 {
 	m_s_side = LoadGraph("Resources/EncanEncounter.png");
@@ -128,7 +134,26 @@ void TitleScene::Draw()
 	float win = WindowSize::Wid / 2;
 	float hi = WindowSize::Hi / 2;
 	DrawExtendGraph(win - m_titleSize.u / 2, hi - 0 - m_titleSize.v / 2, win + m_titleSize.u / 2, hi - 0 + m_titleSize.v / 2, m_s_title, true);
+
+	if (isDec)
+	{
+		spaceAlpha = Easeing::EaseInQuad(spaceAlpha, 20, 0.3f);
+		if (spaceAlpha < 25)
+		{
+			isDec = false;
+		}
+	}
+	else
+	{
+		spaceAlpha = Easeing::EaseInQuad(spaceAlpha, 255, 0.3f);
+		if (spaceAlpha > 250)
+		{
+			isDec = true;
+		}
+	}
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, spaceAlpha);
 	DrawExtendGraph(win - m_spaceSize.u / 2, hi + 120 - m_spaceSize.v / 2, win + m_spaceSize.u / 2, hi + 120 + m_spaceSize.v / 2, m_s_space, true);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
 void ResultScene::Draw()
@@ -151,8 +176,28 @@ void ResultScene::Draw()
 							WindowSize::Wid / 2 + (m_numSize.u / 2) + x, WindowSize::Hi / 2 + (m_numSize.v / 2), s_number[score[i]], true);
 			x += m_numSize.u;
 		}
+
+		if (isDec)
+		{
+			spaceAlpha = Easeing::EaseInQuad(spaceAlpha, 20, 0.3f);
+			if (spaceAlpha < 25)
+			{
+				isDec = false;
+			}
+		}
+		else
+		{
+			spaceAlpha = Easeing::EaseInQuad(spaceAlpha, 255, 0.3f);
+			if (spaceAlpha > 250)
+			{
+				isDec = true;
+			}
+		}
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, spaceAlpha);
 		DrawExtendGraph(WindowSize::Wid / 2 - (552 / 2 * 0.2f), WindowSize::Hi / 2 - (509 / 2 * 0.2f) + 150,
 						WindowSize::Wid / 2 + (552 / 2 * 0.2f), WindowSize::Hi / 2 + (509 / 2 * 0.2f) + 150, s_space, true);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+		
 	}
 
 }
