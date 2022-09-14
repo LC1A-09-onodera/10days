@@ -237,11 +237,13 @@ void ScoreUI::LoadFile()
 
 void ScoreUI::Init()
 {
+	m_scores.clear();
 	for (int i = 0; i < 6; i++)
 	{
 		UISprite* ui = new UISprite();
 		m_scores.push_back(ui);
 	}
+	m_bombs.clear();
 	for (int i = 0; i < 3; i++)
 	{
 		UISprite *ui = new UISprite();
