@@ -165,11 +165,11 @@ void BaseEnemy::CiycleMove()
 	int shake = ShakeStartTime;
 	if (speedType == SpeedType::Midl)
 	{
-		shake += 15;
+		shake += 20;
 	}
 	else if (speedType == SpeedType::Hi)
 	{
-		shake += 30;
+		shake += 60;
 	}
 	if (m_timer <= shake)
 	{
