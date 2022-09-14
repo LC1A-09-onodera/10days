@@ -19,7 +19,7 @@ FLOAT2 WaveManager::m_endPosition;
 int WaveManager::stopTimer = 0;
 bool WaveManager::isStopEnd = false;
 
-int WaveManager::WaveBorader[WaveManager::MaxWaveNum] = { 100, 300, 800, 1800, 2500, 3000, 4000, 5000, 8000, 10000 };
+int WaveManager::WaveBorader[WaveManager::MaxWaveNum - 1] = { 100, 300, 800, 1800, 2500, 3000, 4000, 5000, 8000 };
 int WaveManager::s_back;
 FLOAT2 WaveManager::m_backSize;
 float WaveManager::m_backEaseTimer;
@@ -129,18 +129,21 @@ void WaveManager::Update()
 		{
 			if (EnemyManager::enemys.size() <= 0 || rand() % 240 == 0)
 			{
-				int ran = rand() % 5;
-				if (ran == 0)
+				for (int i = 0; i < 2; i++)
 				{
-					EnemyManager::AddEnemy(BaseEnemy::SpeedType::Hi);
-				}
-				else if (ran == 1 || ran == 2)
-				{
-					EnemyManager::AddEnemy(BaseEnemy::SpeedType::Midl);
-				}
-				else
-				{
-					EnemyManager::AddEnemy(BaseEnemy::SpeedType::Normal);
+					int ran = rand() % 5;
+					if (ran == 0)
+					{
+						EnemyManager::AddEnemy(BaseEnemy::SpeedType::Hi);
+					}
+					else if (ran == 1 || ran == 2)
+					{
+						EnemyManager::AddEnemy(BaseEnemy::SpeedType::Midl);
+					}
+					else
+					{
+						EnemyManager::AddEnemy(BaseEnemy::SpeedType::Normal);
+					}
 				}
 			}
 		}
@@ -148,18 +151,21 @@ void WaveManager::Update()
 		{
 			if (EnemyManager::enemys.size() <= 0 || rand() % 180 == 0)
 			{
-				int ran = rand() % 5;
-				if (ran == 0)
+				for (int i = 0; i < 2; i++)
 				{
-					EnemyManager::AddEnemy(BaseEnemy::SpeedType::Hi);
-				}
-				else if (ran == 1 || ran == 2)
-				{
-					EnemyManager::AddEnemy(BaseEnemy::SpeedType::Midl);
-				}
-				else
-				{
-					EnemyManager::AddEnemy(BaseEnemy::SpeedType::Normal);
+					int ran = rand() % 5;
+					if (ran == 0)
+					{
+						EnemyManager::AddEnemy(BaseEnemy::SpeedType::Hi);
+					}
+					else if (ran == 1 || ran == 2)
+					{
+						EnemyManager::AddEnemy(BaseEnemy::SpeedType::Midl);
+					}
+					else
+					{
+						EnemyManager::AddEnemy(BaseEnemy::SpeedType::Normal);
+					}
 				}
 			}
 		}
@@ -211,7 +217,7 @@ void WaveManager::Update()
 		{
 			if (EnemyManager::enemys.size() <= 0 || rand() % 100 == 0)
 			{
-				for (int i = 0; i < 2; i++)
+				for (int i = 0; i < 3; i++)
 				{
 					int ran = rand() % 5;
 					if (ran == 0 || ran == 1)
@@ -253,7 +259,7 @@ void WaveManager::Update()
 		}
 		else if (waveNumber == 8)
 		{
-			if (EnemyManager::enemys.size() <= 0 || rand() % 100 == 0)
+			if (EnemyManager::enemys.size() <= 0 || rand() % 80 == 0)
 			{
 				for (int i = 0; i < 3; i++)
 				{
@@ -275,9 +281,9 @@ void WaveManager::Update()
 		}
 		else if (waveNumber == 9)
 		{
-			if (EnemyManager::enemys.size() <= 0 || rand() % 100 == 0)
+			if (EnemyManager::enemys.size() <= 0 || rand() % 60 == 0)
 			{
-				for (int i = 0; i < 3; i++)
+				for (int i = 0; i < 4; i++)
 				{
 					int ran = rand() % 5;
 					if (ran == 0 || ran == 2)

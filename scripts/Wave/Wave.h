@@ -28,7 +28,7 @@ public:
 	static int stopTimer;
 	static bool isStopEnd;
 
-	static int WaveBorader[MaxWaveNum];
+	static int WaveBorader[MaxWaveNum - 1];
 
 	static int s_rule;
 	static int alpha;

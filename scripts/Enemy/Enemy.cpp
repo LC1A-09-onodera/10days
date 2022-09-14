@@ -7,6 +7,7 @@
 #include "../Score/Score.h"
 #include "../Particle/Particle.h"
 #include "../Sound/Sound.h"
+#include "../Scroll/Scroll.h"
 
 int BaseEnemy::m_sprite[3];
 std::list<BaseEnemy*> EnemyManager::enemys;
@@ -109,7 +110,7 @@ void BaseEnemy::Draw()
 	{
 		angle += 3.141582f / 2.0f;
 	}
-	DrawRotaGraph(m_position.u + shakePower.u, m_position.v + shakePower.v, 0.2f, angle, m_sprite[speedType], true);
+	DrawRotaGraph(m_position.u + Shake::GetShake().u + shakePower.u, m_position.v + Shake::GetShake().v + shakePower.v, 0.2f, angle, m_sprite[speedType], true);
 }
 
 void BaseEnemy::ToCiycleMove()
@@ -333,7 +334,7 @@ void EnemyManager::Update()
 
 void EnemyManager::Draw()
 {
-	DrawCircleAA(WindowSize::Wid / 2, WindowSize::Hi / 2, nowCenterR, 128, GetColor(200, 13, 13), 0, 1.0f);
+	DrawCircleAA(WindowSize::Wid / 2 + Shake::GetShake().u, WindowSize::Hi / 2 + Shake::GetShake().v, nowCenterR, 128, GetColor(200, 13, 13), 0, 1.0f);
 	DrawCircleAA(WindowSize::Wid / 2, WindowSize::Hi / 2, nowTowerR, 128, GetColor(13, 200, 13), 0, 2.0f);
 	for (auto itr = enemys.begin(); itr != enemys.end(); ++itr)
 	{

@@ -104,7 +104,7 @@ void ObjectSample::Draw()
 		//DrawGraph((*itr)->m_position.u, (*itr)->m_position.v, m_sprite, true);
 		/*DrawExtendGraph((*itr)->m_position.u - ((*itr)->m_spriteSize.u / 2.0f), (*itr)->m_position.v - ((*itr)->m_spriteSize.v / 2.0f),
 			(*itr)->m_position.u + ((*itr)->m_spriteSize.u / 2.0f), (*itr)->m_position.v + ((*itr)->m_spriteSize.v / 2.0f), m_sprite, true);*/
-		DrawCircle((*itr)->m_position.u, (*itr)->m_position.v, (*itr)->m_R - 10.0f, GetColor(30, 30, 30));
+		DrawCircle((*itr)->m_position.u + Shake::GetShake().u, (*itr)->m_position.v + Shake::GetShake().v, (*itr)->m_R - 10.0f, GetColor(30, 30, 30));
 	}
 }
 
@@ -291,12 +291,6 @@ void ObjectManager::Update(FLOAT2& f_playerPos, bool f_playerIsOutside)
 	object2.Update(f_playerPos, f_playerIsOutside);
 	//’e“¯Žm‚Ì“–‚½‚è”»’è
 	//AllCollision();
-
-	if (Shake::GetPower().u > 0.0f)
-	{
-		FLOAT2 l_shakePower = { -0.1f,-0.1f };
-		Shake::AddShakePower(l_shakePower);
-	}
 }
 
 void ObjectManager::Draw()
@@ -372,7 +366,7 @@ void InducedExplosion::Update()
 void InducedExplosion::Draw()
 {
 	//DrawExtendGraph(0, 0, 10 , 10,  InducedExplosion::m_s_exprosion[0], true);
-	DrawCircle(m_position.u, m_position.v, ExplosionR, GetColor(255, 0, 255), false);
+	DrawCircle(m_position.u + Shake::GetShake().u, m_position.v + Shake::GetShake().v, ExplosionR, GetColor(255, 0, 255), false);
 }
 
 void InducedExplosion::Collition(BaseObject& obj)

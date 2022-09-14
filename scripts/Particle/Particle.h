@@ -89,6 +89,9 @@ public:
 	static ScoreParticle scoreParitcle;
 	static Particle circleParticle;
 	static Particle cubeParticle;
+	static Particle speedType1;
+	static Particle speedType2;
+	static Particle speedType3;
 	static void LoadFile();
 	static void Update();
 	static void Draw();

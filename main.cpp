@@ -132,7 +132,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 				static int time = 0;
 				EnemyManager::CiycleDec();
 				int nowBullet = bulletUI.m_bullets.size();
-				if (!player.GetIsMove() && nowBullet >= player.GetBulletNum() && player.GetMode() == player.SHOT)
+				if (!player.GetIsMove() && nowBullet >= player.GetBulletNum() && player.GetMode() == player.SHOT && !player.IsShotBomb())
 				{
 					time++;
 					if (time > 2)
