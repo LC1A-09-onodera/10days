@@ -147,6 +147,24 @@ void TitleScene::Draw()
 	{
 		DrawExtendGraph(win - m_titleSize.u / 2, hi + 10 - m_titleSize.v / 2, win + m_titleSize.u / 2, hi - 40 + m_titleSize.v / 2, m_s_encaenca, true);
 	}
+
+	if (isDec)
+	{
+		spaceAlpha = Easeing::EaseInQuad(spaceAlpha, 20, 0.3f);
+		if (spaceAlpha < 25)
+		{
+			isDec = false;
+		}
+	}
+	else
+	{
+		spaceAlpha = Easeing::EaseInQuad(spaceAlpha, 255, 0.3f);
+		if (spaceAlpha > 250)
+		{
+			isDec = true;
+		}
+	}
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, spaceAlpha);
 	DrawExtendGraph(win - m_spaceSize.u / 2, hi + 120 - m_spaceSize.v / 2, win + m_spaceSize.u / 2, hi + 120 + m_spaceSize.v / 2, m_s_space, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
@@ -198,6 +216,7 @@ void ResultScene::Draw()
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, spaceAlpha);
 		DrawExtendGraph(WindowSize::Wid / 2 - (552 / 2 * 0.2f), WindowSize::Hi / 2 - (509 / 2 * 0.2f) + 150,
 			WindowSize::Wid / 2 + (552 / 2 * 0.2f), WindowSize::Hi / 2 + (509 / 2 * 0.2f) + 150, s_space, true);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	}
 
 }
