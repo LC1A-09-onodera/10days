@@ -11,6 +11,7 @@
 #include "scripts/Enemy/Enemy.h"
 #include "scripts/Score/Score.h"
 #include "scripts/Wave/Wave.h"
+#include "scripts/Scroll/Scroll.h"
 #include <string>
 #include <time.h>
 
@@ -113,6 +114,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		// çXêVèàóù
 		if (sceneNum == TITLE)
 		{
+			FLOAT2 l_resetShakePower{ -50.0f,-50.0f };
+			Shake::AddShakePower(l_resetShakePower);
+
 			if (Input::GetKeyTrigger(KEY_INPUT_SPACE) || Input::isJoyBottomTrigger(XINPUT_BUTTON_A))
 			{
 				sceneNum = GAME;
@@ -341,10 +345,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		else if (sceneNum == GAME)
 		{
 			WaveManager::Draw();
-			
+
 			TowerHP::Draw();
 			ScoreUI::Draw();
-			
+
 			bulletUI.Draw();
 			player.Draw();
 			ObjectManager::Draw();

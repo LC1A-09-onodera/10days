@@ -196,7 +196,7 @@ void Player::Update()
 			//リフレクターヒット時
 			if (m_isReflectorHit)
 			{
-				FLOAT2 l_shakePower = { 20.0f,15.0f };
+				FLOAT2 l_shakePower = { 10.0f,6.0f };
 				Shake::AddShakePower(l_shakePower);
 				m_isReflectorHit = false;
 			}

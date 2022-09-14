@@ -383,21 +383,21 @@ void EnemyManager::Update()
 				int score;
 				if ((*itr)->speedType == BaseEnemy::SpeedType::Normal)
 				{
-					score = 10;
+					score = NormalSpeedScore;
 					/*FLOAT2 start = {40,40};
 					FLOAT2 end = {0, 0};
 					ParticleManager::speedType1.ExprotionParticle((*itr)->m_position, start, end, 10, 40);*/
 				}
 				else if ((*itr)->speedType == BaseEnemy::SpeedType::Midl)
 				{
-					score = 20;
+					score = MiddleSpeedScore;
 					/*FLOAT2 start = {40,40 };
 					FLOAT2 end = { 0, 0 };
 					ParticleManager::speedType2.ExprotionParticle((*itr)->m_position, start, end, 10, 40);*/
 				}
 				else if ((*itr)->speedType == BaseEnemy::SpeedType::Hi)
 				{
-					score = 30;
+					score = HiSpeedScore;
 					/*FLOAT2 start = { 40,40 };
 					FLOAT2 end = { 0, 0 };
 					ParticleManager::speedType3.ExprotionParticle((*itr)->m_position, start, end, 10, 40);*/
