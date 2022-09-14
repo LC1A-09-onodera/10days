@@ -77,13 +77,13 @@ void GameScene::Draw()
 {
 	for (int i = static_cast<int>(Direction::Right1); i <= static_cast<int>(Direction::Right2); i++)
 	{
-		DrawRotaGraph(SceneSide::m_sidePosition[i].u + m_sideSize.v / 2.0f, SceneSide::m_sidePosition[i].v,
+		DrawRotaGraph(SceneSide::m_sidePosition[i].u + m_sideSize.v / 2.0f + Shake::GetShake().u, SceneSide::m_sidePosition[i].v + Shake::GetShake().v,
 			1.0f, 3.1415f / 2.0f,
 			m_s_side, true, false);
 	}
 	for (int i = static_cast<int>(Direction::Left1); i <= static_cast<int>(Direction::Left2); i++)
 	{
-		DrawRotaGraph(SceneSide::m_sidePosition[i].u + m_sideSize.v / 2.0f, SceneSide::m_sidePosition[i].v,
+		DrawRotaGraph(SceneSide::m_sidePosition[i].u + m_sideSize.v / 2.0f + Shake::GetShake().u, SceneSide::m_sidePosition[i].v + Shake::GetShake().v,
 			1.0f, 3.1415f / 2.0f * 3.0f,
 			m_s_side, true, false);
 	}

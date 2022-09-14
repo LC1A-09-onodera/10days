@@ -92,7 +92,9 @@ private:
 	int m_s_player;
 	int m_s_stage;
 	int m_s_reflector;
+	int m_s_reflector_alpha;
 	int m_s_reflector_hit;
+	int m_s_bomb_effect;
 	FLOAT2 m_stageSize;
 
 	//debug

@@ -13,7 +13,7 @@ Particle ParticleManager::cubeParticle;
 
 void Particle::AddParitcle(FLOAT2& f_pos, FLOAT2& f_vec, FLOAT2& f_acc, FLOAT2& f_startSize, FLOAT2& f_endSize, int f_life)
 {
-	ParticleEach *each = new ParticleEach();
+	ParticleEach* each = new ParticleEach();
 	each->position = f_pos;
 	each->vector = f_vec;
 	each->acceleration = f_acc;
@@ -43,7 +43,7 @@ void Particle::Update()
 	m_deleteParticles.clear();
 }
 
-void Particle::EachUpdate(ParticleEach *itr)
+void Particle::EachUpdate(ParticleEach* itr)
 {
 	itr->life--;
 	itr->position.u += itr->vector.u;
@@ -53,16 +53,16 @@ void Particle::EachUpdate(ParticleEach *itr)
 	float u = (itr->endSize.u - itr->startSize.u) / itr->sLife;
 	float v = (itr->endSize.v - itr->startSize.v) / itr->sLife;
 
-	itr->size.u +=  u;
-	itr->size.v +=  v;
+	itr->size.u += u;
+	itr->size.v += v;
 }
 
 void Particle::Draw()
 {
 	for (auto itr = m_particles.begin(); itr != m_particles.end(); ++itr)
 	{
-		DrawExtendGraph((*itr)->position.u - ((*itr)->size.u / 2), (*itr)->position.v - ((*itr)->size.v / 2), 
-						(*itr)->position.u + ((*itr)->size.u / 2), (*itr)->position.v + ((*itr)->size.v / 2), m_sprite, true);
+		DrawExtendGraph((*itr)->position.u - ((*itr)->size.u / 2) + Shake::GetShake().u, (*itr)->position.v - ((*itr)->size.v / 2) + Shake::GetShake().v,
+			(*itr)->position.u + ((*itr)->size.u / 2) + Shake::GetShake().u, (*itr)->position.v + ((*itr)->size.v / 2) + Shake::GetShake().v, m_sprite, true);
 		//DrawExtendGraph((*itr)->position.u - ((*itr)->size.u / 2) - Scroll::GetScrollX(), (*itr)->position.v - ((*itr)->size.v / 2), (*itr)->position.u + ((*itr)->size.u / 2) - Scroll::GetScrollX(), (*itr)->position.v + ((*itr)->size.v / 2), m_sprite, true);
 	}
 }
@@ -72,7 +72,7 @@ void Particle::LoadFile(const char* path)
 	m_sprite = LoadGraph(path);
 }
 
-void Particle::FlyParticle(FLOAT2 &f_emitPos, FLOAT2& f_startSize, FLOAT2& f_endSize, int f_count, int f_life)
+void Particle::FlyParticle(FLOAT2& f_emitPos, FLOAT2& f_startSize, FLOAT2& f_endSize, int f_count, int f_life)
 {
 	for (int i = 0; i < f_count; i++)
 	{
@@ -251,7 +251,7 @@ void ScoreParticle::LoadFile()
 void ScoreParticle::AddScore(FLOAT2& f_emitPos, FLOAT2& f_startSize, FLOAT2& f_endSize, int f_addScore, int f_life)
 {
 	FLOAT2 emitPos = { 0 };
-	FLOAT2 end = {0, 0};
+	FLOAT2 end = { 0, 0 };
 	float leng = 50.0f;
 	int dis = 10;
 	if (f_addScore < 10)

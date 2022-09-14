@@ -3,6 +3,7 @@
 #include "../WindowsSize/WindowSize.h"
 #include "../Math/Math.h"
 #include "../Sound/Sound.h"
+#include "../Scroll/Scroll.h"
 
 using namespace DxLibMath;
 
@@ -125,7 +126,7 @@ void BulletUI::Draw()
 	{
 		for (auto itr = m_bullets.begin(); itr != m_bullets.end(); ++itr)
 		{
-			DrawExtendGraph((*itr)->m_position.u - (*itr)->m_size.u / 2, (*itr)->m_position.v - (*itr)->m_size.v / 2,
+			DrawExtendGraph((*itr)->m_position.u - (*itr)->m_size.u / 2 + Shake::GetShake().u, (*itr)->m_position.v - (*itr)->m_size.v / 2 + Shake::GetShake().v,
 				(*itr)->m_position.u + (*itr)->m_size.u / 2, (*itr)->m_position.v + (*itr)->m_size.v / 2, m_sprite, true);
 		}
 	}
