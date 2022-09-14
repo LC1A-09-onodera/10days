@@ -66,7 +66,7 @@ public:
 	//出現時の
 	static const int OutsideR = 1000;
 	//最大HP
-	static const int MaxHP = 1;
+	static const int MaxHP = 2;
 	//円周上を回っているとき
 	static const int NormalMode = 6;
 	//攻撃時の進行モード
@@ -77,6 +77,10 @@ public:
 	//サークル場を回っているときの速度
 	static const int OnCiycleSpeed = 1;
 	static const int MaxTimer = 120;
+	static const int ShakeStartTime = 45;
+
+	FLOAT2 shakePower;
+
 	static FLOAT2 CiycleCenter;
 	//ダメージ食らうゾーン
 	static float TowerR;
@@ -109,7 +113,7 @@ public:
 
 	//static int enemyCiycle;
 	static void Init();
-	static void AddEnemy();
+	static void AddEnemy(BaseEnemy::SpeedType f_speedType);
 	static void Update();
 	static void Draw();
 	static void CiycleInc();

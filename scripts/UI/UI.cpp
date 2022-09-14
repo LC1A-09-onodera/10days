@@ -14,6 +14,24 @@ int ScoreUI::nowScore;
 float ScoreUI::ext = 0.1f;
 FLOAT2 ScoreUI::scorePos[5];
 int ScoreUI::s_score[5];
+bool ScoreUI::isIncDec = false;
+float ScoreUI::nowR = 0;
+
+float ScoreUI::scoreExt;
+float ScoreUI::MaxExt = 0.1f;
+float ScoreUI::MaxScoreExt = 0.3f;
+
+int ScoreUI::s_bomb;
+std::list<UISprite*> ScoreUI::m_bombs;
+int ScoreUI::nowBomb;
+int ScoreUI::s_bombTex[4];
+FLOAT2 ScoreUI::m_bombTexPos[4];
+
+float ScoreUI::bombTexExt = 0;
+float ScoreUI::MaxBombExt = 0.2f;
+
+float ScoreUI::bombExt = 0;
+float ScoreUI::MaxBomb = 0.1f;
 
 void BulletUI::AddBullet()
 {
@@ -184,9 +202,38 @@ void HPUI::Draw()
 	}
 }
 
+void ScoreUI::Increase()
+{
+	nowR = Easeing::EaseInQuad(nowR, R, 0.3f);
+	ext = Easeing::EaseInQuad(ext, MaxExt, 0.3f);
+	scoreExt = Easeing::EaseInQuad(scoreExt, MaxScoreExt, 0.3f);
+	bombTexExt = Easeing::EaseInQuad(bombTexExt, MaxBombExt, 0.3f);
+	bombExt = Easeing::EaseInQuad(bombExt, MaxBomb, 0.3f);
+}
+
+void ScoreUI::Decrease()
+{
+	nowR = Easeing::EaseInQuad(nowR, 0, 0.3f);
+	ext = Easeing::EaseInQuad(ext, 0, 0.3f);
+	scoreExt = Easeing::EaseInQuad(scoreExt, 0, 0.3f);
+	bombTexExt = Easeing::EaseInQuad(bombTexExt, 0, 0.3f);
+	bombExt = Easeing::EaseInQuad(bombExt, 0, 0.3f);
+}
+
 void ScoreUI::LoadFile()
 {
-	LoadDivGraph("Resources/numbers.png", 10, 5, 2, 700 / 5, 346 / 2, s_numbers);
+	LoadDivGraph("Resources/numbers_alpha.png", 10, 5, 2, 690 / 5, 368 / 2, s_numbers);
+	s_score[0] = LoadGraph("Resources/s.png");
+	s_score[1] = LoadGraph("Resources/c.png");
+	s_score[2] = LoadGraph("Resources/o.png");
+	s_score[3] = LoadGraph("Resources/r.png");
+	s_score[4] = LoadGraph("Resources/e.png");
+
+	s_bomb = LoadGraph("Resources/bomb.png");
+	s_bombTex[0] = LoadGraph("Resources/b.png");
+	s_bombTex[1] = LoadGraph("Resources/oBomb.png");
+	s_bombTex[2] = LoadGraph("Resources/m.png");
+	s_bombTex[3] = LoadGraph("Resources/b.png");
 }
 
 void ScoreUI::Init()
@@ -196,6 +243,11 @@ void ScoreUI::Init()
 		UISprite* ui = new UISprite();
 		m_scores.push_back(ui);
 	}
+	for (int i = 0; i < 3; i++)
+	{
+		UISprite *ui = new UISprite();
+		m_bombs.push_back(ui);
+	}
 }
 
 void ScoreUI::Update(int score)
@@ -204,8 +256,8 @@ void ScoreUI::Update(int score)
 	nowScore = score;
 	for (auto itr = m_scores.begin(); itr != m_scores.end(); ++itr)
 	{
-		(*itr)->m_position.u = WindowSize::Wid / 2 + (R * DxLibMath::Cos(startAngle));
-		(*itr)->m_position.v = WindowSize::Hi / 2 + (R * DxLibMath::Sin(startAngle));
+		(*itr)->m_position.u = WindowSize::Wid / 2 + (nowR * DxLibMath::Cos(startAngle));
+		(*itr)->m_position.v = WindowSize::Hi / 2 + (nowR * DxLibMath::Sin(startAngle));
 		//(*itr)->angle = startAngle - 180.0f;
 		startAngle -= 18;
 	}
@@ -213,10 +265,34 @@ void ScoreUI::Update(int score)
 	float scoreStart = 230;
 	for (int i = 0; i < 5; i++)
 	{
-		scorePos[i].u = WindowSize::Wid / 2 + (R * DxLibMath::Cos(scoreStart));
-		scorePos[i].v = WindowSize::Hi / 2 + (R * DxLibMath::Sin(scoreStart));
+		scorePos[i].u = WindowSize::Wid / 2 + (nowR * DxLibMath::Cos(scoreStart));
+		scorePos[i].v = WindowSize::Hi / 2 + (nowR * DxLibMath::Sin(scoreStart));
 		//(*itr)->angle = startAngle - 180.0f;
-		startAngle -= 20;
+		scoreStart += 20;
+	}
+
+	float bombStart = 152;
+	for (int i = 0; i < 4; i++)
+	{
+		m_bombTexPos[i].u = WindowSize::Wid / 2 + (nowR * DxLibMath::Cos(bombStart));
+		m_bombTexPos[i].v = WindowSize::Hi / 2 + (nowR * DxLibMath::Sin(bombStart));
+		bombStart += 18;
+	}
+
+	float bombUIStart = 340;
+	for (auto itr = m_bombs.begin(); itr != m_bombs.end(); ++itr)
+	{
+		(*itr)->m_position.u = WindowSize::Wid / 2 + (nowR * DxLibMath::Cos(bombUIStart));
+		(*itr)->m_position.v = WindowSize::Hi / 2 + (nowR * DxLibMath::Sin(bombUIStart));
+		bombUIStart += 20;
+	}
+	if (isIncDec)
+	{
+		Increase();
+	}
+	else
+	{
+		Decrease();
 	}
 }
 
@@ -273,6 +349,27 @@ void ScoreUI::Draw()
 		vec.v = WindowSize::Hi / 2 - scorePos[i].v;
 		vec = Collision::Normalize(vec);
 		angle = atan2(vec.v, vec.u);
-		DrawRotaGraph(scorePos[i].u, scorePos[i].v, ext, angle, s_score[i], true);
+		angle -= 3.141592f / 2.0f;
+		DrawRotaGraph(scorePos[i].u, scorePos[i].v, scoreExt, angle, s_score[i], true);
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		vec.u = WindowSize::Wid / 2 - m_bombTexPos[i].u;
+		vec.v = WindowSize::Hi / 2 - m_bombTexPos[i].v;
+		vec = Collision::Normalize(vec);
+		angle = atan2(vec.v, vec.u);
+		angle -= 3.141592f / 2.0f;
+		DrawRotaGraph(m_bombTexPos[i].u, m_bombTexPos[i].v, bombTexExt, angle, s_bombTex[i], true);
+	}
+
+	for (auto itr = m_bombs.begin(); itr != m_bombs.end(); ++itr)
+	{
+		vec.u = WindowSize::Wid / 2 - (*itr)->m_position.u;
+		vec.v = WindowSize::Hi / 2 - (*itr)->m_position.v;
+		vec = Collision::Normalize(vec);
+		angle = atan2(vec.v, vec.u);
+		angle -= 3.141592f / 2.0f;
+		DrawRotaGraph((*itr)->m_position.u, (*itr)->m_position.v, bombExt, angle, s_bomb, true);
 	}
 }

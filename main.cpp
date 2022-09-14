@@ -213,7 +213,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 							//”ÍˆÍ“à
 							if (l_degDiff < l_hitDeg)
 							{
-								x->isStop = true;
+								//x->isStop = true;
 							}
 							//0~359“x‚ÌƒPƒA
 							else
@@ -227,7 +227,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 									//”ÍˆÍ“à
 									if (l_degDiff < l_hitDeg)
 									{
-										x->isStop = true;
+										//x->isStop = true;
 									}
 									else
 									{
@@ -299,6 +299,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 					ObjectManager::AllClear();
 					ResultScene::Init(Score::GetScore());
 					EnemyManager::AllDelete();
+					//GameScene::Init();
 				}
 
 				if (TowerHP::HP <= 0 || Input::GetKeyTrigger(KEY_INPUT_ESCAPE))
@@ -324,11 +325,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		else if (sceneNum == GAME)
 		{
 			WaveManager::Draw();
-			if (WaveManager::isAllEnd)
-			{
-				TowerHP::Draw();
-				ScoreUI::Draw();
-			}
+			
+			TowerHP::Draw();
+			ScoreUI::Draw();
+			
 			bulletUI.Draw();
 			player.Draw();
 			ObjectManager::Draw();
@@ -338,9 +338,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 
 			ParticleManager::scoreParitcle.Draw();
-			DrawFormatString(0, 100, GetColor(0, 0, 0), "BulletNum:%d", player.GetBulletNum());
-			DrawFormatString(0, 120, GetColor(0, 0, 0), "BulletNum:%d", player.GetMaxBulletNum());
-			DrawFormatString(400, 100, GetColor(0, 0, 0), "Score:%d", Score::GetScore());
 
 		}
 		else if (sceneNum == RESULT)

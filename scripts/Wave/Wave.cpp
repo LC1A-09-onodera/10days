@@ -3,6 +3,8 @@
 #include "../Lib/Lib.h"
 #include "../Enemy/Enemy.h"
 #include "../Score/Score.h"
+#include "../UI/UI.h"
+
 #include <string>
 
 int WaveManager::waveNumber = 0;
@@ -17,12 +19,15 @@ FLOAT2 WaveManager::m_endPosition;
 int WaveManager::stopTimer = 0;
 bool WaveManager::isStopEnd = false;
 
-int WaveManager::WaveBorader[WaveManager::MaxWaveNum] = { 10, 40, 120, 200, 300, 500, 800, 1200, 2000, 3000 };
+int WaveManager::WaveBorader[WaveManager::MaxWaveNum] = { 100, 300, 800, 1800, 2500, 3000, 4000, 5000, 8000, 10000 };
 int WaveManager::s_back;
 FLOAT2 WaveManager::m_backSize;
 float WaveManager::m_backEaseTimer;
 FLOAT2 WaveManager::m_backEndSize;
 bool WaveManager::isAllEnd = false;
+
+int WaveManager::s_rule;
+int WaveManager::alpha;
 
 void WaveManager::LoadFile()
 {
@@ -31,6 +36,7 @@ void WaveManager::LoadFile()
 		std::string path = "Resources/wave_" + std::to_string(i) + ".png";
 		s_waves[i - 1] = LoadGraph(path.c_str());
 	}
+	s_rule = LoadGraph("Resources/rule_guide.png");
 }
 
 void WaveManager::WaveInit(int waveNum)
@@ -47,6 +53,9 @@ void WaveManager::WaveInit(int waveNum)
 	m_backEaseTimer = 0.0f;
 	isAllEnd = false;
 	isStopEnd = false;
+	ScoreUI::isIncDec = false;
+	TowerHP::isIncDec = false;
+	alpha = 250;
 }
 
 void WaveManager::Update()
@@ -82,10 +91,12 @@ void WaveManager::Update()
 		if (m_backSize.v < 1)
 		{
 			m_backSize.v = 0;
+			ScoreUI::isIncDec = true;
+			TowerHP::isIncDec = true;
 		}
 	}
 
-	if (Score::score > WaveBorader[waveNumber])
+	if (Score::score >= WaveBorader[waveNumber])
 	{
 		WaveInit(waveNumber + 1);
 	}
@@ -95,17 +106,217 @@ void WaveManager::Update()
 		{
 			if (EnemyManager::enemys.size() <= 0)
 			{
-				EnemyManager::AddEnemy();
+				EnemyManager::AddEnemy(BaseEnemy::SpeedType::Normal);
 			}
 		}
-		else
+		else if (waveNumber == 1)
 		{
-			if (rand() % (300 / waveNumber) == 0)
+			if (EnemyManager::enemys.size() <= 0)
 			{
-				EnemyManager::AddEnemy();
-				EnemyManager::AddEnemy();
+				int ran = rand() % 5;
+				if (ran <= 2)
+				{
+					EnemyManager::AddEnemy(BaseEnemy::SpeedType::Midl);
+				}
+				else
+				{
+					EnemyManager::AddEnemy(BaseEnemy::SpeedType::Normal);
+				}
+			}
+
+		}
+		else if (waveNumber == 2)
+		{
+			if (EnemyManager::enemys.size() <= 0 || rand() % 240 == 0)
+			{
+				int ran = rand() % 5;
+				if (ran == 0)
+				{
+					EnemyManager::AddEnemy(BaseEnemy::SpeedType::Hi);
+				}
+				else if (ran == 1 || ran == 2)
+				{
+					EnemyManager::AddEnemy(BaseEnemy::SpeedType::Midl);
+				}
+				else
+				{
+					EnemyManager::AddEnemy(BaseEnemy::SpeedType::Normal);
+				}
 			}
 		}
+		else if (waveNumber == 3)
+		{
+			if (EnemyManager::enemys.size() <= 0 || rand() % 180 == 0)
+			{
+				int ran = rand() % 5;
+				if (ran == 0)
+				{
+					EnemyManager::AddEnemy(BaseEnemy::SpeedType::Hi);
+				}
+				else if (ran == 1 || ran == 2)
+				{
+					EnemyManager::AddEnemy(BaseEnemy::SpeedType::Midl);
+				}
+				else
+				{
+					EnemyManager::AddEnemy(BaseEnemy::SpeedType::Normal);
+				}
+			}
+		}
+		else if (waveNumber == 4)
+		{
+			if (EnemyManager::enemys.size() <= 0 || rand() % 160 == 0)
+			{
+				for (int i = 0; i < 2; i++)
+				{
+					int ran = rand() % 5;
+					if (ran == 0)
+					{
+						EnemyManager::AddEnemy(BaseEnemy::SpeedType::Hi);
+					}
+					else if (ran == 1 || ran == 2)
+					{
+						EnemyManager::AddEnemy(BaseEnemy::SpeedType::Midl);
+					}
+					else
+					{
+						EnemyManager::AddEnemy(BaseEnemy::SpeedType::Normal);
+					}
+				}
+			}
+		}
+		else if (waveNumber == 5)
+		{
+			if (EnemyManager::enemys.size() <= 0 || rand() % 130 == 0)
+			{
+				for (int i = 0; i < 2; i++)
+				{
+					int ran = rand() % 5;
+					if (ran == 0)
+					{
+						EnemyManager::AddEnemy(BaseEnemy::SpeedType::Hi);
+					}
+					else if (ran == 1 || ran == 2)
+					{
+						EnemyManager::AddEnemy(BaseEnemy::SpeedType::Midl);
+					}
+					else
+					{
+						EnemyManager::AddEnemy(BaseEnemy::SpeedType::Normal);
+					}
+				}
+			}
+		}
+		else if (waveNumber == 6)
+		{
+			if (EnemyManager::enemys.size() <= 0 || rand() % 100 == 0)
+			{
+				for (int i = 0; i < 2; i++)
+				{
+					int ran = rand() % 5;
+					if (ran == 0 || ran == 1)
+					{
+						EnemyManager::AddEnemy(BaseEnemy::SpeedType::Hi);
+					}
+					else if (ran == 2 || ran == 3)
+					{
+						EnemyManager::AddEnemy(BaseEnemy::SpeedType::Midl);
+					}
+					else
+					{
+						EnemyManager::AddEnemy(BaseEnemy::SpeedType::Normal);
+					}
+				}
+			}
+		}
+		else if (waveNumber == 7)
+		{
+			if (EnemyManager::enemys.size() <= 0 || rand() % 100 == 0)
+			{
+				for (int i = 0; i < 3; i++)
+				{
+					int ran = rand() % 5;
+					if (ran == 0 || ran == 1)
+					{
+						EnemyManager::AddEnemy(BaseEnemy::SpeedType::Hi);
+					}
+					else if (ran == 2 || ran == 3)
+					{
+						EnemyManager::AddEnemy(BaseEnemy::SpeedType::Midl);
+					}
+					else
+					{
+						EnemyManager::AddEnemy(BaseEnemy::SpeedType::Normal);
+					}
+				}
+			}
+		}
+		else if (waveNumber == 8)
+		{
+			if (EnemyManager::enemys.size() <= 0 || rand() % 100 == 0)
+			{
+				for (int i = 0; i < 3; i++)
+				{
+					int ran = rand() % 5;
+					if (ran == 0)
+					{
+						EnemyManager::AddEnemy(BaseEnemy::SpeedType::Hi);
+					}
+					else if (ran == 1 || ran == 3)
+					{
+						EnemyManager::AddEnemy(BaseEnemy::SpeedType::Midl);
+					}
+					else
+					{
+						EnemyManager::AddEnemy(BaseEnemy::SpeedType::Normal);
+					}
+				}
+			}
+		}
+		else if (waveNumber == 9)
+		{
+			if (EnemyManager::enemys.size() <= 0 || rand() % 100 == 0)
+			{
+				for (int i = 0; i < 3; i++)
+				{
+					int ran = rand() % 5;
+					if (ran == 0 || ran == 2)
+					{
+						EnemyManager::AddEnemy(BaseEnemy::SpeedType::Hi);
+					}
+					else if (ran == 1 || ran == 3)
+					{
+						EnemyManager::AddEnemy(BaseEnemy::SpeedType::Midl);
+					}
+					else
+					{
+						EnemyManager::AddEnemy(BaseEnemy::SpeedType::Normal);
+					}
+				}
+			}
+		}
+		/*else if (waveNumber == 9)
+		{
+			if (EnemyManager::enemys.size() <= 0 || rand() % 150 == 0)
+			{
+				for (int i = 0; i < 4; i++)
+				{
+					int ran = rand() % 5;
+					if (ran == 0 || ran == 2)
+					{
+						EnemyManager::AddEnemy(BaseEnemy::SpeedType::Hi);
+					}
+					else if (ran == 1 || ran == 3)
+					{
+						EnemyManager::AddEnemy(BaseEnemy::SpeedType::Midl);
+					}
+					else
+					{
+						EnemyManager::AddEnemy(BaseEnemy::SpeedType::Normal);
+					}
+				}
+			}
+		}*/
 	}
 }
 
@@ -114,6 +325,21 @@ void WaveManager::Draw()
 	//DrawBox(0, WindowSize::Hi / 2 - m_backSize.v / 2, WindowSize::Wid, WindowSize::Hi / 2 + m_backSize.v / 2, GetColor(123, 204, 41), true);
 	DrawExtendGraph(m_position.u - m_size.u / 2, m_position.v - m_size.v / 2, m_position.u + m_size.u / 2, m_position.v + m_size.v / 2,
 		s_waves[waveNumber], true);
+	if (waveNumber == 0)
+	{
+		alpha -= 1;
+		if (alpha <= 0)
+		{
+			alpha = 0;
+		}
+		float sens = 0.3f;
+		FLOAT2 size = { 933.0f * sens , 174.0f * sens };
+		float y = 300;
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
+		DrawExtendGraph(WindowSize::Wid / 2 - size.u, WindowSize::Hi / 2 - size.v + y, WindowSize::Wid / 2 + size.u, WindowSize::Hi / 2 + size.v + y
+			, s_rule, TRUE);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	}
 }
 
 void WaveManager::Wave1()

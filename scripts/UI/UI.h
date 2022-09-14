@@ -70,10 +70,27 @@ public:
 	static int s_numbers[10];
 	static int nowScore;
 	static float ext;
+	static float scoreExt;
+	static float MaxExt;
+	static float MaxScoreExt;
 	static FLOAT2 scorePos[5];
 	static int s_score[5];
+	static float nowR;
 	static const int R = 80;
+	static bool isIncDec;
 
+	static int s_bomb;
+	static std::list<UISprite *> m_bombs;
+	static int nowBomb;
+	static int s_bombTex[4];
+	static FLOAT2 m_bombTexPos[4];
+	static float bombTexExt;
+	static float MaxBombExt;
+	static float bombExt;
+	static float MaxBomb;
+
+	static void Increase();
+	static void Decrease();
 	static void LoadFile();
 	static void Init();
 	static void Update(int score);

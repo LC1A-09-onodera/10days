@@ -293,8 +293,7 @@ void Player::Draw()
 
 	float left = Input::GetJoyLeftTrigger();
 	float right = Input::GetJoyRightTrigger();
-	DrawFormatString(0, 0, GetColor(255, 255, 255), "LEFT:%2f", left);
-	DrawFormatString(0, 20, GetColor(255, 255, 255), "RIGHT:%2f", right);
+	
 
 	//Ž©‹@
 	float l_addRad = 0;
