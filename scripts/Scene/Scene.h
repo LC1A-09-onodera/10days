@@ -17,8 +17,10 @@ public:
 		Left1,
 		Left2,
 	};
+
 	static int m_s_backBround;
 	static int m_s_title;
+	static int m_s_encaenca;
 	static int m_s_space;
 	static int m_s_side;
 	static FLOAT2 m_sideSize;
@@ -29,10 +31,12 @@ public:
 
 	static int m_s_ciycle;
 	static FLOAT2 m_ciycleSize;
+	static bool m_isEnca;
 	static void LoadFile();
 	static void Update();
 	static void Init();
 	static void Draw();
+	static void SetRand();
 };
 
 class GameScene

@@ -13,6 +13,7 @@ FLOAT2 GameScene::m_sideSize;
 
 
 int TitleScene::m_s_title;
+int TitleScene::m_s_encaenca;
 int TitleScene::m_s_space;
 FLOAT2 TitleScene::m_titlePos;
 FLOAT2 TitleScene::m_spacePos;
@@ -20,6 +21,7 @@ FLOAT2 TitleScene::m_titleSize;
 FLOAT2 TitleScene::m_spaceSize;
 int TitleScene::m_s_ciycle;
 FLOAT2 TitleScene::m_ciycleSize = { 504, 504 };
+bool TitleScene::m_isEnca = false;
 
 FLOAT2 SceneSide::m_sidePosition[4];
 
@@ -93,6 +95,7 @@ void TitleScene::LoadFile()
 {
 	m_s_side = LoadGraph("Resources/EncanEncounter.png");
 	m_s_title = LoadGraph("Resources/new_title.png");
+	m_s_encaenca = LoadGraph("Resources/enca_enca.png");
 	m_s_space = LoadGraph("Resources/push_guide.png");
 	m_s_ciycle = LoadGraph("Resources/circle.png");
 	m_sideSize = { 1139.0f, 104.0f };
@@ -117,6 +120,9 @@ void TitleScene::Init()
 	{
 		SceneSide::m_sidePosition[i] = { WindowSize::Wid - m_sideSize.v, (-m_sideSize.u / 2) - (m_sideSize.u * (i - 2) + (GameScene::dis * (i - 2))) };
 	}
+	int l_rand = std::rand() % 5;
+	if (l_rand == 0) { m_isEnca = true; }
+	else { m_isEnca = false; }
 }
 
 void TitleScene::Draw()
@@ -127,8 +133,22 @@ void TitleScene::Draw()
 	GameScene::Draw();
 	float win = WindowSize::Wid / 2;
 	float hi = WindowSize::Hi / 2;
-	DrawExtendGraph(win - m_titleSize.u / 2, hi - 0 - m_titleSize.v / 2, win + m_titleSize.u / 2, hi - 0 + m_titleSize.v / 2, m_s_title, true);
+	if (!m_isEnca)
+	{
+		DrawExtendGraph(win - m_titleSize.u / 2, hi - 0 - m_titleSize.v / 2, win + m_titleSize.u / 2, hi - 0 + m_titleSize.v / 2, m_s_title, true);
+	}
+	else
+	{
+		DrawExtendGraph(win - m_titleSize.u / 2, hi + 10 - m_titleSize.v / 2, win + m_titleSize.u / 2, hi - 40 + m_titleSize.v / 2, m_s_encaenca, true);
+	}
 	DrawExtendGraph(win - m_spaceSize.u / 2, hi + 120 - m_spaceSize.v / 2, win + m_spaceSize.u / 2, hi + 120 + m_spaceSize.v / 2, m_s_space, true);
+}
+
+void TitleScene::SetRand()
+{
+	int l_rand = std::rand() % 5;
+	if (l_rand == 0) { m_isEnca = true; }
+	else { m_isEnca = false; }
 }
 
 void ResultScene::Draw()
@@ -138,21 +158,21 @@ void ResultScene::Draw()
 		TitleScene::Draw();
 	}
 	DrawCircleAA(WindowSize::Wid / 2, WindowSize::Hi / 2, ciycleR, 128, GetColor(13, 13, 13));
-	
+
 	if (!isToTitle)
 	{
 		DrawExtendGraph(WindowSize::Wid / 2 - (340 / 2 * 0.5f) - 200, WindowSize::Hi / 2 - (75 / 2 * 0.5f),
-						WindowSize::Wid / 2 + (340 / 2 * 0.5f) - 200, WindowSize::Hi / 2 + (75 / 2 * 0.5f), s_score, true);
+			WindowSize::Wid / 2 + (340 / 2 * 0.5f) - 200, WindowSize::Hi / 2 + (75 / 2 * 0.5f), s_score, true);
 		float x = -32;
-		int score[6] = { m_score / 100000 % 10,m_score / 10000 % 10,m_score / 1000 % 10,m_score / 100 % 10,m_score / 10 % 10, m_score % 10};
+		int score[6] = { m_score / 100000 % 10,m_score / 10000 % 10,m_score / 1000 % 10,m_score / 100 % 10,m_score / 10 % 10, m_score % 10 };
 		for (int i = 0; i < 6; i++)
 		{
 			DrawExtendGraph(WindowSize::Wid / 2 - (m_numSize.u / 2) + x, WindowSize::Hi / 2 - (m_numSize.v / 2),
-							WindowSize::Wid / 2 + (m_numSize.u / 2) + x, WindowSize::Hi / 2 + (m_numSize.v / 2), s_number[score[i]], true);
+				WindowSize::Wid / 2 + (m_numSize.u / 2) + x, WindowSize::Hi / 2 + (m_numSize.v / 2), s_number[score[i]], true);
 			x += m_numSize.u;
 		}
 		DrawExtendGraph(WindowSize::Wid / 2 - (552 / 2 * 0.2f), WindowSize::Hi / 2 - (509 / 2 * 0.2f) + 150,
-						WindowSize::Wid / 2 + (552 / 2 * 0.2f), WindowSize::Hi / 2 + (509 / 2 * 0.2f) + 150, s_space, true);
+			WindowSize::Wid / 2 + (552 / 2 * 0.2f), WindowSize::Hi / 2 + (509 / 2 * 0.2f) + 150, s_space, true);
 	}
 
 }
