@@ -2,7 +2,7 @@
 #include "../Input/Input.h"
 #include "../Scroll/Scroll.h"
 #include "../Sound/Sound.h"
-
+#include "../Wave/Wave.h"
 int Player::m_bomb;
 bool Player::m_isShotBomb;
 
@@ -186,6 +186,7 @@ void Player::Update()
 				if (Input::GetKeyTrigger(KEY_INPUT_SPACE) ||
 					Input::isJoyBottomTrigger(XINPUT_BUTTON_RIGHT_SHOULDER))
 				{
+					//WaveManager::isBombHit = true;
 					StopSoundMem(SoundManager::BombShot);
 					PlaySoundMem(SoundManager::BombShot, DX_PLAYTYPE_BACK);
 					m_isShotBomb = true;
