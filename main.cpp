@@ -165,14 +165,14 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 						ShotDistance++;
 						/*if (ShotDistance % 2 == 0)
 						{*/
-							bool isShot = player.ShotBullet();
-							if (isShot && !bulletUI.m_isAllShot)
-							{
+						bool isShot = player.ShotBullet();
+						if (isShot && !bulletUI.m_isAllShot)
+						{
 
-								ObjectManager::object1.Shot(winSizeHalf, spriteSize, player.GetDeg(), 18.0f, BaseObject::ObjectType::ORANGE);
-								StopSoundMem(SoundManager::shotBullet);
-								PlaySoundMem(SoundManager::shotBullet, DX_PLAYTYPE_BACK);
-							}
+							ObjectManager::object1.Shot(winSizeHalf, spriteSize, player.GetDeg(), 18.0f, BaseObject::ObjectType::ORANGE);
+							StopSoundMem(SoundManager::shotBullet);
+							PlaySoundMem(SoundManager::shotBullet, DX_PLAYTYPE_BACK);
+						}
 						//}
 					}
 					BaseObject::ResetSpeed();
@@ -207,6 +207,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 							if (!x->isDelete)
 							{
 								x->HitShiled();
+								if (x->speedType == BaseEnemy::SpeedType::Bomb)
+								{
+									x->isBombErase = true;
+								}
 							}
 						}
 					}
