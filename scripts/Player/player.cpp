@@ -18,19 +18,25 @@ void Player::Init()
 	m_reflector_pos = {
 		C_HALF_WID,
 		C_HALF_HEI + C_STAGE_REFLECTOR_RAD };
+	m_mode = SHOT;
 	m_stage_rad = C_STAGE_RAD;
 	m_bulletNum = C_BULLET_INIT_VAL;
+	m_bomb = C_BOMB_INIT_VAL;
 	m_maxBulletNum = m_bulletNum;
 	m_stage_rad = C_STAGE_RAD;
 	m_rad = 1.0f;
 	m_easeTimer = 0.0f;
 	m_deg = 0;
-	m_reflector_rad = DX_PI_F;
+	m_reflector_rad = DX_PI_F / 2.0f;
+	m_reflector_size = 0.0f;
+	m_bombLength = 0.0f;
 	m_isMove = false;
 	m_stageSize = { 504, 504 };
 	m_isReload = false;
 	m_isChange = false;
 	m_isReflectorHit = false;
+	m_isChangeMode = false;
+	m_isShotBomb = false;
 }
 
 void Player::Update()
@@ -39,85 +45,160 @@ void Player::Update()
 
 	AttachForce();
 
-	if (m_bulletNum == 0)
+	if (Shake::GetPower().u > 0.0f)
 	{
-		m_bulletNum = m_maxBulletNum;
+		FLOAT2 l_shakePower = { -0.5f,-0.5f };
+		Shake::AddShakePower(l_shakePower);
 	}
 
 	//通常時
 	if (!m_isMove)
 	{
-		//自機の方向ベクトルを計算
-		FLOAT2 l_diff = { 0,0 };
-		l_diff.u = m_position.u - C_HALF_WID;
-		l_diff.v = m_position.v - C_HALF_HEI;
-		float l_len = sqrtf(
-			powf(l_diff.u, 2.0f) +
-			powf(l_diff.v, 2.0f));
-		FLOAT2 l_vec = { 0,0 };
-		l_vec.u = l_diff.u / l_len;
-		l_vec.v = l_diff.v / l_len;
-		float l_pRad = atan2f(-l_vec.v, -l_vec.u);
-		if (l_pRad < 0.0f)
+		//ボム以外
+		if (!m_isShotBomb)
 		{
-			l_pRad += DX_PI_F * 2;
-		}
-		m_deg = 180.0f / DX_PI_F * l_pRad;
-
-		//左スティックが倒されている時のみ(コントローラー以外も対応させろ！)
-		if (Input::isJoyLeftStickBottom())
-		{
-			//自機の位置算出正規化
-			m_vec = Input::GetJoyLeftStick();
-			float l_len = sqrtf(powf(m_vec.u, 2.0f) + powf(m_vec.v, 2.0f));
-			m_vec.u /= l_len;
-			m_vec.v /= l_len * -1;
-
-			float l_pAngle = 180.0f / DX_PI_F * atan2f(l_vec.v, l_vec.u);
-			float l_sAngle = 180.0f / DX_PI_F * atan2f(m_vec.v, m_vec.u);
-			if (l_pAngle < 0.0f) { l_pAngle += 360.0f; }
-			if (l_sAngle < 0.0f) { l_sAngle += 360.0f; }
-			float l_nearArc = RotateEarliestArc(l_pAngle, l_sAngle);
-
-			FLOAT2 l_nearVec = { 0,0 };
-			//要修正
-			float l_rad = (l_pAngle + (l_nearArc / 30.0f)) * DX_PI_F / 180.0f;
-			l_nearVec.u = cosf(l_rad);
-			l_nearVec.v = sinf(l_rad);
-
-			m_position.u = l_nearVec.u * (C_STAGE_RAD - C_PLAYER_RAD) + C_HALF_WID;
-			m_position.v = l_nearVec.v * (C_STAGE_RAD - C_PLAYER_RAD) + C_HALF_HEI;
-
-			//リフレクター
-			m_reflector_pos.u = l_nearVec.u * C_STAGE_REFLECTOR_RAD + C_HALF_WID;
-			m_reflector_pos.v = l_nearVec.v * C_STAGE_REFLECTOR_RAD + C_HALF_HEI;
-			m_reflector_rad = l_pRad - DX_PI_F / 2.0f;
-			if (m_reflector_rad < 0.0f)
+			//自機の方向ベクトルを計算
+			FLOAT2 l_diff = { 0,0 };
+			l_diff.u = m_position.u - C_HALF_WID;
+			l_diff.v = m_position.v - C_HALF_HEI;
+			float l_len = sqrtf(
+				powf(l_diff.u, 2.0f) +
+				powf(l_diff.v, 2.0f));
+			FLOAT2 l_vec = { 0,0 };
+			l_vec.u = l_diff.u / l_len;
+			l_vec.v = l_diff.v / l_len;
+			float l_pRad = atan2f(-l_vec.v, -l_vec.u);
+			if (l_pRad < 0.0f)
 			{
-				m_reflector_rad += DX_PI_F * 2.0f;
+				l_pRad += DX_PI_F * 2;
 			}
-		}
+			m_deg = 180.0f / DX_PI_F * l_pRad;
 
-		//縦断入力
-		if (Input::GetKeyTrigger(KEY_INPUT_SPACE) ||
-			Input::isJoyBottomTrigger(XINPUT_BUTTON_A))
-		{
-			m_bulletNum = m_maxBulletNum;
-			m_start_pos = m_position;
-			l_vec.u *= -1.0f;
-			l_vec.v *= -1.0f;
-			m_end_pos.u = l_vec.u * (C_STAGE_RAD - C_PLAYER_RAD) + C_HALF_WID;
-			m_end_pos.v = l_vec.v * (C_STAGE_RAD - C_PLAYER_RAD) + C_HALF_HEI;
-			m_vec = l_vec;
-			m_isMove = true;
-		}
+			//左スティックが倒されている時のみ(コントローラー以外も対応させろ！)
+			if (Input::isJoyLeftStickBottom())
+			{
+				//自機の位置算出正規化
+				m_vec = Input::GetJoyLeftStick();
+				float l_len = sqrtf(powf(m_vec.u, 2.0f) + powf(m_vec.v, 2.0f));
+				m_vec.u /= l_len;
+				m_vec.v /= l_len * -1;
 
-		//リフレクターヒット時
-		if (m_isReflectorHit)
-		{
-			FLOAT2 l_shakePower = { 2.0f,2.0f };
-			Shake::AddShakePower(l_shakePower);
-			m_isReflectorHit = false;
+				float l_pAngle = 180.0f / DX_PI_F * atan2f(l_vec.v, l_vec.u);
+				float l_sAngle = 180.0f / DX_PI_F * atan2f(m_vec.v, m_vec.u);
+				if (l_pAngle < 0.0f) { l_pAngle += 360.0f; }
+				if (l_sAngle < 0.0f) { l_sAngle += 360.0f; }
+				float l_nearArc = RotateEarliestArc(l_pAngle, l_sAngle);
+
+				FLOAT2 l_nearVec = { 0,0 };
+				//要修正
+				//float l_speed = 0.0f;
+				//if (l_nearArc < 0.0f) { l_speed = -C_MAX_MOVE_SPEED; }
+				//else if (l_nearArc > 0.0f) { l_speed = C_MAX_MOVE_SPEED; }
+				//if (fabsf(l_nearArc) < C_MAX_MOVE_SPEED)
+				//{
+					//if (l_nearArc < 0.0f) { l_speed = -l_nearArc; }
+					//else if (l_nearArc > 0.0f) { l_speed = l_nearArc; }
+				//}
+				float l_rad = (l_pAngle + (l_nearArc / 30.0f)) * DX_PI_F / 180.0f;
+				l_nearVec.u = cosf(l_rad);
+				l_nearVec.v = sinf(l_rad);
+
+				m_position.u = l_nearVec.u * (C_STAGE_RAD - C_PLAYER_RAD) + C_HALF_WID;
+				m_position.v = l_nearVec.v * (C_STAGE_RAD - C_PLAYER_RAD) + C_HALF_HEI;
+
+				//リフレクター
+				m_reflector_pos.u = l_nearVec.u * C_STAGE_REFLECTOR_RAD + C_HALF_WID;
+				m_reflector_pos.v = l_nearVec.v * C_STAGE_REFLECTOR_RAD + C_HALF_HEI;
+				m_reflector_rad = l_rad;
+				if (m_reflector_rad < 0.0f)
+				{
+					m_reflector_rad += DX_PI_F * 2.0f;
+				}
+			}
+
+			//縦断入力
+			if (Input::GetKeyTrigger(KEY_INPUT_Z) ||
+				Input::isJoyBottomTrigger(XINPUT_BUTTON_B))
+			{
+				m_bulletNum = m_maxBulletNum;
+				m_start_pos = m_position;
+				l_vec.u *= -1.0f;
+				l_vec.v *= -1.0f;
+				m_end_pos.u = l_vec.u * (C_STAGE_RAD - C_PLAYER_RAD) + C_HALF_WID;
+				m_end_pos.v = l_vec.v * (C_STAGE_RAD - C_PLAYER_RAD) + C_HALF_HEI;
+				m_vec = l_vec;
+				m_isMove = true;
+			}
+
+			//モード変更
+			if (!m_isChangeMode)
+			{
+				if (Input::GetKeyTrigger(KEY_INPUT_Z) ||
+					Input::isJoyBottomTrigger(XINPUT_BUTTON_A))
+				{
+					m_isChangeMode = true;
+				}
+			}
+			else
+			{
+				const float l_addTimer = C_ADD_TIMER * 2.0f;
+				if (m_mode == REFLECTION)
+				{
+					if (m_reflector_size > 0.0f)
+					{
+						m_reflector_size -= l_addTimer;
+					}
+					if (m_reflector_size <= 0.0f)
+					{
+						m_reflector_size = 0.0f;
+						m_mode = SHOT;
+						m_isChangeMode = false;
+					}
+				}
+				else
+				{
+					if (m_reflector_size < 1.0f)
+					{
+						m_reflector_size += l_addTimer;
+					}
+					if (m_reflector_size >= 1.0f)
+					{
+						m_reflector_size = 1.0f;
+						m_bulletNum = m_maxBulletNum;
+						m_mode = REFLECTION;
+						m_isChangeMode = false;
+					}
+				}
+			}
+
+			//ボム発射
+			if (!m_isShotBomb && m_bomb > 0)
+			{
+				if (Input::GetKeyTrigger(KEY_INPUT_SPACE) ||
+					Input::isJoyBottomTrigger(XINPUT_BUTTON_RIGHT_SHOULDER))
+				{
+					m_isShotBomb = true;
+					m_bomb--;
+				}
+			}
+
+			//リフレクターヒット時
+			if (m_isReflectorHit)
+			{
+				FLOAT2 l_shakePower = { 20.0f,15.0f };
+				Shake::AddShakePower(l_shakePower);
+				m_isReflectorHit = false;
+			}
+
+			//射撃モード
+			if (m_mode == SHOT)
+			{
+				//自動リロード
+				if (m_bulletNum == 0)
+				{
+					m_bulletNum = m_maxBulletNum;
+				}
+			}
 		}
 	}
 
@@ -137,11 +218,12 @@ void Player::Update()
 		}
 
 		//自機拡縮処理
+		const float l_addTimer = C_ADD_TIMER * 2.0f;
 		if (!m_isChange)
 		{
 			if (m_rad > 0.0f)
 			{
-				m_rad -= C_ADD_TIMER * 4.0f;
+				m_rad -= l_addTimer;
 			}
 			if (m_rad < 0.0f) { m_rad = 0.0f; }
 			if (m_easeTimer >= 0.5f)
@@ -156,7 +238,7 @@ void Player::Update()
 		{
 			if (m_rad < 1.0f)
 			{
-				m_rad += C_ADD_TIMER * 4.0f;
+				m_rad += l_addTimer;
 			}
 			if (m_rad > 1.0f) { m_rad = 1.0f; }
 			if (!m_isMove)
@@ -171,11 +253,11 @@ void Player::Update()
 	{
 		if (itr->timer < 1.0f)
 		{
-			itr->timer += C_ADD_TIMER;
+			itr->timer += C_ADD_TIMER * 1.2f;
 		}
 		if (itr->timer > 0.3f)
 		{
-			itr->alpha -= 5;
+			itr->alpha -= 10;
 		}
 		if (itr->timer > 1.0f) { itr->timer = 1.0f; }
 		if (!itr->isDraw) { itr->isDraw = true; }
@@ -189,6 +271,20 @@ void Player::Update()
 			break;
 		}
 	}
+
+	//ボムのLength計算
+	if (m_isShotBomb)
+	{
+		m_bombLength += C_ADD_BOMB_LENGTH;
+		FLOAT2 l_addPower{ 4.0f,4.0f };
+		Shake::AddShakePower(l_addPower);
+
+		if (m_bombLength > m_winSize.u)
+		{
+			m_bombLength = 0.0f;
+			m_isShotBomb = false;
+		}
+	}
 }
 
 void Player::Draw()
@@ -197,25 +293,61 @@ void Player::Draw()
 
 	float left = Input::GetJoyLeftTrigger();
 	float right = Input::GetJoyRightTrigger();
-	DrawFormatString(0, 0, GetColor(255, 255, 255), "LEFT:%2f", left);
-	DrawFormatString(0, 20, GetColor(255, 255, 255), "RIGHT:%2f", right);
+	
 
 	//自機
+	float l_addRad = 0;
+	float l_pSize = 1.0f;
+	if (m_reflector_size >= 0.5f)
+	{
+		l_addRad = DX_PI_F;
+		l_pSize = m_reflector_size;
+	}
+	else
+	{
+		l_pSize = (1.0f - m_reflector_size);
+	}
 	DrawRotaGraph(
-		m_position.u + Shake::GetShake().u,
-		m_position.v + Shake::GetShake().v,
-		m_rad * 0.3f,
-		m_reflector_rad - DX_PI_F,
+		static_cast<int>(m_position.u + Shake::GetShake().u),
+		static_cast<int>(m_position.v + Shake::GetShake().v),
+		static_cast<double>(m_rad) * l_pSize * 0.2,
+		static_cast<double>(m_reflector_rad) + l_addRad - DX_PI_F / 2.0,
 		m_s_player,
+		true
+	);
+
+	//リフレクターから発生するパーティクル
+	if (m_mode == REFLECTION)
+	{
+		const int l_reflector_len = 180;
+		const float l_len = rand() % l_reflector_len;
+		const float l_rand = l_len - l_reflector_len / 2.0f;
+		const float l_reflector_posX = m_reflector_pos.u + l_rand * cosf(m_reflector_rad);
+		const float l_reflector_posY = m_reflector_pos.v + l_rand * sinf(m_reflector_rad);
+		FLOAT2 l_pos = { l_reflector_posX,l_reflector_posY };
+		FLOAT2 startSize = { 20.0f, 20.0f };
+		FLOAT2 endSize = { 2.0f, 2.0f };
+		ParticleManager::smpParticle.StayParticle(l_pos, startSize, endSize, 2, 60);
+	}
+
+	//リフレクター(薄い)
+	const float l_reflectorSize = 0.28f;
+
+	DrawRotaGraph(
+		static_cast<int>(m_reflector_pos.u + Shake::GetShake().u),
+		static_cast<int>(m_reflector_pos.v + Shake::GetShake().v),
+		static_cast<double>(m_rad) * l_reflectorSize,
+		static_cast<double>(m_reflector_rad),
+		m_s_reflector_alpha,
 		true
 	);
 
 	//リフレクター
 	DrawRotaGraph(
-		m_reflector_pos.u + Shake::GetShake().u,
-		m_reflector_pos.v + Shake::GetShake().v,
-		m_rad,
-		m_reflector_rad,
+		static_cast<int>(m_reflector_pos.u + Shake::GetShake().u),
+		static_cast<int>(m_reflector_pos.v + Shake::GetShake().v),
+		static_cast<double>(m_rad) * m_reflector_size * l_reflectorSize,
+		static_cast<double>(m_reflector_rad),
 		m_s_reflector,
 		true
 	);
@@ -237,9 +369,9 @@ void Player::Draw()
 		if (itr->isDraw)
 		{
 			DrawRotaGraph(
-				itr->pos.u,
-				itr->pos.v,
-				itr->r * 0.5f,
+				itr->pos.u + Shake::GetShake().u,
+				itr->pos.v + Shake::GetShake().v,
+				static_cast<double>(itr->r) * 0.5,
 				0.0f,
 				m_s_reflector_hit,
 				true
@@ -248,10 +380,25 @@ void Player::Draw()
 	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
+	//ボム
+	if (m_isShotBomb)
+	{
+		DrawRotaGraph(
+			C_HALF_WID + Shake::GetShake().u,
+			C_HALF_HEI + Shake::GetShake().v,
+			static_cast<double>(m_bombLength) / 254.0,
+			0.0,
+			m_s_bomb_effect,
+			true
+		);
+	}
+
 	//debug
 	float hoge = Shake::GetPowerX();
-	DrawFormatString(0, 40, GetColor(0, 0, 0), "ShakeX:%f", hoge);
-	DrawFormatString(0, 60, GetColor(0, 0, 0), "RefRad:%f", m_rad);
+	DrawFormatString(50, 20, GetColor(0, 0, 0), "ShakeX:%f", hoge);
+	float hoge2 = Shake::GetPowerX();
+	DrawFormatString(50, 40, GetColor(0, 0, 0), "ShakeY:%f", hoge2);
+	DrawFormatString(50, 60, GetColor(0, 0, 0), "RefRad:%f", m_reflector_rad);
 }
 
 void Player::LoadFile()
@@ -259,8 +406,10 @@ void Player::LoadFile()
 	m_s_player = LoadGraph("Resources/player.png");
 	m_sprite = LoadGraph("Resources/particle.png");
 	m_s_stage = LoadGraph("Resources/circle.png");
-	m_s_reflector = LoadGraph("Resources/reflector.png");
+	m_s_reflector = LoadGraph("Resources/new_reflecter.png");
+	m_s_reflector_alpha = LoadGraph("Resources/new_reflecter_alpha.png");
 	m_s_reflector_hit = LoadGraph("Resources/hit_effect.png");
+	m_s_bomb_effect = LoadGraph("Resources/bomb_effect.png");
 	Init();
 }
 
@@ -290,6 +439,11 @@ void Player::ReflectorHit(FLOAT2& hitPos)
 	m_effects.push_back(l_effects);
 
 	m_isReflectorHit = true;
+}
+
+bool Player::IsShotBomb()
+{
+	return m_isShotBomb;
 }
 
 bool Player::ShotBullet()

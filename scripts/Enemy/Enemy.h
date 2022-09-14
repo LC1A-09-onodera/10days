@@ -18,6 +18,8 @@ public:
 	//円周上を回っていられる残り時間
 	int m_timer;
 
+	int m_stopTimer;
+	static const int StopTime = 30;
 	enum State
 	{
 		//サイクル上を目指す
@@ -38,38 +40,54 @@ public:
 	};
 	int m_type = Devil;
 
+	enum SpeedType
+	{
+		Normal,
+		Midl,
+		Hi,
+	};
+
+	int speedType;
+
 	int m_returnNum = 0;
 	bool m_isReturn = false;
 
-	static int m_sprite[7];
+	static int m_sprite[3];
 	int nowSpriteNum = NormalMode;
 	
 	static int SpornAngle;
 
 	bool isDelete = false;
 
+	bool isStop = false;
+
 	//中心からの停止用距離
-	static const int CenterR = 450;
+	static const int CenterR = 470;
 	//出現時の
 	static const int OutsideR = 1000;
 	//最大HP
-	static const int MaxHP = 5;
+	static const int MaxHP = 2;
 	//円周上を回っているとき
 	static const int NormalMode = 6;
 	//攻撃時の進行モード
 	static const int ProgressMode = 5;
 	static const int FriendMode = 0;
 	//中心に向かっていくときの速度
-	static const int ToCenterSpeed = 2;
+	float m_ToCenterSpeed = 2;
 	//サークル場を回っているときの速度
 	static const int OnCiycleSpeed = 1;
-	static const int MaxTimer = 600;
+	static const int MaxTimer = 120;
+	static const int ShakeStartTime = 45;
+
+	FLOAT2 shakePower;
+
 	static FLOAT2 CiycleCenter;
 	//ダメージ食らうゾーン
 	static float TowerR;
 
+
 	static void LoadFile();
-	void Init();
+	void Init(SpeedType type = SpeedType::Normal);
 	void Update();
 	void Draw();
 	void ToCiycleMove();
@@ -95,7 +113,7 @@ public:
 
 	//static int enemyCiycle;
 	static void Init();
-	static void AddEnemy();
+	static void AddEnemy(BaseEnemy::SpeedType f_speedType);
 	static void Update();
 	static void Draw();
 	static void CiycleInc();

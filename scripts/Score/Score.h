@@ -1,4 +1,5 @@
 #pragma once
+#include "DxLib.h"
 class Score
 {
 	public:
@@ -12,7 +13,11 @@ class TowerHP
 	static int HP;
 	static const int MaxHP = 3;
 	static int s_HP;
+	static int s_hart[4];
 	static float nowAngle;
+	static FLOAT2 maxSize;
+	static FLOAT2 nowSize;
+	static bool isIncDec;
 	//static float startAngle;
 	static float endAngle;
 	static void Draw();

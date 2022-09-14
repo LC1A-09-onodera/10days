@@ -7,27 +7,29 @@
 #include "../Score/Score.h"
 #include "../Particle/Particle.h"
 #include "../Sound/Sound.h"
+#include "../Scroll/Scroll.h"
 
-int BaseEnemy::m_sprite[7];
+int BaseEnemy::m_sprite[3];
 std::list<BaseEnemy*> EnemyManager::enemys;
 std::list<std::list<BaseEnemy*>::iterator> EnemyManager::deleteEnemys;
 
 FLOAT2 BaseEnemy::CiycleCenter = { WindowSize::Wid / 2, WindowSize::Hi / 2 };
-float BaseEnemy::TowerR = 100;
+float BaseEnemy::TowerR = 65;
 int BaseEnemy::SpornAngle = 45;
 
 int enemyCiycle;
 
 int EnemyManager::nowTowerR = MaxR;
 int EnemyManager::nowCenterR = MaxR;
+
 void BaseEnemy::LoadFile()
 {
-	m_sprite[FriendMode] = LoadGraph("Resources/score_enemy.png");
-	m_sprite[ProgressMode] = LoadGraph("Resources/enemy.png");
-	m_sprite[NormalMode] = LoadGraph("Resources/enemy.png");
+	m_sprite[Normal] = LoadGraph("Resources/enemy_0.png");
+	m_sprite[Midl] = LoadGraph("Resources/enemy_1.png");
+	m_sprite[Hi] = LoadGraph("Resources/enemy_2.png");
 }
 
-void BaseEnemy::Init()
+void BaseEnemy::Init(SpeedType type)
 {
 	m_angle = (float)SpornAngle;
 	float cos = DxLibMath::Cos(m_angle);
@@ -42,6 +44,19 @@ void BaseEnemy::Init()
 	m_easeTimer = 0.0f;
 	m_HP = MaxHP;
 	m_size = {50 , 50};
+	speedType = type;
+	if (type == SpeedType::Normal)
+	{
+		m_ToCenterSpeed = 3.0f;
+	}
+	else if (type == SpeedType::Midl)
+	{
+		m_ToCenterSpeed = 4.0f;
+	}
+	else if (type == SpeedType::Hi)
+	{
+		m_ToCenterSpeed = 5.0f;
+	}
 }
 
 void BaseEnemy::Update()
@@ -59,10 +74,10 @@ void BaseEnemy::Update()
 		LineMove();
 		//HitShiled();
 	}
-	else if (m_state == ReturnCiycle)
+	/*else if (m_state == ReturnCiycle)
 	{
 		ReturnToCiycle();
-	}
+	}*/
 
 	BulletCollision();
 
@@ -83,14 +98,24 @@ void BaseEnemy::Update()
 
 void BaseEnemy::Draw()
 {
-	DrawExtendGraph(m_position.u - (m_size.u / 2), m_position.v - (m_size.v / 2),
-		m_position.u + (m_size.u / 2), m_position.v + (m_size.v / 2), m_sprite[nowSpriteNum], true);
+	/*DrawExtendGraph(m_position.u - (m_size.u / 2), m_position.v - (m_size.v / 2),
+		m_position.u + (m_size.u / 2), m_position.v + (m_size.v / 2), m_sprite[speedType], true);*/
 	//DrawCircle(m_position.u, m_position.v,10,  GetColor(13, 13, 13));
+	FLOAT2 vec = { 0 };
+	vec.u = WindowSize::Wid / 2 - m_position.u;
+	vec.v = WindowSize::Hi / 2 - m_position.v;
+	vec = Collision::Normalize(vec);
+	float angle = atan2(vec.v, vec.u);
+	if (speedType == SpeedType::Hi)
+	{
+		angle += 3.141582f / 2.0f;
+	}
+	DrawRotaGraph(m_position.u + Shake::GetShake().u, m_position.v + Shake::GetShake().v, 0.2f, angle, m_sprite[speedType], true);
 }
 
 void BaseEnemy::ToCiycleMove()
 {
-	m_easeTimer += (float)ToCenterSpeed / 200.0f;
+	m_easeTimer += (float)m_ToCenterSpeed / 200.0f;
 	m_position = Easeing::EaseInQuad(m_position, m_endPosition, m_easeTimer);
 	if (m_easeTimer >= 1.0f)
 	{
@@ -110,18 +135,22 @@ void BaseEnemy::CiycleMove()
 	{
 		m_state = ToCenter;
 	}
+	if (m_timer <= ShakeStartTime)
+	{
+		shakePower = {rand() % 6 - 2.0f, rand() % 6 - 2.0f };
+	}
 }
 
 void BaseEnemy::ReturnToCiycle()
 {
-	m_easeTimer += (float)ToCenterSpeed / 80.0f;
+	m_easeTimer += (float)m_ToCenterSpeed / 50.0f;
 	m_position = Easeing::EaseInQuad(m_position, m_endPosition, m_easeTimer);
 	if (m_easeTimer >= 1.0f)
 	{
 		m_position.u = BaseEnemy::CiycleCenter.u + DxLibMath::Cos(m_angle) * CenterR;
 		m_position.v = BaseEnemy::CiycleCenter.v + DxLibMath::Sin(m_angle) * CenterR;
 		m_easeTimer = 0.0f;
-		m_HP = MaxHP;
+		m_HP = (MaxHP - m_returnNum) < 0 ? 1 : MaxHP - m_returnNum;
 		m_state = ToCenter;
 		m_isReturn = false;
 	}
@@ -129,7 +158,16 @@ void BaseEnemy::ReturnToCiycle()
 
 void BaseEnemy::LineMove()
 {
-	m_position = Easeing::EaseInQuad(m_position, BaseEnemy::CiycleCenter, (float)ToCenterSpeed / 50.0f);
+	if (isStop)
+	{
+		m_stopTimer++;
+		if (m_stopTimer < StopTime)
+		{
+			return;
+		}
+		isStop = false;
+	}
+	m_position = Easeing::EaseInQuad(m_position, BaseEnemy::CiycleCenter, (float)m_ToCenterSpeed / 50.0f);
 	if (Collision::Lenght(BaseEnemy::CiycleCenter, m_position) < TowerR)
 	{
 		//スコア加算
@@ -140,6 +178,7 @@ void BaseEnemy::LineMove()
 			FLOAT2 size = { 18.0f, 22.0f };
 			int score = 10 * (m_returnNum + 1);
 			ParticleManager::scoreParitcle.AddScore(m_position, size, size, score, 60);
+			Score::score += score;
 			StopSoundMem(SoundManager::addScore);
 			PlaySoundMem(SoundManager::addScore, DX_PLAYTYPE_BACK);
 		}
@@ -164,6 +203,12 @@ void BaseEnemy::HitShiled()
 {
 	if (true)
 	{
+		m_HP = 0;
+		isDelete = true;
+		/*float addScore = 10;
+		Score::score += addScore;
+		FLOAT2 size = { 18.0f, 22.0f };
+		ParticleManager::scoreParitcle.AddScore(m_position, size, size, addScore, 60);*/
 		//以下反射板に当たった時
 		m_isReturn = true;
 		if (m_type == Angel)
@@ -176,8 +221,8 @@ void BaseEnemy::HitShiled()
 		float sin = DxLibMath::Sin(m_angle);
 		m_endPosition = { BaseEnemy::CiycleCenter.u + CenterR * cos , BaseEnemy::CiycleCenter.v + CenterR * sin };
 		m_easeTimer = 0.0f;
+		m_ToCenterSpeed += 0.5f;
 	}
-
 }
 
 void BaseEnemy::BulletCollision()
@@ -186,20 +231,21 @@ void BaseEnemy::BulletCollision()
 	{
 		if (m_HP <= 0)continue;
 		if ((*itr)->m_isHit) continue;
-		if (Collision::CiycleCollision(m_position, 10, (*itr)->m_position, 10))
+		if (Collision::CiycleCollision(m_position, 20, (*itr)->m_position, 10))
 		{
 			(*itr)->m_isHit = true;
 			ObjectManager::object1.m_deleteObject.push_back(itr);
 			m_HP--;
 			m_timer = 0;
 			//スコア加算
-			Score::score++;
-			FLOAT2 size = { 10.0f, 17.0f };
-			ParticleManager::scoreParitcle.AddScore((*itr)->m_position, size, size, 1, 60);
+			//Score::score++;
+			//FLOAT2 size = { 10.0f, 17.0f };
+			//ParticleManager::scoreParitcle.AddScore((*itr)->m_position, size, size, 1, 60);
 
 			if (m_HP <= 0)
 			{
 				m_type = Angel;
+				isDelete = true;
 			}
 
 			StopSoundMem(SoundManager::shotHitSound);
@@ -217,13 +263,14 @@ void BaseEnemy::BulletCollision()
 			m_HP--;
 			m_timer = 0;
 			//スコア加算
-			Score::score++;
+			/*Score::score++;
 			FLOAT2 size = { 10.0f, 17.0f };
-			ParticleManager::scoreParitcle.AddScore((*itr)->m_position, size, size, 1, 60);
+			ParticleManager::scoreParitcle.AddScore((*itr)->m_position, size, size, 1, 60);*/
 
 			if (m_HP <= 0)
 			{
 				m_type = Angel;
+				isDelete = true;
 			}
 
 			StopSoundMem(SoundManager::shotHitSound);
@@ -242,10 +289,13 @@ void EnemyManager::Init()
 
 }
 
-void EnemyManager::AddEnemy()
+void EnemyManager::AddEnemy(BaseEnemy::SpeedType f_speedType)
 {
 	BaseEnemy* enemy = new BaseEnemy();
-	enemy->Init();
+	int a = rand() % 3;
+	
+	enemy->Init(f_speedType);
+	
 	EnemyManager::enemys.push_back(&(*enemy));
 }
 
@@ -256,6 +306,22 @@ void EnemyManager::Update()
 		(*itr)->Update();
 		if ((*itr)->isDelete)
 		{
+			int score;
+			if ((*itr)->speedType == BaseEnemy::SpeedType::Normal)
+			{
+				score = 10;
+			}
+			else if ((*itr)->speedType == BaseEnemy::SpeedType::Midl)
+			{
+				score = 20;
+			}
+			else if ((*itr)->speedType == BaseEnemy::SpeedType::Hi)
+			{
+				score = 30;
+			}
+			Score::score += score;
+			FLOAT2 size = { 10.0f, 17.0f };
+			ParticleManager::scoreParitcle.AddScore((*itr)->m_position, size, size, score, 60);
 			deleteEnemys.push_back(itr);
 		}
 	}
@@ -268,8 +334,8 @@ void EnemyManager::Update()
 
 void EnemyManager::Draw()
 {
-	DrawCircleAA(WindowSize::Wid / 2, WindowSize::Hi / 2, nowCenterR, 128, GetColor(200, 13, 13), 0, 1.0f);
-	DrawCircleAA(WindowSize::Wid / 2, WindowSize::Hi / 2, nowTowerR, 128, GetColor(13, 200, 13), 0, 1.0f);
+	DrawCircleAA(WindowSize::Wid / 2 + Shake::GetShake().u, WindowSize::Hi / 2 + Shake::GetShake().v, nowCenterR, 128, GetColor(200, 13, 13), 0, 1.0f);
+	DrawCircleAA(WindowSize::Wid / 2 + Shake::GetShake().u, WindowSize::Hi / 2 + Shake::GetShake().v, nowTowerR, 128, GetColor(13, 200, 13), 0, 2.0f);
 	for (auto itr = enemys.begin(); itr != enemys.end(); ++itr)
 	{
 		(*itr)->Draw();

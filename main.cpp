@@ -11,6 +11,8 @@
 #include "scripts/Enemy/Enemy.h"
 #include "scripts/Score/Score.h"
 #include "scripts/Wave/Wave.h"
+#include <string>
+#include <time.h>
 
 // ウィンドウのタイトルに表示する文字列
 const char TITLE[] = "10days";
@@ -23,6 +25,7 @@ const int WIN_HEIGHT = 720;
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
 {
+	srand((unsigned int)time(NULL));
 	// ウィンドウモードに設定
 	ChangeWindowMode(TRUE);
 
@@ -85,7 +88,16 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	BaseEnemy::LoadFile();
 	ResultScene::LoadFile();
 	TowerHP::s_HP = LoadGraph("Resources/hp.png");
+	for (int i = 1; i < 4; i++)
+	{
+		std::string path = "Resources/heart" + std::to_string(i) + ".png";
+		TowerHP::s_hart[i] = LoadGraph(path.c_str());
+	}
 	WaveManager::LoadFile();
+
+	ScoreUI::LoadFile();
+	ScoreUI::Init();
+
 	// ゲームループ
 	while (1)
 	{
@@ -113,61 +125,52 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		else if (sceneNum == GAME)
 		{
 			WaveManager::Update();
-			player.Update();
-			static float angle = 0.0f;
-			static int time = 0;
-			EnemyManager::CiycleDec();
-			if (Input::GetKeyTrigger(KEY_INPUT_SPACE) || Input::isJoyBottom(XINPUT_BUTTON_X))
+			//if (WaveManager::isAllEnd)
 			{
-				EnemyManager::AddEnemy();
-			}
-			int nowBullet = bulletUI.m_bullets.size();
-			if (!player.GetIsMove() && nowBullet >= player.GetBulletNum())
-			{
-				time++;
-				if (time > 2)
+				player.Update();
+				static float angle = 0.0f;
+				static int time = 0;
+				EnemyManager::CiycleDec();
+				int nowBullet = bulletUI.m_bullets.size();
+				if (!player.GetIsMove() && nowBullet >= player.GetBulletNum() && player.GetMode() == player.SHOT && !player.IsShotBomb())
 				{
-					time = 0;
-					angle = rand() % 360;
-					if (angle >= 360.0f)
+					time++;
+					if (time > 2)
 					{
-						angle = 0.0f;
-					}
-					FLOAT2 winSizeHalf = { player.GetPos().u,  player.GetPos().v };
-					FLOAT2 spriteSize = { 30.0f, 30.0f };
-
-					//弾が残ってるかの判定
-					bool isShot = player.ShotBullet();
-					if (isShot && !bulletUI.m_isAllShot)
-					{
-						if (rand() % 2 == 0)
+						time = 0;
+						angle = rand() % 360;
+						if (angle >= 360.0f)
 						{
+							angle = 0.0f;
+						}
+						FLOAT2 winSizeHalf = { player.GetPos().u,  player.GetPos().v };
+						FLOAT2 spriteSize = { 30.0f, 30.0f };
+
+						//弾が残ってるかの判定
+						bool isShot = player.ShotBullet();
+						if (isShot && !bulletUI.m_isAllShot)
+						{
+
 							ObjectManager::object1.Shot(winSizeHalf, spriteSize, player.GetDeg(), 18.0f, BaseObject::ObjectType::ORANGE);
-						}
-						else
-						{
-							ObjectManager::object2.Shot(winSizeHalf, spriteSize, player.GetDeg(), 18.0f, BaseObject::ObjectType::PINK);
-						}
-						StopSoundMem(SoundManager::shotBullet);
-						PlaySoundMem(SoundManager::shotBullet, DX_PLAYTYPE_BACK);
-					}
-				}
-				BaseObject::ResetSpeed();
-			}
-			BaseObject::SetIsMove(player.GetIsMove());
-			FLOAT2 pos = player.GetPos();
-			//各オブジェクトの更新
-			ObjectManager::Update(pos, true);
-			//パーティクルの更新
-			ParticleManager::Update();
-			//エネミーの更新
-			EnemyManager::Update();
-			GameScene::Update();
 
-			//エネミーとリフレクターの判定
-			for (auto &x : EnemyManager::enemys)
-			{
-				if (!x->m_isReturn)
+							StopSoundMem(SoundManager::shotBullet);
+							PlaySoundMem(SoundManager::shotBullet, DX_PLAYTYPE_BACK);
+						}
+					}
+					BaseObject::ResetSpeed();
+				}
+				BaseObject::SetIsMove(player.GetIsMove());
+				FLOAT2 pos = player.GetPos();
+				//各オブジェクトの更新
+				ObjectManager::Update(pos, true);
+				//パーティクルの更新
+				ParticleManager::Update();
+				//エネミーの更新
+				EnemyManager::Update();
+				GameScene::Update();
+				ScoreUI::Update(Score::GetScore());
+				//エネミーとリフレクターの判定
+				for (auto& x : EnemyManager::enemys)
 				{
 					//敵と中心の距離
 					FLOAT2 l_halfWinSize = player.GetHalfWinSize();
@@ -179,10 +182,16 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 						powf(l_diffY, 2.0f)
 					);
 
-					//円周上なら
-					const float l_checkDiff = 20.0f;
-					const float l_diff = fabsf(player.GetStageReflectorRad() - l_len);
-					if (l_diff < l_checkDiff)
+					if (player.IsShotBomb())
+					{
+						if (l_len < player.GetBombLength())
+						{
+							x->HitShiled();
+						}
+					}
+
+					//決め打ち(内側に向かってる途中)
+					if (x->m_state == 2)
 					{
 						//中心から見た敵の角度を算出
 						FLOAT2 l_vec;
@@ -191,27 +200,61 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 						float l_enemyDeg = atan2f(l_vec.v, l_vec.u);
 						l_enemyDeg = 180.0f / DX_PI_F * l_enemyDeg;
 
-						//中心から見た自機の角度を算出
-						float l_playerDeg = 180.0f / DX_PI_F * player.GetReflectorRad();
-
-						//何度まで当たるか
-						const float l_hitDeg = 20.0f;
-						const float l_degDiff = fabsf(l_playerDeg - 90.0f - l_enemyDeg);
-
-						//範囲内
-						if (l_degDiff < l_hitDeg)
+						/*-----敵停止処理-----*/
+						if (player.GetMode() == player.SHOT)
 						{
-							x->m_isReturn = true;
-							x->HitShiled();
-							player.ReflectorHit(x->m_position);
+							//中心から見た自機の角度を算出
+							float l_playerDeg = player.GetDeg();
+
+							//何度まで当たるか
+							const float l_hitDeg = 30.0f;
+							float l_degDiff = fabsf(l_playerDeg - l_enemyDeg);
+
+							//範囲内
+							if (l_degDiff < l_hitDeg)
+							{
+								//x->isStop = true;
+							}
+							//0~359度のケア
+							else
+							{
+								if (l_playerDeg < l_hitDeg || l_enemyDeg < l_hitDeg)
+								{
+									if (l_playerDeg < l_hitDeg) { l_playerDeg += 359.9f; }
+									if (l_enemyDeg < l_hitDeg) { l_enemyDeg += 359.9f; }
+									l_degDiff = fabsf(l_playerDeg - l_enemyDeg);
+
+									//範囲内
+									if (l_degDiff < l_hitDeg)
+									{
+										//x->isStop = true;
+									}
+									else
+									{
+										x->isStop = false;
+									}
+								}
+								else
+								{
+									x->isStop = false;
+								}
+							}
 						}
-						//0~359度のケア
+
+						/*-----敵殺す処理-----*/
 						else
 						{
-							if (l_playerDeg < l_hitDeg || l_enemyDeg < l_hitDeg)
+							//判定を入れる距離
+							const float l_checkDiff = 100.0f;
+							const float l_diff = fabsf(player.GetStageReflectorRad() - l_len);
+							if (l_diff < l_checkDiff)
 							{
-								if (l_playerDeg < l_hitDeg) { l_playerDeg += 359.9f; }
-								if (l_enemyDeg < l_hitDeg) { l_enemyDeg += 359.9f; }
+								//中心から見た自機の角度を算出
+								float l_playerDeg = 180.0f / DX_PI_F * player.GetReflectorRad();
+
+								//何度まで当たるか
+								const float l_hitDeg = 5.0f;
+								float l_degDiff = fabsf(l_playerDeg - l_enemyDeg);
 
 								//範囲内
 								if (l_degDiff < l_hitDeg)
@@ -220,31 +263,51 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 									x->HitShiled();
 									player.ReflectorHit(x->m_position);
 								}
+								//0~359度のケア
+								else
+								{
+									if (l_playerDeg < l_hitDeg || l_enemyDeg < l_hitDeg)
+									{
+										if (l_playerDeg < l_hitDeg) { l_playerDeg += 359.9f; }
+										if (l_enemyDeg < l_hitDeg) { l_enemyDeg += 359.9f; }
+										l_degDiff = fabsf(l_playerDeg - l_enemyDeg);
+
+										//範囲内
+										if (l_degDiff < l_hitDeg)
+										{
+											x->m_isReturn = true;
+											x->HitShiled();
+											player.ReflectorHit(x->m_position);
+										}
+									}
+								}
 							}
 						}
 					}
 				}
-			}
-			if (WaveManager::isAllEnd)
-			{
-				bulletUI.Update(player.GetBulletNum());
-			}
-			if (bulletUI.GetIsAllShot() && bulletUI.BulletNum() <= 0)
-			{
-				sceneNum = RESULT;
-				player.Init();
-				bulletUI.m_isAllShot = false;
-				ParticleManager::AllClear();
-				ObjectManager::AllClear();
-				ResultScene::Init(12345);
-			}
 
-			if (TowerHP::HP <= 0)
-			{
-				//player.Init();
-				bulletUI.m_isAllShot = false;
-				EnemyManager::AllDelete();
-				bulletUI.AllShotStart();
+				//if (WaveManager::isAllEnd)
+				{
+					bulletUI.Update(player.GetBulletNum());
+				}
+				if (bulletUI.GetIsAllShot() && bulletUI.BulletNum() <= 0)
+				{
+					sceneNum = RESULT;
+					player.Init();
+					bulletUI.m_isAllShot = false;
+					ParticleManager::AllClear();
+					ObjectManager::AllClear();
+					ResultScene::Init(Score::GetScore());
+					EnemyManager::AllDelete();
+					//GameScene::Init();
+				}
+
+				if (TowerHP::HP <= 0 || Input::GetKeyTrigger(KEY_INPUT_ESCAPE))
+				{
+					//player.Init();
+					bulletUI.m_isAllShot = false;
+					bulletUI.AllShotStart();
+				}
 			}
 		}
 		// 描画処理
@@ -261,26 +324,28 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 		else if (sceneNum == GAME)
 		{
-			if (WaveManager::isAllEnd)
-			{
-				TowerHP::Draw();
-			}
+			WaveManager::Draw();
+			
+			TowerHP::Draw();
+			ScoreUI::Draw();
+			
 			bulletUI.Draw();
 			player.Draw();
 			ObjectManager::Draw();
 			GameScene::Draw();
 
 			EnemyManager::Draw();
-			DrawFormatString(0, 100, GetColor(0, 0, 0), "BulletNum:%d", player.GetBulletNum());
-			DrawFormatString(0, 120, GetColor(0, 0, 0), "BulletNum:%d", player.GetMaxBulletNum());
-			DrawFormatString(400, 100, GetColor(0, 0, 0), "Score:%d", Score::GetScore());
-			WaveManager::Draw();
+
+
+			ParticleManager::scoreParitcle.Draw();
+
 		}
 		else if (sceneNum == RESULT)
 		{
-			if (Input::GetKeyTrigger(KEY_INPUT_SPACE))
+			if (Input::GetKeyTrigger(KEY_INPUT_SPACE) || Input::isJoyBottomTrigger(XINPUT_BUTTON_A))
 			{
 				ResultScene::isToTitle = true;
+				ScoreUI::Init();
 			}
 			player.Draw();
 			ObjectManager::Draw();
