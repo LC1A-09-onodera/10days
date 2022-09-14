@@ -119,8 +119,8 @@ public:
 	static const int MaxR = 1500;
 
 	static const int NormalSpeedScore = 100;
-	static const int MiddleSpeedScore = 100;
-	static const int HiSpeedScore = 100;
+	static const int MiddleSpeedScore = 125;
+	static const int HiSpeedScore = 150;
 
 	//static int enemyCiycle;
 	static void Init();

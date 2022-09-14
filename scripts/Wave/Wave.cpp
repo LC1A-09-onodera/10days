@@ -19,7 +19,7 @@ FLOAT2 WaveManager::m_endPosition;
 int WaveManager::stopTimer = 0;
 bool WaveManager::isStopEnd = false;
 
-int WaveManager::WaveBorader[WaveManager::MaxWaveNum - 1] = { 500, 1500, 3000, 5000, 7500, 10000, 12500, 15000, 17500 };
+int WaveManager::WaveBorader[WaveManager::MaxWaveNum - 1] = { 500, 2000, 4000, 6500, 10000, 13500, 17500, 25000, 35000 };
 int WaveManager::s_back;
 FLOAT2 WaveManager::m_backSize;
 float WaveManager::m_backEaseTimer;
@@ -297,7 +297,7 @@ void WaveManager::Update()
 		{
 			if (EnemyManager::enemys.size() <= 4 || rand() % 150 == 0)
 			{
-				for (int i = 0; i < 3; i++)
+				for (int i = 0; i < 4; i++)
 				{
 					int ran = rand() % 10;
 					if (ran < 4)
@@ -317,9 +317,9 @@ void WaveManager::Update()
 		}
 		else if (waveNumber == 9)
 		{
-			if (EnemyManager::enemys.size() <= 5 || rand() % 150 == 0)
+			if (EnemyManager::enemys.size() <= 5 || rand() % 120 == 0)
 			{
-				for (int i = 0; i < 3; i++)
+				for (int i = 0; i < 5; i++)
 				{
 					int ran = rand() % 10;
 					if (ran < 4)
