@@ -2,6 +2,9 @@
 #include "../Input/Input.h"
 #include "../Scroll/Scroll.h"
 
+int Player::m_bomb;
+bool Player::m_isShotBomb;
+
 void Player::Init()
 {
 	//ˆÊ’u,•Ï

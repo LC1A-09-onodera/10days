@@ -4,7 +4,7 @@
 #include "../Enemy/Enemy.h"
 #include "../Score/Score.h"
 #include "../UI/UI.h"
-
+#include "../Player/player.h"
 #include <string>
 
 int WaveManager::waveNumber = 0;
@@ -88,6 +88,10 @@ void WaveManager::WaveInit(int waveNum)
 	bombAlpha = 0;
 	changeAlpha = 0;
 	isRuleEnd = false;
+	if (waveNum == 5 && Player::GetBombCount() < 3)
+	{
+		EnemyManager::AddEnemy(BaseEnemy::SpeedType::Bomb);
+	}
 }
 
 void WaveManager::Update()

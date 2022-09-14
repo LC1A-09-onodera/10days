@@ -4,6 +4,7 @@
 #include "../Math/Math.h"
 #include "../Sound/Sound.h"
 #include "../Scroll/Scroll.h"
+#include "../Player/player.h"
 
 using namespace DxLibMath;
 
@@ -23,6 +24,8 @@ float ScoreUI::MaxScoreExt = 0.3f;
 
 int ScoreUI::s_bomb;
 std::list<UISprite*> ScoreUI::m_bombs;
+bool ScoreUI::oldBomb = false;
+bool ScoreUI::isNowBomb = false;
 int ScoreUI::nowBomb;
 int ScoreUI::s_bombTex[4];
 FLOAT2 ScoreUI::m_bombTexPos[4];
@@ -245,7 +248,7 @@ void ScoreUI::Init()
 		m_scores.push_back(ui);
 	}
 	m_bombs.clear();
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < Player::GetBombCount(); i++)
 	{
 		UISprite *ui = new UISprite();
 		m_bombs.push_back(ui);
@@ -288,6 +291,19 @@ void ScoreUI::Update(int score)
 		(*itr)->m_position.v = WindowSize::Hi / 2 + (nowR * DxLibMath::Sin(bombUIStart));
 		bombUIStart += 20;
 	}
+	
+	if (oldBomb != Player::IsShotBomb() && Player::IsShotBomb())
+	{
+		m_bombs.erase(m_bombs.begin());
+	}
+
+	oldBomb = Player::IsShotBomb();
+	if (m_bombs.size() < Player::GetBombCount())
+	{
+		UISprite* ui = new UISprite();
+		m_bombs.push_back(ui);
+	}
+
 	if (isIncDec)
 	{
 		Increase();

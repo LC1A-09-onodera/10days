@@ -8,6 +8,7 @@
 #include "../Particle/Particle.h"
 #include "../Sound/Sound.h"
 #include "../Scroll/Scroll.h"
+#include "../Player/player.h"
 
 int BaseEnemy::m_sprite[4];
 std::list<BaseEnemy*> EnemyManager::enemys;
@@ -362,7 +363,7 @@ void EnemyManager::Update()
 				else
 				{
 					//ƒ{ƒ€‘‚â‚·H
-					
+					Player::AddBomb();
 					deleteEnemys.push_back(itr);
 				}
 			}
