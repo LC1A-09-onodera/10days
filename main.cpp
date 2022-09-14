@@ -16,7 +16,7 @@
 #include <time.h>
 
 // ウィンドウのタイトルに表示する文字列
-const char TITLE[] = "10days";
+const char TITLE[] = "円環エンカウンター";
 
 // ウィンドウ横幅
 const int WIN_WIDTH = 1280;
