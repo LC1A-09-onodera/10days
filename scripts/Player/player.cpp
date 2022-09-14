@@ -50,7 +50,7 @@ void Player::Update()
 
 	if (Shake::GetPower().u > 0.0f)
 	{
-		FLOAT2 l_shakePower = { -0.2f,-0.2f };
+		FLOAT2 l_shakePower = { -0.5f,-0.5f };
 		Shake::AddShakePower(l_shakePower);
 	}
 
@@ -188,7 +188,7 @@ void Player::Update()
 			//リフレクターヒット時
 			if (m_isReflectorHit)
 			{
-				FLOAT2 l_shakePower = { 5.0f,3.0f };
+				FLOAT2 l_shakePower = { 10.0f,6.0f };
 				Shake::AddShakePower(l_shakePower);
 				m_isReflectorHit = false;
 			}
