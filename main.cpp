@@ -112,10 +112,15 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		mousePos = { (float)mouse_x, (float)mouse_y };
 
 		// çXêVèàóù
+		
+		//ì‡ïîä«óù
+		player.OtherUpdate();
+
 		if (sceneNum == TITLE)
 		{
 			FLOAT2 l_resetShakePower{ -50.0f,-50.0f };
 			Shake::AddShakePower(l_resetShakePower);
+			player.InGame(false);
 
 			if (Input::GetKeyTrigger(KEY_INPUT_SPACE) || Input::isJoyBottomTrigger(XINPUT_BUTTON_A))
 			{
@@ -129,11 +134,13 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 				ChangeVolumeSoundMem(SoundManager::BGMVol, SoundManager::BGM);
 				StopSoundMem(SoundManager::BGM);
 				PlaySoundMem(SoundManager::BGM, DX_PLAYTYPE_BACK);
+				player.InGame(true);
 			}
 		}
 
 		else if (sceneNum == GAME)
 		{
+			player.Update();
 			WaveManager::Update();
 			if (CheckSoundMem(SoundManager::BGM) == 0)
 			{
@@ -141,7 +148,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			}
 			if (!WaveManager::isBombHit)
 			{
-				player.Update();
 				static float angle = 0.0f;
 				static int time = 0;
 				EnemyManager::CiycleDec();
@@ -353,6 +359,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		// ï`âÊèàóù
 		DrawExtendGraph(0, 0, WindowSize::Wid, WindowSize::Hi, BackGraund, true);
 		ParticleManager::Draw();
+		player.OtherDraw();
 
 		if (sceneNum == TITLE)
 		{
@@ -382,6 +389,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		}
 		else if (sceneNum == RESULT)
 		{
+			player.InGame(false);
 			SoundManager::BGMVol -= 2;
 			if (SoundManager::BGMVol <= 0)
 			{

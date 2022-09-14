@@ -87,6 +87,8 @@ private:
 	bool m_isReflectorHit;
 	bool m_mode;
 	bool m_isChangeMode;
+	bool m_inGame;
+
 	static bool m_isShotBomb;
 
 	int m_s_player;
@@ -98,12 +100,14 @@ private:
 	FLOAT2 m_stageSize;
 
 	//debug
-	float a = 0;
+	//float a = 0;
 
 public:
 	void Init();
 	void Update();
+	void OtherUpdate();
 	void Draw();
+	void OtherDraw();
 	void LoadFile();
 	bool GetIsMove();
 
@@ -157,4 +161,5 @@ public:
 	const void SetStageSize(const FLOAT2& stageSize) { m_stageSize = stageSize; }
 	const void SetStageRad(const int& stageRad) { m_stage_rad = stageRad; }
 	const void AddPlayerPosY(const float& addPosY) { m_position.v += addPosY; }
+	const void InGame(bool inGame) { m_inGame = inGame; }
 };
