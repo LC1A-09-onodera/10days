@@ -165,7 +165,7 @@ void WaveManager::Update()
 		{
 			if (EnemyManager::enemys.size() <= 2 || rand() % 240 == 0)
 			{
-				for (int i = 0; i < 1; i++)
+				for (int i = 0; i < 2; i++)
 				{
 					int ran = rand() % 10;
 					if (ran < 2)
@@ -187,7 +187,7 @@ void WaveManager::Update()
 		{
 			if (EnemyManager::enemys.size() <= 2 || rand() % 180 == 0)
 			{
-				for (int i = 0; i < 1; i++)
+				for (int i = 0; i < 2; i++)
 				{
 					int ran = rand() % 10;
 					if (ran < 2)
@@ -209,7 +209,7 @@ void WaveManager::Update()
 		{
 			if (EnemyManager::enemys.size() <= 2 || rand() % 180 == 0)
 			{
-				for (int i = 0; i < 1; i++)
+				for (int i = 0; i < 2; i++)
 				{
 					int ran = rand() % 10;
 					if (ran < 4)
@@ -231,7 +231,7 @@ void WaveManager::Update()
 		{
 			if (EnemyManager::enemys.size() <= 3 || rand() % 180 == 0)
 			{
-				for (int i = 0; i < 2; i++)
+				for (int i = 0; i < 3; i++)
 				{
 					int ran = rand() % 10;
 					if (ran < 4)
@@ -253,7 +253,7 @@ void WaveManager::Update()
 		{
 			if (EnemyManager::enemys.size() <= 3 || rand() % 150 == 0)
 			{
-				for (int i = 0; i < 2; i++)
+				for (int i = 0; i < 3; i++)
 				{
 					int ran = rand() % 10;
 					if (ran < 3)
@@ -275,7 +275,7 @@ void WaveManager::Update()
 		{
 			if (EnemyManager::enemys.size() <= 4 || rand() % 180 == 0)
 			{
-				for (int i = 0; i < 2; i++)
+				for (int i = 0; i < 3; i++)
 				{
 					int ran = rand() % 10;
 					if (ran < 3)
@@ -297,7 +297,7 @@ void WaveManager::Update()
 		{
 			if (EnemyManager::enemys.size() <= 4 || rand() % 150 == 0)
 			{
-				for (int i = 0; i < 2; i++)
+				for (int i = 0; i < 3; i++)
 				{
 					int ran = rand() % 10;
 					if (ran < 4)
@@ -319,7 +319,7 @@ void WaveManager::Update()
 		{
 			if (EnemyManager::enemys.size() <= 5 || rand() % 150 == 0)
 			{
-				for (int i = 0; i < 2; i++)
+				for (int i = 0; i < 3; i++)
 				{
 					int ran = rand() % 10;
 					if (ran < 4)
