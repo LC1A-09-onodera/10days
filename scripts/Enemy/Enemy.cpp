@@ -206,6 +206,8 @@ void BaseEnemy::LineMove()
 			FLOAT2 start = { 30.0f, 30.0f };
 			FLOAT2 end = { 0, 0 };
 			ParticleManager::heart.ExprotionParticle(m_position, start, end, 10, 50);
+			StopSoundMem(SoundManager::damage);
+			PlaySoundMem(SoundManager::damage, DX_PLAYTYPE_BACK);
 		}
 		//ƒ‰ƒCƒt‚ÅŽó‚¯‚é
 		else
@@ -218,6 +220,9 @@ void BaseEnemy::LineMove()
 			FLOAT2 start = { 30.0f, 30.0f };
 			FLOAT2 end = { 0, 0 };
 			ParticleManager::heart.ExprotionParticle(m_position, start, end, 10, 50);
+			StopSoundMem(SoundManager::damage);
+			PlaySoundMem(SoundManager::damage, DX_PLAYTYPE_BACK);
+			
 		}
 		isDelete = true;
 	}

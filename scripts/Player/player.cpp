@@ -124,6 +124,9 @@ void Player::Update()
 			if (Input::GetKeyTrigger(KEY_INPUT_Z) ||
 				Input::isJoyBottomTrigger(XINPUT_BUTTON_B))
 			{
+				StopSoundMem(SoundManager::transe);
+				PlaySoundMem(SoundManager::transe, DX_PLAYTYPE_BACK);
+
 				m_bulletNum = m_maxBulletNum;
 				m_start_pos = m_position;
 				l_vec.u *= -1.0f;
@@ -301,7 +304,7 @@ void Player::Draw()
 
 	float left = Input::GetJoyLeftTrigger();
 	float right = Input::GetJoyRightTrigger();
-	
+
 
 	//Ž©‹@
 	float l_addRad = 0;

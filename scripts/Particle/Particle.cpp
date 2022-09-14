@@ -314,10 +314,10 @@ void ScoreParticle::AddScore(FLOAT2& f_emitPos, FLOAT2& f_startSize, FLOAT2& f_e
 		AddParitcle(emitPos, end, 10, f_startSize, f_life);
 		emitPos.u += f_startSize.u / 2.0f + dis;
 		end.u += f_startSize.u / 2.0f + dis;
-		AddParitcle(emitPos, end, f_addScore / 10 % 10, f_startSize, f_life);
+		AddParitcle(emitPos, end, f_addScore / 100 % 10, f_startSize, f_life);
 		emitPos.u += f_startSize.u / 2.0f + dis;
 		end.u += f_startSize.u / 2.0f + dis;
-		AddParitcle(emitPos, end, f_addScore % 10, f_startSize, f_life);
+		AddParitcle(emitPos, end, f_addScore / 10 % 10, f_startSize, f_life);
 		emitPos.u += f_startSize.u / 2.0f + dis;
 		end.u += f_startSize.u / 2.0f + dis;
 		AddParitcle(emitPos, end, f_addScore % 10, f_startSize, f_life);

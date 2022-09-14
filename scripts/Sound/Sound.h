@@ -13,5 +13,7 @@ public:
 	static int BombShot;
 	static int weponChange;
 	static int select;
+	static int damage;
+	static int transe;
 	static void LoadFile();
 };

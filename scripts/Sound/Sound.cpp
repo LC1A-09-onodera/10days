@@ -12,6 +12,9 @@ int SoundManager::BombShot;
 int SoundManager::weponChange;
 int SoundManager::select;
 
+int SoundManager::damage;
+int SoundManager::transe;
+
 void SoundManager::LoadFile()
 {
 	shotHitSound = LoadSoundMem("Resources/Sound/hit.wav");
@@ -23,4 +26,6 @@ void SoundManager::LoadFile()
 	BombShot = LoadSoundMem("Resources/Sound/bomb.wav");
 	weponChange = LoadSoundMem("Resources/Sound/change.wav");
 	select = LoadSoundMem("Resources/Sound/switch.wav");
+	damage = LoadSoundMem("Resources/Sound/damage.wav");
+	transe = LoadSoundMem("Resources/Sound/transverse.wav");
 }

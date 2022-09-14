@@ -317,6 +317,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 					bulletUI.AllShotStart();
 				}
 			}
+			if (Score::score >= 999999)
+			{
+				Score::score = 999999;
+			}
 		}
 		// •`‰æˆ—
 		DrawExtendGraph(0, 0, WindowSize::Wid, WindowSize::Hi, BackGraund, true);
