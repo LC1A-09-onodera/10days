@@ -194,31 +194,30 @@ void BaseEnemy::LineMove()
 		isStop = false;
 	}
 	m_position = Easeing::EaseInQuad(m_position, BaseEnemy::CiycleCenter, (float)m_ToCenterSpeed / 50.0f);
-	if (Collision::Lenght(BaseEnemy::CiycleCenter, m_position) < TowerR)
+	if (Collision::Lenght(BaseEnemy::CiycleCenter, m_position) < TowerR + 10)
 	{
 		//スコア加算
 		if (m_type == Angel)
 		{
 			int a = 0;
 			a++;
-			FLOAT2 size = { 18.0f, 22.0f };
-			int score = 10 * (m_returnNum + 1);
-			ParticleManager::scoreParitcle.AddScore(m_position, size, size, score, 60);
-			Score::score += score;
-			StopSoundMem(SoundManager::addScore);
-			PlaySoundMem(SoundManager::addScore, DX_PLAYTYPE_BACK);
+
+			TowerHP::HP--;
+			FLOAT2 start = { 30.0f, 30.0f };
+			FLOAT2 end = { 0, 0 };
+			ParticleManager::heart.ExprotionParticle(m_position, start, end, 10, 50);
 		}
 		//ライフで受ける
 		else
 		{
 			int a = 0;
 			a++;
-			FLOAT2 size = { 18.0f, 22.0f };
-			FLOAT2 start = { 40.0f, 40.0f };
-			FLOAT2 end = { 0.0f, 0.0f };
-			ParticleManager::pinkParticle.ExprotionParticle(m_position, start, end, 5, 30);
+			//ParticleManager::pinkParticle.ExprotionParticle(m_position, start, end, 5, 30);
 			//ParticleManager::scoreParitcle.AddScore(m_position, size, size, 99, 60);
 			TowerHP::HP--;
+			FLOAT2 start = { 30.0f, 30.0f };
+			FLOAT2 end = { 0, 0 };
+			ParticleManager::heart.ExprotionParticle(m_position, start, end, 10, 50);
 		}
 		isDelete = true;
 	}
@@ -227,7 +226,7 @@ void BaseEnemy::LineMove()
 
 void BaseEnemy::HitShiled()
 {
-	if (true)
+	if (m_state != ToCiycle)
 	{
 		m_HP = 0;
 		isDelete = true;
@@ -248,6 +247,8 @@ void BaseEnemy::HitShiled()
 		m_endPosition = { BaseEnemy::CiycleCenter.u + CenterR * cos , BaseEnemy::CiycleCenter.v + CenterR * sin };
 		m_easeTimer = 0.0f;
 		m_ToCenterSpeed += 0.5f;
+		StopSoundMem(SoundManager::shotHitSound);
+		PlaySoundMem(SoundManager::shotHitSound, DX_PLAYTYPE_BACK);
 	}
 }
 
@@ -295,7 +296,12 @@ void BaseEnemy::BulletCollision()
 				FLOAT2 end = { 0, 0 };
 				ParticleManager::speedType3.ExprotionParticle((*itr)->m_position, start, end, 10, 40);
 			}
-
+			else if (speedType == BaseEnemy::SpeedType::Bomb)
+			{
+				FLOAT2 start = { 40,40 };
+				FLOAT2 end = { 0, 0 };
+				ParticleManager::bombGet.ExprotionParticle(m_position, start, end, 10, 50);
+			}
 			StopSoundMem(SoundManager::shotHitSound);
 			PlaySoundMem(SoundManager::shotHitSound, DX_PLAYTYPE_BACK);
 		}

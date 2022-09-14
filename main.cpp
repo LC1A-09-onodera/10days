@@ -119,6 +119,12 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 				TowerHP::HP = TowerHP::MaxHP;
 				bulletUI.m_isAllShot = false;
 				WaveManager::WaveInit(0);
+				StopSoundMem(SoundManager::select);
+				PlaySoundMem(SoundManager::select, DX_PLAYTYPE_BACK);
+				SoundManager::BGMVol = 200;
+				ChangeVolumeSoundMem(SoundManager::BGMVol, SoundManager::BGM);
+				StopSoundMem(SoundManager::BGM);
+				PlaySoundMem(SoundManager::BGM, DX_PLAYTYPE_BACK);
 			}
 		}
 
@@ -300,6 +306,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 					ResultScene::Init(Score::GetScore());
 					EnemyManager::AllDelete();
 					Score::score = 0;
+
 					//GameScene::Init();
 				}
 
@@ -343,10 +350,18 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		}
 		else if (sceneNum == RESULT)
 		{
+			SoundManager::BGMVol -= 2;
+			if (SoundManager::BGMVol <= 0)
+			{
+				SoundManager::BGMVol = 0;
+			}
+			ChangeVolumeSoundMem(SoundManager::BGMVol, SoundManager::BGM);
 			if (Input::GetKeyTrigger(KEY_INPUT_SPACE) || Input::isJoyBottomTrigger(XINPUT_BUTTON_A))
 			{
 				ResultScene::isToTitle = true;
 				ScoreUI::Init();
+				StopSoundMem(SoundManager::select);
+				PlaySoundMem(SoundManager::select, DX_PLAYTYPE_BACK);
 			}
 			player.Draw();
 			ObjectManager::Draw();

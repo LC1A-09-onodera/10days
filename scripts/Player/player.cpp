@@ -1,6 +1,7 @@
 #include "player.h"
 #include "../Input/Input.h"
 #include "../Scroll/Scroll.h"
+#include "../Sound/Sound.h"
 
 int Player::m_bomb;
 bool Player::m_isShotBomb;
@@ -139,6 +140,8 @@ void Player::Update()
 				if (Input::GetKeyTrigger(KEY_INPUT_Z) ||
 					Input::isJoyBottomTrigger(XINPUT_BUTTON_A))
 				{
+					StopSoundMem(SoundManager::weponChange);
+					PlaySoundMem(SoundManager::weponChange, DX_PLAYTYPE_BACK);
 					m_isChangeMode = true;
 				}
 			}
@@ -180,6 +183,8 @@ void Player::Update()
 				if (Input::GetKeyTrigger(KEY_INPUT_SPACE) ||
 					Input::isJoyBottomTrigger(XINPUT_BUTTON_RIGHT_SHOULDER))
 				{
+					StopSoundMem(SoundManager::BombShot);
+					PlaySoundMem(SoundManager::BombShot, DX_PLAYTYPE_BACK);
 					m_isShotBomb = true;
 					m_bomb--;
 				}

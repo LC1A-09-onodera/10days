@@ -14,6 +14,8 @@ Particle ParticleManager::cubeParticle;
 Particle ParticleManager::speedType1;
 Particle ParticleManager::speedType2;
 Particle ParticleManager::speedType3;
+Particle ParticleManager::heart;
+Particle ParticleManager::bombGet;
 
 void Particle::AddParitcle(FLOAT2& f_pos, FLOAT2& f_vec, FLOAT2& f_acc, FLOAT2& f_startSize, FLOAT2& f_endSize, int f_life)
 {
@@ -144,6 +146,8 @@ void ParticleManager::LoadFile()
 	orangeParticle.LoadFile("Resources/ParticleOrange.png");
 	circleParticle.LoadFile("Resources/particle_cr.png");
 	cubeParticle.LoadFile("Resources/particle_sq.png");
+	heart.LoadFile("Resources/heart.png");
+	bombGet.LoadFile("Resources/particle_blue.png");
 
 	speedType1.LoadFile("Resources/enemy_particle_sq.png");
 	speedType2.LoadFile("Resources/enemy_particle_cr.png");
@@ -163,6 +167,9 @@ void ParticleManager::Update()
 	speedType1.Update();
 	speedType2.Update();
 	speedType3.Update();
+	heart.Update();
+	bombGet.Update();
+
 }
 
 void ParticleManager::Draw()
@@ -175,6 +182,8 @@ void ParticleManager::Draw()
 	speedType1.Draw();
 	speedType2.Draw();
 	speedType3.Draw();
+	heart.Draw();
+	bombGet.Draw();
 }
 
 void ParticleManager::AllClear()
@@ -188,6 +197,8 @@ void ParticleManager::AllClear()
 	speedType1.Clear();
 	speedType2.Clear();
 	speedType3.Clear();
+	heart.Clear();
+	bombGet.Clear();
 }
 
 void ScoreParticle::AddParitcle(FLOAT2& f_pos, FLOAT2& f_vec, FLOAT2& f_acc, FLOAT2& f_startSize, FLOAT2& f_endSize, int f_life)
