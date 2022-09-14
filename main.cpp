@@ -139,7 +139,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			{
 				PlaySoundMem(SoundManager::BGM, DX_PLAYTYPE_BACK);
 			}
-			//if (WaveManager::isAllEnd)
+			if (!WaveManager::isBombHit)
 			{
 				player.Update();
 				static float angle = 0.0f;
@@ -163,8 +163,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 						//’e‚ªŽc‚Á‚Ä‚é‚©‚Ì”»’è
 						static int ShotDistance = 0;
 						ShotDistance++;
-						if (ShotDistance % 2 == 0)
-						{
+						/*if (ShotDistance % 2 == 0)
+						{*/
 							bool isShot = player.ShotBullet();
 							if (isShot && !bulletUI.m_isAllShot)
 							{
@@ -173,7 +173,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 								StopSoundMem(SoundManager::shotBullet);
 								PlaySoundMem(SoundManager::shotBullet, DX_PLAYTYPE_BACK);
 							}
-						}
+						//}
 					}
 					BaseObject::ResetSpeed();
 				}
@@ -202,9 +202,12 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 					if (player.IsShotBomb())
 					{
-						if (l_len < player.GetBombLength())
+						if (l_len < player.GetBombLength() && l_len > player.GetBombLength() - 40)
 						{
-							x->HitShiled();
+							if (!x->isDelete)
+							{
+								x->HitShiled();
+							}
 						}
 					}
 
@@ -327,6 +330,15 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 					//player.Init();
 					bulletUI.m_isAllShot = false;
 					bulletUI.AllShotStart();
+				}
+			}
+			else
+			{
+				WaveManager::bombTimer++;
+				if (WaveManager::bombTimer >= WaveManager::BombHitTime)
+				{
+					WaveManager::isBombHit = false;
+					WaveManager::bombTimer = 0;
 				}
 			}
 			if (Score::score >= 999999)

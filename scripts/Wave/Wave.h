@@ -63,6 +63,10 @@ public:
 	static FLOAT2 m_position;
 	static FLOAT2 m_endPosition;
 
+	static bool isBombHit;
+	static const int BombHitTime = 10;
+	static int bombTimer;
+
 	static void LoadFile();
 
 	static void WaveInit(int waveNum);
