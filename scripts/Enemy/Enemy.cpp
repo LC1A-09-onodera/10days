@@ -9,6 +9,7 @@
 #include "../Sound/Sound.h"
 #include "../Scroll/Scroll.h"
 #include "../Player/player.h"
+#include "../Wave/Wave.h"
 
 int BaseEnemy::m_sprite[4];
 std::list<BaseEnemy*> EnemyManager::enemys;
@@ -222,7 +223,7 @@ void BaseEnemy::LineMove()
 			ParticleManager::heart.ExprotionParticle(m_position, start, end, 10, 50);
 			StopSoundMem(SoundManager::damage);
 			PlaySoundMem(SoundManager::damage, DX_PLAYTYPE_BACK);
-			
+
 		}
 		isDelete = true;
 	}
@@ -383,21 +384,21 @@ void EnemyManager::Update()
 				int score;
 				if ((*itr)->speedType == BaseEnemy::SpeedType::Normal)
 				{
-					score = NormalSpeedScore;
+					score = NormalSpeedScore * powf(1.05f, WaveManager::waveNumber);
 					/*FLOAT2 start = {40,40};
 					FLOAT2 end = {0, 0};
 					ParticleManager::speedType1.ExprotionParticle((*itr)->m_position, start, end, 10, 40);*/
 				}
 				else if ((*itr)->speedType == BaseEnemy::SpeedType::Midl)
 				{
-					score = MiddleSpeedScore;
+					score = MiddleSpeedScore * powf(1.05f, WaveManager::waveNumber);
 					/*FLOAT2 start = {40,40 };
 					FLOAT2 end = { 0, 0 };
 					ParticleManager::speedType2.ExprotionParticle((*itr)->m_position, start, end, 10, 40);*/
 				}
 				else if ((*itr)->speedType == BaseEnemy::SpeedType::Hi)
 				{
-					score = HiSpeedScore;
+					score = HiSpeedScore * powf(1.05f, WaveManager::waveNumber);
 					/*FLOAT2 start = { 40,40 };
 					FLOAT2 end = { 0, 0 };
 					ParticleManager::speedType3.ExprotionParticle((*itr)->m_position, start, end, 10, 40);*/
