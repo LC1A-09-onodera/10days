@@ -161,14 +161,18 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 						FLOAT2 spriteSize = { 30.0f, 30.0f };
 
 						//’e‚ªŽc‚Á‚Ä‚é‚©‚Ì”»’è
-						bool isShot = player.ShotBullet();
-						if (isShot && !bulletUI.m_isAllShot)
+						static int ShotDistance = 0;
+						ShotDistance++;
+						if (ShotDistance % 2 == 0)
 						{
+							bool isShot = player.ShotBullet();
+							if (isShot && !bulletUI.m_isAllShot)
+							{
 
-							ObjectManager::object1.Shot(winSizeHalf, spriteSize, player.GetDeg(), 18.0f, BaseObject::ObjectType::ORANGE);
-
-							StopSoundMem(SoundManager::shotBullet);
-							PlaySoundMem(SoundManager::shotBullet, DX_PLAYTYPE_BACK);
+								ObjectManager::object1.Shot(winSizeHalf, spriteSize, player.GetDeg(), 18.0f, BaseObject::ObjectType::ORANGE);
+								StopSoundMem(SoundManager::shotBullet);
+								PlaySoundMem(SoundManager::shotBullet, DX_PLAYTYPE_BACK);
+							}
 						}
 					}
 					BaseObject::ResetSpeed();
