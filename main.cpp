@@ -121,7 +121,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 				WaveManager::WaveInit(0);
 				StopSoundMem(SoundManager::select);
 				PlaySoundMem(SoundManager::select, DX_PLAYTYPE_BACK);
-				SoundManager::BGMVol = 200;
+				SoundManager::BGMVol = 180;
 				ChangeVolumeSoundMem(SoundManager::BGMVol, SoundManager::BGM);
 				StopSoundMem(SoundManager::BGM);
 				PlaySoundMem(SoundManager::BGM, DX_PLAYTYPE_BACK);
@@ -131,6 +131,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		else if (sceneNum == GAME)
 		{
 			WaveManager::Update();
+			if (CheckSoundMem(SoundManager::BGM) == 0)
+			{
+				PlaySoundMem(SoundManager::BGM, DX_PLAYTYPE_BACK);
+			}
 			//if (WaveManager::isAllEnd)
 			{
 				player.Update();
