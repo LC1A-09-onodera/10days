@@ -9,7 +9,7 @@
 #include "../Sound/Sound.h"
 #include "../Scroll/Scroll.h"
 
-int BaseEnemy::m_sprite[3];
+int BaseEnemy::m_sprite[4];
 std::list<BaseEnemy*> EnemyManager::enemys;
 std::list<std::list<BaseEnemy*>::iterator> EnemyManager::deleteEnemys;
 
@@ -27,6 +27,7 @@ void BaseEnemy::LoadFile()
 	m_sprite[Normal] = LoadGraph("Resources/enemy_0.png");
 	m_sprite[Midl] = LoadGraph("Resources/enemy_1.png");
 	m_sprite[Hi] = LoadGraph("Resources/enemy_2.png");
+	m_sprite[Bomb] = LoadGraph("Resources/bomb.png");
 }
 
 void BaseEnemy::Init(SpeedType type)
@@ -43,7 +44,7 @@ void BaseEnemy::Init(SpeedType type)
 	m_timer = MaxTimer;
 	m_easeTimer = 0.0f;
 	m_HP = MaxHP;
-	m_size = {50 , 50};
+	m_size = { 50 , 50 };
 	speedType = type;
 	if (type == SpeedType::Normal)
 	{
@@ -57,6 +58,11 @@ void BaseEnemy::Init(SpeedType type)
 	{
 		m_ToCenterSpeed = 5.0f;
 	}
+	else if (type == SpeedType::Bomb)
+	{
+		m_HP = 10;
+		m_timer = BombLife;
+	}
 }
 
 void BaseEnemy::Update()
@@ -69,10 +75,18 @@ void BaseEnemy::Update()
 	{
 		CiycleMove();
 	}
-	else if (m_state == ToCenter)
+	else if (m_state == ToCenter && speedType != SpeedType::Bomb)
 	{
 		LineMove();
 		//HitShiled();
+	}
+	else if (speedType == SpeedType::Bomb && isBombErase)
+	{
+		m_ext = Easeing::EaseInQuad(m_ext, 0, 0.3f);
+		if (m_ext <= 0.01f)
+		{
+			isDelete = true;
+		}
 	}
 	/*else if (m_state == ReturnCiycle)
 	{
@@ -100,7 +114,7 @@ void BaseEnemy::Draw()
 {
 	/*DrawExtendGraph(m_position.u - (m_size.u / 2), m_position.v - (m_size.v / 2),
 		m_position.u + (m_size.u / 2), m_position.v + (m_size.v / 2), m_sprite[speedType], true);*/
-	//DrawCircle(m_position.u, m_position.v,10,  GetColor(13, 13, 13));
+		//DrawCircle(m_position.u, m_position.v,10,  GetColor(13, 13, 13));
 	FLOAT2 vec = { 0 };
 	vec.u = WindowSize::Wid / 2 - m_position.u;
 	vec.v = WindowSize::Hi / 2 - m_position.v;
@@ -110,7 +124,14 @@ void BaseEnemy::Draw()
 	{
 		angle += 3.141582f / 2.0f;
 	}
-	DrawRotaGraph(m_position.u + Shake::GetShake().u + shakePower.u, m_position.v + Shake::GetShake().v + shakePower.v, 0.2f, angle, m_sprite[speedType], true);
+	if (speedType != SpeedType::Bomb)
+	{
+		DrawRotaGraph(m_position.u + Shake::GetShake().u + shakePower.u, m_position.v + Shake::GetShake().v + shakePower.v, m_ext, angle, m_sprite[speedType], true);
+	}
+	else
+	{
+		DrawRotaGraph(m_position.u + Shake::GetShake().u + shakePower.u, m_position.v + Shake::GetShake().v + shakePower.v, m_ext, angle, m_sprite[Bomb], true);
+	}
 }
 
 void BaseEnemy::ToCiycleMove()
@@ -134,10 +155,14 @@ void BaseEnemy::CiycleMove()
 	if (m_timer <= 0)
 	{
 		m_state = ToCenter;
+		if (speedType == Bomb)
+		{
+			isBombErase = true;
+		}
 	}
 	if (m_timer <= ShakeStartTime)
 	{
-		shakePower = {rand() % 6 - 2.0f, rand() % 6 - 2.0f };
+		shakePower = { rand() % 6 - 2.0f, rand() % 6 - 2.0f };
 	}
 }
 
@@ -236,7 +261,10 @@ void BaseEnemy::BulletCollision()
 			(*itr)->m_isHit = true;
 			ObjectManager::object1.m_deleteObject.push_back(itr);
 			m_HP--;
-			m_timer = 0;
+			if (speedType != SpeedType::Bomb)
+			{
+				m_timer = 0;
+			}
 			//スコア加算
 			//Score::score++;
 			//FLOAT2 size = { 10.0f, 17.0f };
@@ -246,6 +274,25 @@ void BaseEnemy::BulletCollision()
 			{
 				m_type = Angel;
 				isDelete = true;
+			}
+
+			if (speedType == BaseEnemy::SpeedType::Normal)
+			{
+				FLOAT2 start = { 40,40 };
+				FLOAT2 end = { 0, 0 };
+				ParticleManager::speedType1.ExprotionParticle((*itr)->m_position, start, end, 10, 40);
+			}
+			else if (speedType == BaseEnemy::SpeedType::Midl)
+			{
+				FLOAT2 start = { 40,40 };
+				FLOAT2 end = { 0, 0 };
+				ParticleManager::speedType2.ExprotionParticle((*itr)->m_position, start, end, 10, 40);
+			}
+			else if (speedType == BaseEnemy::SpeedType::Hi)
+			{
+				FLOAT2 start = { 40,40 };
+				FLOAT2 end = { 0, 0 };
+				ParticleManager::speedType3.ExprotionParticle((*itr)->m_position, start, end, 10, 40);
 			}
 
 			StopSoundMem(SoundManager::shotHitSound);
@@ -293,9 +340,9 @@ void EnemyManager::AddEnemy(BaseEnemy::SpeedType f_speedType)
 {
 	BaseEnemy* enemy = new BaseEnemy();
 	int a = rand() % 3;
-	
+
 	enemy->Init(f_speedType);
-	
+
 	EnemyManager::enemys.push_back(&(*enemy));
 }
 
@@ -306,23 +353,48 @@ void EnemyManager::Update()
 		(*itr)->Update();
 		if ((*itr)->isDelete)
 		{
-			int score;
-			if ((*itr)->speedType == BaseEnemy::SpeedType::Normal)
+			if ((*itr)->speedType == BaseEnemy::SpeedType::Bomb)
 			{
-				score = 10;
+				if ((*itr)->isBombErase)
+				{
+					deleteEnemys.push_back(itr);
+				}
+				else
+				{
+					//ボム増やす？
+					
+					deleteEnemys.push_back(itr);
+				}
 			}
-			else if ((*itr)->speedType == BaseEnemy::SpeedType::Midl)
+			else
 			{
-				score = 20;
+				int score;
+				if ((*itr)->speedType == BaseEnemy::SpeedType::Normal)
+				{
+					score = 10;
+					/*FLOAT2 start = {40,40};
+					FLOAT2 end = {0, 0};
+					ParticleManager::speedType1.ExprotionParticle((*itr)->m_position, start, end, 10, 40);*/
+				}
+				else if ((*itr)->speedType == BaseEnemy::SpeedType::Midl)
+				{
+					score = 20;
+					/*FLOAT2 start = {40,40 };
+					FLOAT2 end = { 0, 0 };
+					ParticleManager::speedType2.ExprotionParticle((*itr)->m_position, start, end, 10, 40);*/
+				}
+				else if ((*itr)->speedType == BaseEnemy::SpeedType::Hi)
+				{
+					score = 30;
+					/*FLOAT2 start = { 40,40 };
+					FLOAT2 end = { 0, 0 };
+					ParticleManager::speedType3.ExprotionParticle((*itr)->m_position, start, end, 10, 40);*/
+				}
+				Score::score += score;
+				FLOAT2 size = { 10.0f, 17.0f };
+				ParticleManager::scoreParitcle.AddScore((*itr)->m_position, size, size, score, 60);
+				deleteEnemys.push_back(itr);
 			}
-			else if ((*itr)->speedType == BaseEnemy::SpeedType::Hi)
-			{
-				score = 30;
-			}
-			Score::score += score;
-			FLOAT2 size = { 10.0f, 17.0f };
-			ParticleManager::scoreParitcle.AddScore((*itr)->m_position, size, size, score, 60);
-			deleteEnemys.push_back(itr);
 		}
 	}
 	for (auto itr = deleteEnemys.begin(); itr != deleteEnemys.end(); ++itr)

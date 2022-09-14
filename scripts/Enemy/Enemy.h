@@ -45,14 +45,20 @@ public:
 		Normal,
 		Midl,
 		Hi,
+		Bomb,
 	};
+	static const int BombLife = 600;
+	int m_bombTimer = 0;
+	bool isBombErase;
+
+	float m_ext = 0.2f;
 
 	int speedType;
 
 	int m_returnNum = 0;
 	bool m_isReturn = false;
 
-	static int m_sprite[3];
+	static int m_sprite[4];
 	int nowSpriteNum = NormalMode;
 	
 	static int SpornAngle;
@@ -93,6 +99,7 @@ public:
 	void ToCiycleMove();
 	void CiycleMove();
 	void ReturnToCiycle();
+	void BombUpdate();
 	void LineMove();
 	void HitShiled();
 	void BulletCollision();

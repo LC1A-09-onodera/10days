@@ -145,9 +145,9 @@ void ParticleManager::LoadFile()
 	circleParticle.LoadFile("Resources/particle_cr.png");
 	cubeParticle.LoadFile("Resources/particle_sq.png");
 
-	speedType1.LoadFile("Resources/1.png");
-	speedType2.LoadFile("Resources/2.png");
-	speedType3.LoadFile("Resources/3.png");
+	speedType1.LoadFile("Resources/enemy_particle_sq.png");
+	speedType2.LoadFile("Resources/enemy_particle_cr.png");
+	speedType3.LoadFile("Resources/enemy_particle_tri.png");
 
 	scoreParitcle.LoadFile();
 }

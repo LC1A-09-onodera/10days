@@ -27,7 +27,32 @@ FLOAT2 WaveManager::m_backEndSize;
 bool WaveManager::isAllEnd = false;
 
 int WaveManager::s_rule;
-int WaveManager::alpha;
+int WaveManager::ruleAlpha;
+float WaveManager::ruleEaseTimer;
+bool WaveManager::isRuleEnd;
+FLOAT2 WaveManager::nowRuleSize;
+FLOAT2 WaveManager::MaxRuleSize;
+
+int WaveManager::s_change;
+int WaveManager::changeAlpha;
+float WaveManager::changeEaseTimer;
+bool WaveManager::isChangeEnd;
+FLOAT2 WaveManager::nowChangeSize;
+FLOAT2 WaveManager::MaxChangeSize;
+
+int WaveManager::s_transe;
+int WaveManager::transeAlpha;
+float WaveManager::transeEaseTimer;
+bool WaveManager::isTranseEnd;
+FLOAT2 WaveManager::nowTranseSize;
+FLOAT2 WaveManager::MaxTranseSize;
+
+int WaveManager::s_bomb;
+int WaveManager::bombAlpha;
+float WaveManager::bombEaseTimer;
+bool WaveManager::isBombEnd;
+FLOAT2 WaveManager::nowBombSize;
+FLOAT2 WaveManager::MaxBombSize;
 
 void WaveManager::LoadFile()
 {
@@ -37,6 +62,9 @@ void WaveManager::LoadFile()
 		s_waves[i - 1] = LoadGraph(path.c_str());
 	}
 	s_rule = LoadGraph("Resources/rule_guide.png");
+	s_change = LoadGraph("Resources/guide_a.png");
+	s_transe = LoadGraph("Resources/guide_b.png");
+	s_bomb = LoadGraph("Resources/guide_rb.png");
 }
 
 void WaveManager::WaveInit(int waveNum)
@@ -55,7 +83,11 @@ void WaveManager::WaveInit(int waveNum)
 	isStopEnd = false;
 	ScoreUI::isIncDec = false;
 	TowerHP::isIncDec = false;
-	alpha = 250;
+	ruleAlpha = 250;
+	transeAlpha = 0;
+	bombAlpha = 0;
+	changeAlpha = 0;
+	isRuleEnd = false;
 }
 
 void WaveManager::Update()
@@ -333,18 +365,100 @@ void WaveManager::Draw()
 		s_waves[waveNumber], true);
 	if (waveNumber == 0)
 	{
-		alpha -= 1;
-		if (alpha <= 0)
+		if (!isRuleEnd)
 		{
-			alpha = 0;
+			ruleEaseTimer += 0.02f;
+			if (ruleEaseTimer >= 1.0f)
+			{
+				ruleAlpha -= 2;
+				if (ruleAlpha <= 0)
+				{
+					ruleAlpha = 0;
+					isRuleEnd = true;
+					isChangeEnd = false;
+					changeAlpha = 250;
+					changeEaseTimer = 0;
+					ruleEaseTimer = 0;
+				}
+			}
+			
+			float sens = 0.3f;
+			FLOAT2 size = { 933.0f * sens , 174.0f * sens };
+			float y = 300;
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, ruleAlpha);
+			DrawExtendGraph(WindowSize::Wid / 2 - size.u, WindowSize::Hi / 2 - size.v + y, WindowSize::Wid / 2 + size.u, WindowSize::Hi / 2 + size.v + y
+				, s_rule, TRUE);
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		}
-		float sens = 0.3f;
-		FLOAT2 size = { 933.0f * sens , 174.0f * sens };
-		float y = 300;
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
-		DrawExtendGraph(WindowSize::Wid / 2 - size.u, WindowSize::Hi / 2 - size.v + y, WindowSize::Wid / 2 + size.u, WindowSize::Hi / 2 + size.v + y
-			, s_rule, TRUE);
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+		else if (!isChangeEnd)
+		{
+			changeEaseTimer += 0.02f;
+			if (changeEaseTimer >= 1.0f)
+			{
+				changeAlpha -= 2;
+				if (changeAlpha <= 0)
+				{
+					changeAlpha = 0;
+					changeEaseTimer = 0;
+					isChangeEnd = true;
+					isTranseEnd = false;
+					transeAlpha = 250;
+					transeEaseTimer = 0;
+				}
+			}
+			float sens = 0.3f;
+			FLOAT2 size = { 607.0f * sens , 111.0f * sens };
+			float y = 300;
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, changeAlpha);
+			DrawExtendGraph(WindowSize::Wid / 2 - size.u, WindowSize::Hi / 2 - size.v + y, WindowSize::Wid / 2 + size.u, WindowSize::Hi / 2 + size.v + y
+				, s_change, TRUE);
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+		}
+		else if (!isTranseEnd)
+		{
+			transeEaseTimer += 0.02f;
+			if (transeEaseTimer >= 1.0f)
+			{
+				transeAlpha -= 2;
+				if (transeAlpha <= 0)
+				{
+					transeAlpha = 0;
+					transeEaseTimer = 0;
+					isTranseEnd = true;
+					isBombEnd = false;
+					bombAlpha = 250;
+					bombEaseTimer = 0;
+				}
+			}
+			float sens = 0.3f;
+			FLOAT2 size = { 525.0f * sens , 111.0f * sens };
+			float y = 300;
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, transeAlpha);
+			DrawExtendGraph(WindowSize::Wid / 2 - size.u, WindowSize::Hi / 2 - size.v + y, WindowSize::Wid / 2 + size.u, WindowSize::Hi / 2 + size.v + y
+				, s_transe, TRUE);
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+		}
+		else if (!isBombEnd)
+		{
+			bombEaseTimer += 0.02f;
+			if (bombEaseTimer >= 1.0f)
+			{
+				bombAlpha -= 2;
+				if (bombAlpha <= 0)
+				{
+					bombAlpha = 0;
+					bombEaseTimer = 0;
+					isBombEnd = true;
+				}
+			}
+			float sens = 0.3f;
+			FLOAT2 size = { 659.0f * sens , 88.0f * sens };
+			float y = 300;
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, bombAlpha);
+			DrawExtendGraph(WindowSize::Wid / 2 - size.u, WindowSize::Hi / 2 - size.v + y, WindowSize::Wid / 2 + size.u, WindowSize::Hi / 2 + size.v + y
+				, s_bomb, TRUE);
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+		}
 	}
 }
 
