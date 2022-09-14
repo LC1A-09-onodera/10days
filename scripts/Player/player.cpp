@@ -41,14 +41,11 @@ void Player::Init()
 	m_isReflectorHit = false;
 	m_isChangeMode = false;
 	m_isShotBomb = false;
+	m_inGame = false;
 }
 
 void Player::Update()
 {
-	AddForce();
-
-	AttachForce();
-
 	if (Shake::GetPower().u > 0.0f)
 	{
 		FLOAT2 l_shakePower = { -0.5f,-0.5f };
@@ -299,14 +296,74 @@ void Player::Update()
 	}
 }
 
+void Player::OtherUpdate()
+{
+	if (m_inGame)
+	{
+		//サイズ調整
+		if (m_rad < 1.0f)
+		{
+			m_rad += 0.1f;
+		}
+	}
+	else
+	{
+		m_rad = 0.0f;
+
+		//左スティックが倒されている時のみ(コントローラー以外も対応させろ！)
+		if (Input::isJoyLeftStickBottom())
+		{
+			//自機の方向ベクトルを計算
+			FLOAT2 l_diff = { 0,0 };
+			l_diff.u = m_position.u - C_HALF_WID;
+			l_diff.v = m_position.v - C_HALF_HEI;
+			float l_leng = sqrtf(
+				powf(l_diff.u, 2.0f) +
+				powf(l_diff.v, 2.0f));
+			FLOAT2 l_vec = { 0,0 };
+			l_vec.u = l_diff.u / l_leng;
+			l_vec.v = l_diff.v / l_leng;
+			float l_pRad = atan2f(-l_vec.v, -l_vec.u);
+			if (l_pRad < 0.0f)
+			{
+				l_pRad += DX_PI_F * 2;
+			}
+			m_deg = 180.0f / DX_PI_F * l_pRad;
+
+			//自機の位置算出正規化
+			m_vec = Input::GetJoyLeftStick();
+			float l_len = sqrtf(powf(m_vec.u, 2.0f) + powf(m_vec.v, 2.0f));
+			m_vec.u /= l_len;
+			m_vec.v /= l_len * -1;
+
+			float l_pAngle = 180.0f / DX_PI_F * atan2f(l_vec.v, l_vec.u);
+			float l_sAngle = 180.0f / DX_PI_F * atan2f(m_vec.v, m_vec.u);
+			if (l_pAngle < 0.0f) { l_pAngle += 360.0f; }
+			if (l_sAngle < 0.0f) { l_sAngle += 360.0f; }
+			float l_nearArc = RotateEarliestArc(l_pAngle, l_sAngle);
+
+			FLOAT2 l_nearVec = { 0,0 };
+			float l_rad = (l_pAngle + (l_nearArc / 30.0f)) * DX_PI_F / 180.0f;
+			l_nearVec.u = cosf(l_rad);
+			l_nearVec.v = sinf(l_rad);
+
+			m_position.u = l_nearVec.u * (C_STAGE_RAD - C_PLAYER_RAD) + C_HALF_WID;
+			m_position.v = l_nearVec.v * (C_STAGE_RAD - C_PLAYER_RAD) + C_HALF_HEI;
+
+			//リフレクター
+			m_reflector_pos.u = l_nearVec.u * C_STAGE_REFLECTOR_RAD + C_HALF_WID;
+			m_reflector_pos.v = l_nearVec.v * C_STAGE_REFLECTOR_RAD + C_HALF_HEI;
+			m_reflector_rad = l_rad;
+			if (m_reflector_rad < 0.0f)
+			{
+				m_reflector_rad += DX_PI_F * 2.0f;
+			}
+		}
+	}
+}
+
 void Player::Draw()
 {
-	//DrawGraph(static_cast<int>(m_position.u) - Scroll::GetScrollX(), static_cast<int>(m_position.v), m_sprite, true);
-
-	float left = Input::GetJoyLeftTrigger();
-	float right = Input::GetJoyRightTrigger();
-
-
 	//自機
 	float l_addRad = 0;
 	float l_pSize = 1.0f;
@@ -406,11 +463,29 @@ void Player::Draw()
 	}
 
 	//debug
-	float hoge = Shake::GetPowerX();
-	float hoge2 = Shake::GetPowerY();
-	DrawFormatString(50, 20, GetColor(0, 0, 0), "ShakeX:%f", hoge);
-	DrawFormatString(50, 40, GetColor(0, 0, 0), "ShakeY:%f", hoge2);
-	DrawFormatString(50, 60, GetColor(0, 0, 0), "RefRad:%f", m_reflector_rad);
+	//float hoge = Shake::GetPowerX();
+	//float hoge2 = Shake::GetPowerY();
+	//DrawFormatString(50, 20, GetColor(0, 0, 0), "ShakeX:%f", hoge);
+	//DrawFormatString(50, 40, GetColor(0, 0, 0), "ShakeY:%f", hoge2);
+	//DrawFormatString(50, 60, GetColor(0, 0, 0), "RefRad:%f", m_reflector_rad);
+}
+
+void Player::OtherDraw()
+{
+	if (!m_inGame)
+	{
+		//自機
+		float l_addRad = 0;
+		float l_pSize = 1.0f;
+		DrawRotaGraph(
+			static_cast<int>(m_position.u + Shake::GetShake().u),
+			static_cast<int>(m_position.v + Shake::GetShake().v),
+			l_pSize * 0.2,
+			static_cast<double>(m_reflector_rad) + l_addRad - DX_PI_F / 2.0,
+			m_s_player,
+			true
+		);
+	}
 }
 
 void Player::LoadFile()
