@@ -66,7 +66,7 @@ void BulletUI::Update(int bulletNum)
 	}
 	else if (nowBullet < bulletNum)
 	{
-		for (int i = 0l; i < 3; i++)
+		for (int i = 0; i < 2; i++)
 		{
 			if (nowBullet < bulletNum)
 			{

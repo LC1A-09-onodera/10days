@@ -11,6 +11,7 @@
 #include "scripts/Enemy/Enemy.h"
 #include "scripts/Score/Score.h"
 #include "scripts/Wave/Wave.h"
+#include "scripts/Scroll/Scroll.h"
 #include <string>
 #include <time.h>
 
@@ -113,6 +114,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		// çXêVèàóù
 		if (sceneNum == TITLE)
 		{
+			FLOAT2 l_resetShakePower{ -50.0f,-50.0f };
+			Shake::AddShakePower(l_resetShakePower);
+
 			if (Input::GetKeyTrigger(KEY_INPUT_SPACE) || Input::isJoyBottomTrigger(XINPUT_BUTTON_A))
 			{
 				sceneNum = GAME;
@@ -157,14 +161,18 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 						FLOAT2 spriteSize = { 30.0f, 30.0f };
 
 						//íeÇ™écÇ¡ÇƒÇÈÇ©ÇÃîªíË
-						bool isShot = player.ShotBullet();
-						if (isShot && !bulletUI.m_isAllShot)
+						static int ShotDistance = 0;
+						ShotDistance++;
+						if (ShotDistance % 2 == 0)
 						{
+							bool isShot = player.ShotBullet();
+							if (isShot && !bulletUI.m_isAllShot)
+							{
 
-							ObjectManager::object1.Shot(winSizeHalf, spriteSize, player.GetDeg(), 18.0f, BaseObject::ObjectType::ORANGE);
-
-							StopSoundMem(SoundManager::shotBullet);
-							PlaySoundMem(SoundManager::shotBullet, DX_PLAYTYPE_BACK);
+								ObjectManager::object1.Shot(winSizeHalf, spriteSize, player.GetDeg(), 18.0f, BaseObject::ObjectType::ORANGE);
+								StopSoundMem(SoundManager::shotBullet);
+								PlaySoundMem(SoundManager::shotBullet, DX_PLAYTYPE_BACK);
+							}
 						}
 					}
 					BaseObject::ResetSpeed();
@@ -341,10 +349,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		else if (sceneNum == GAME)
 		{
 			WaveManager::Draw();
-			
+
 			TowerHP::Draw();
 			ScoreUI::Draw();
-			
+
 			bulletUI.Draw();
 			player.Draw();
 			ObjectManager::Draw();
