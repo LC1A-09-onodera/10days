@@ -284,7 +284,7 @@ void ScoreUI::Update(int score)
 		bombStart += 18;
 	}
 
-	float bombUIStart = 340;
+	float bombUIStart = 350;
 	for (auto itr = m_bombs.begin(); itr != m_bombs.end(); ++itr)
 	{
 		(*itr)->m_position.u = WindowSize::Wid / 2 + (nowR * DxLibMath::Cos(bombUIStart));
