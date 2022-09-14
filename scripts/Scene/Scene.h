@@ -27,6 +27,9 @@ public:
 	static FLOAT2 m_titleSize;
 	static FLOAT2 m_spaceSize;
 
+	static float spaceAlpha;
+	static bool isDec;
+
 	static int m_s_ciycle;
 	static FLOAT2 m_ciycleSize;
 	static void LoadFile();
@@ -68,6 +71,9 @@ public:
 	static int s_number[10];
 	static int m_score;
 	static bool isToTitle;
+
+	static float spaceAlpha;
+	static bool isDec;
 	
 	static FLOAT2 m_numSize;
 	static void LoadFile();
