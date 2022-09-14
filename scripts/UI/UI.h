@@ -78,6 +78,17 @@ public:
 	static float nowR;
 	static const int R = 80;
 	static bool isIncDec;
+
+	static int s_bomb;
+	static std::list<UISprite *> m_bombs;
+	static int nowBomb;
+	static int s_bombTex[4];
+	static FLOAT2 m_bombTexPos[4];
+	static float bombTexExt;
+	static float MaxBombExt;
+	static float bombExt;
+	static float MaxBomb;
+
 	static void Increase();
 	static void Decrease();
 	static void LoadFile();

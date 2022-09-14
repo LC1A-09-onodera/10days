@@ -204,11 +204,10 @@ void BaseEnemy::HitShiled()
 	{
 		m_HP = 0;
 		isDelete = true;
-		float addScore = 10;
+		/*float addScore = 10;
 		Score::score += addScore;
 		FLOAT2 size = { 18.0f, 22.0f };
-		//int score = 10 * (m_returnNum + 1);
-		ParticleManager::scoreParitcle.AddScore(m_position, size, size, addScore, 60);
+		ParticleManager::scoreParitcle.AddScore(m_position, size, size, addScore, 60);*/
 		//以下反射板に当たった時
 		m_isReturn = true;
 		if (m_type == Angel)
@@ -238,9 +237,9 @@ void BaseEnemy::BulletCollision()
 			m_HP--;
 			m_timer = 0;
 			//スコア加算
-			Score::score++;
-			FLOAT2 size = { 10.0f, 17.0f };
-			ParticleManager::scoreParitcle.AddScore((*itr)->m_position, size, size, 1, 60);
+			//Score::score++;
+			//FLOAT2 size = { 10.0f, 17.0f };
+			//ParticleManager::scoreParitcle.AddScore((*itr)->m_position, size, size, 1, 60);
 
 			if (m_HP <= 0)
 			{
@@ -263,9 +262,9 @@ void BaseEnemy::BulletCollision()
 			m_HP--;
 			m_timer = 0;
 			//スコア加算
-			Score::score++;
+			/*Score::score++;
 			FLOAT2 size = { 10.0f, 17.0f };
-			ParticleManager::scoreParitcle.AddScore((*itr)->m_position, size, size, 1, 60);
+			ParticleManager::scoreParitcle.AddScore((*itr)->m_position, size, size, 1, 60);*/
 
 			if (m_HP <= 0)
 			{
@@ -289,22 +288,13 @@ void EnemyManager::Init()
 
 }
 
-void EnemyManager::AddEnemy()
+void EnemyManager::AddEnemy(BaseEnemy::SpeedType f_speedType)
 {
 	BaseEnemy* enemy = new BaseEnemy();
 	int a = rand() % 3;
-	if (a == 0)
-	{
-		enemy->Init(BaseEnemy::SpeedType::Normal);
-	}
-	else if (a == 1)
-	{
-		enemy->Init(BaseEnemy::SpeedType::Midl);
-	}
-	else
-	{
-		enemy->Init(BaseEnemy::SpeedType::Hi);
-	}
+	
+	enemy->Init(f_speedType);
+	
 	EnemyManager::enemys.push_back(&(*enemy));
 }
 
@@ -315,6 +305,22 @@ void EnemyManager::Update()
 		(*itr)->Update();
 		if ((*itr)->isDelete)
 		{
+			int score;
+			if ((*itr)->speedType == BaseEnemy::SpeedType::Normal)
+			{
+				score = 10;
+			}
+			else if ((*itr)->speedType == BaseEnemy::SpeedType::Midl)
+			{
+				score = 20;
+			}
+			else if ((*itr)->speedType == BaseEnemy::SpeedType::Hi)
+			{
+				score = 30;
+			}
+			Score::score += score;
+			FLOAT2 size = { 10.0f, 17.0f };
+			ParticleManager::scoreParitcle.AddScore((*itr)->m_position, size, size, score, 60);
 			deleteEnemys.push_back(itr);
 		}
 	}

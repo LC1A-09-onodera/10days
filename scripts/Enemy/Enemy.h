@@ -66,7 +66,7 @@ public:
 	//出現時の
 	static const int OutsideR = 1000;
 	//最大HP
-	static const int MaxHP = 1;
+	static const int MaxHP = 2;
 	//円周上を回っているとき
 	static const int NormalMode = 6;
 	//攻撃時の進行モード
@@ -113,7 +113,7 @@ public:
 
 	//static int enemyCiycle;
 	static void Init();
-	static void AddEnemy();
+	static void AddEnemy(BaseEnemy::SpeedType f_speedType);
 	static void Update();
 	static void Draw();
 	static void CiycleInc();
