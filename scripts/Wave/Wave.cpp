@@ -371,7 +371,7 @@ void WaveManager::Draw()
 	{
 		if (!isRuleEnd)
 		{
-			ruleEaseTimer += 0.02f;
+			ruleEaseTimer += 0.01f;
 			if (ruleEaseTimer >= 1.0f)
 			{
 				ruleAlpha -= 2;
@@ -396,7 +396,7 @@ void WaveManager::Draw()
 		}
 		else if (!isChangeEnd)
 		{
-			changeEaseTimer += 0.02f;
+			changeEaseTimer += 0.01f;
 			if (changeEaseTimer >= 1.0f)
 			{
 				changeAlpha -= 2;
@@ -420,7 +420,7 @@ void WaveManager::Draw()
 		}
 		else if (!isTranseEnd)
 		{
-			transeEaseTimer += 0.02f;
+			transeEaseTimer += 0.01f;
 			if (transeEaseTimer >= 1.0f)
 			{
 				transeAlpha -= 2;
@@ -444,7 +444,7 @@ void WaveManager::Draw()
 		}
 		else if (!isBombEnd)
 		{
-			bombEaseTimer += 0.02f;
+			bombEaseTimer += 0.01f;
 			if (bombEaseTimer >= 1.0f)
 			{
 				bombAlpha -= 2;
