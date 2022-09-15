@@ -118,8 +118,9 @@ void Player::Update()
 			}
 
 			//ècífì¸óÕ
-			if (Input::GetKeyTrigger(KEY_INPUT_Z) ||
-				Input::isJoyBottomTrigger(XINPUT_BUTTON_B))
+			/*if (Input::GetKeyTrigger(KEY_INPUT_Z) ||
+				Input::isJoyBottomTrigger(XINPUT_BUTTON_B))*/
+			if (false)
 			{
 				StopSoundMem(SoundManager::transe);
 				PlaySoundMem(SoundManager::transe, DX_PLAYTYPE_BACK);
