@@ -59,11 +59,17 @@ int WaveManager::bombTimer = 0;
 
 void WaveManager::LoadFile()
 {
-	for (int i = 1; i <= 10; i++)
+	/*for (int i = 1; i <= 10; i++)
 	{
 		std::string path = "Resources/wave_" + std::to_string(i) + ".png";
 		s_waves[i - 1] = LoadGraph(path.c_str());
+	}*/
+	s_waves[0] = LoadGraph("Resources/level_1.png");
+	for (int i = 1; i < 9; i++)
+	{
+		s_waves[i] = LoadGraph("Resources/level_up.png");
 	}
+	s_waves[9] = LoadGraph("Resources/level_max.png");
 	s_rule = LoadGraph("Resources/rule_guide.png");
 	s_change = LoadGraph("Resources/guide_a.png");
 	s_transe = LoadGraph("Resources/guide_b.png");
@@ -91,7 +97,7 @@ void WaveManager::WaveInit(int waveNum)
 	bombAlpha = 0;
 	changeAlpha = 0;
 	isRuleEnd = false;
-	if (waveNum == 2 && Player::GetBombCount() < 3)
+	if (waveNum == 2 && Player::GetBombCount() < 2)
 	{
 		EnemyManager::AddEnemy(BaseEnemy::SpeedType::Bomb);
 	}
@@ -340,7 +346,7 @@ void WaveManager::Update()
 				}
 			}
 		}
-		/*else if (waveNumber == 9)
+		else if (waveNumber >= 10)
 		{
 			if (EnemyManager::enemys.size() <= 0 || rand() % 150 == 0)
 			{
@@ -361,7 +367,7 @@ void WaveManager::Update()
 					}
 				}
 			}
-		}*/
+		}
 	}
 }
 

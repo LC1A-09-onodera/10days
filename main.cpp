@@ -136,6 +136,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 				PlaySoundMem(SoundManager::BGM, DX_PLAYTYPE_BACK);
 				player.InGame(true);
 				TitleScene::SetRand();
+				//Score::score = 34999;
 			}
 		}
 
