@@ -151,7 +151,9 @@ void WaveManager::Update()
 		{
 			if (EnemyManager::enemys.size() <= 0)
 			{
-				EnemyManager::AddEnemy(BaseEnemy::SpeedType::Normal);
+				EnemyManager::AddEnemy(BaseEnemy::SpeedType::Troop2);
+				//EnemyManager::AddEnemy(BaseEnemy::SpeedType::Shild);
+				EnemyManager::AddEnemy(BaseEnemy::SpeedType::Troop);
 			}
 		}
 		else if (waveNumber == 1)
@@ -162,10 +164,14 @@ void WaveManager::Update()
 				if (ran == 0)
 				{
 					EnemyManager::AddEnemy(BaseEnemy::SpeedType::Midl);
+					EnemyManager::AddEnemy(BaseEnemy::SpeedType::Shild);
+					//EnemyManager::AddEnemy(BaseEnemy::SpeedType::Troop);
 				}
 				else
 				{
 					EnemyManager::AddEnemy(BaseEnemy::SpeedType::Normal);
+					EnemyManager::AddEnemy(BaseEnemy::SpeedType::Shild);
+					//EnemyManager::AddEnemy(BaseEnemy::SpeedType::Troop2);
 				}
 			}
 

@@ -45,6 +45,10 @@ public:
 		Normal,
 		Midl,
 		Hi,
+		Shild,
+		//‘à—ñ1
+		Troop,
+		Troop2,
 		Bomb,
 	};
 	static const int BombLife = 600;
@@ -58,7 +62,7 @@ public:
 	int m_returnNum = 0;
 	bool m_isReturn = false;
 
-	static int m_sprite[4];
+	static int m_sprite[SpeedType::Bomb + 1];
 	int nowSpriteNum = NormalMode;
 	
 	static int SpornAngle;
@@ -93,7 +97,7 @@ public:
 
 
 	static void LoadFile();
-	void Init(SpeedType type = SpeedType::Normal);
+	void Init(SpeedType type = SpeedType::Normal, int f_troopCount = 0);
 	void Update();
 	void Draw();
 	void ToCiycleMove();
