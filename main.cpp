@@ -439,11 +439,11 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			}
 		}*/
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
-		DrawGraph(0, 0, vignetteB, TRUE);
+		DrawExtendGraph(0, 0,WindowSize::Wid, WindowSize::Hi, vignetteB, TRUE);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 		/*SetDrawBlendMode(DX_BLENDMODE_ALPHA, (255 - alpha));
-		DrawGraph(0, 0, vignetteR, TRUE);
+		DrawExtendGraph(0, 0,WindowSize::Wid, WindowSize::Hi, vignetteR, TRUE);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);*/
 
 		//---------  ここまでにプログラムを記述  ---------//

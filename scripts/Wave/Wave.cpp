@@ -105,7 +105,7 @@ void WaveManager::WaveInit(int waveNum)
 		EnemyManager::AddEnemy(BaseEnemy::SpeedType::Bomb);
 	}
 
-	if (waveNum == 5)
+	if (waveNum == 0)
 	{
 		EnemyManager::AddEnemy(BaseEnemy::SpeedType::Boss);
 		EnemyManager::isBoss = true;

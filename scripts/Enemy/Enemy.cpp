@@ -176,14 +176,14 @@ void BaseEnemy::Draw()
 	}
 	if (speedType != SpeedType::Bomb)
 	{
-		/*if (speedType == SpeedType::Troop || speedType == SpeedType::Troop2)
+		if (speedType == SpeedType::Boss)
 		{
-			DrawRotaGraph(m_position.u + Shake::GetShake().u + shakePower.u, m_position.v + Shake::GetShake().v + shakePower.v, m_ext, angle, m_sprite[SpeedType::Normal], true);
+			DrawRotaGraph(m_position.u + Shake::GetShake().u + shakePower.u, m_position.v + Shake::GetShake().v + shakePower.v, 0.25f, angle, m_sprite[speedType], true);
 		}
 		else
-		{*/
-		DrawRotaGraph(m_position.u + Shake::GetShake().u + shakePower.u, m_position.v + Shake::GetShake().v + shakePower.v, m_ext, angle, m_sprite[speedType], true);
-		//}
+		{
+			DrawRotaGraph(m_position.u + Shake::GetShake().u + shakePower.u, m_position.v + Shake::GetShake().v + shakePower.v, m_ext, angle, m_sprite[speedType], true);
+		}
 	}
 	else
 	{
