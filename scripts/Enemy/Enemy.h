@@ -73,7 +73,7 @@ public:
 	bool isStop = false;
 
 	//’†S‚©‚ç‚Ì’â~—p‹——£
-	static const int CenterR = 470;
+	static const int CenterR = 460;
 	//oŒ»‚Ì
 	static const int OutsideR = 1000;
 	//Å‘åHP

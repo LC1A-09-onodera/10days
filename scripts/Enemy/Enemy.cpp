@@ -35,7 +35,7 @@ void BaseEnemy::LoadFile()
 	m_sprite[Troop] = LoadGraph("Resources/troops_element_1.png");
 	m_sprite[Troop2] = LoadGraph("Resources/troops_element_2.png");
 	m_sprite[Bomb] = LoadGraph("Resources/bomb.png");
-	m_sprite[Boss] = LoadGraph("Resources/enemy_3.png");
+	m_sprite[Boss] = LoadGraph("Resources/enemy_boss.png");
 }
 
 void BaseEnemy::Init(SpeedType type, int f_troopCount)
