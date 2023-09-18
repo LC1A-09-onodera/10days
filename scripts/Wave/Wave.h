@@ -58,6 +58,8 @@ public:
 	static FLOAT2 nowBombSize;
 	static FLOAT2 MaxBombSize;
 
+	static int s_shild;
+
 
 	static FLOAT2 m_size;
 	static FLOAT2 m_position;

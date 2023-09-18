@@ -54,6 +54,7 @@ public:
 	};
 	//static int m_s_backBround;
 	static int m_s_side;
+	static int m_s_bossSide;
 	//static FLOAT2 m_backPosition;
 	//static FLOAT2 m_backSize;
 	static FLOAT2 m_sideSize;

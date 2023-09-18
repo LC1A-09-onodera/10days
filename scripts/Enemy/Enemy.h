@@ -49,6 +49,7 @@ public:
 		//‘à—ñ1
 		Troop,
 		Troop2,
+		Boss,
 		Bomb,
 	};
 	static const int BombLife = 600;
@@ -125,6 +126,8 @@ public:
 	static const int NormalSpeedScore = 100;
 	static const int MiddleSpeedScore = 125;
 	static const int HiSpeedScore = 150;
+
+	static bool isBoss;
 
 	//static int enemyCiycle;
 	static void Init();

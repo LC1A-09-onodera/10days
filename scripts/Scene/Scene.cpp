@@ -42,9 +42,12 @@ bool TitleScene::isDec = true;
 float ResultScene::spaceAlpha = 255;
 bool ResultScene::isDec = true;
 
+int GameScene::m_s_bossSide;
+
 void GameScene::LoadFile()
 {
 	m_s_side = LoadGraph("Resources/EncanEncounter.png");
+	m_s_bossSide = LoadGraph("Resources/danger.png");
 	m_sideSize = { 1200.0f, 104.0f };
 }
 
@@ -83,6 +86,7 @@ void GameScene::Init()
 
 void GameScene::Draw()
 {
+	
 	for (int i = static_cast<int>(Direction::Right1); i <= static_cast<int>(Direction::Right2); i++)
 	{
 		DrawRotaGraph(SceneSide::m_sidePosition[i].u + m_sideSize.v / 2.0f + Shake::GetShake().u, SceneSide::m_sidePosition[i].v + Shake::GetShake().v,

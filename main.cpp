@@ -58,7 +58,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	float easeTime = 0;
 
 	int BackGraund = LoadGraph("Resources/back.png");
-	int vignette = LoadGraph("Resources/vignette.png");
+
+	int vignetteB = LoadGraph("Resources/vignette_brack.png");
+	int vignetteR = LoadGraph("Resources/vignette_red.png");
 
 	// ゲームループで使う変数の宣言
 	int mouse_x;
@@ -112,7 +114,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		mousePos = { (float)mouse_x, (float)mouse_y };
 
 		// 更新処理
-		
+
 		//内部管理
 		player.OtherUpdate();
 
@@ -418,8 +420,31 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			}
 			ResultScene::Draw();
 		}
+		
+		
+		//255がそれを使う
+		static int alpha = 255;
+		if (!EnemyManager::isBoss)
+		{
+			if (alpha < 255)
+			{
+				alpha++;
+			}
+		}
+		else
+		{
+			if (alpha > 0)
+			{
+				alpha--;
+			}
+		}
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
+		DrawGraph(0, 0, vignetteB, TRUE);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-		DrawGraph(0, 0, vignette, true);
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, (255 - alpha));
+		DrawGraph(0, 0, vignetteR, TRUE);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 		//---------  ここまでにプログラムを記述  ---------//
 		// (ダブルバッファ)裏面

@@ -28,6 +28,11 @@ float Scroll::GetScrollY()
 	return m_scrollValue.v;
 }
 
+void Shake::SetShakePower(FLOAT2 f_shakePower)
+{
+	m_shakeValue = f_shakePower;
+}
+
 void Shake::AddShakePower(FLOAT2 f_shakePower)
 {
 	//–ˆƒtƒŒ[ƒ€•Ï‚¦‚é‚Æ‚¨‚©‚µ‚­‚È‚è‚»‚¤‚¾‚©‚ç
