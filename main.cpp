@@ -127,6 +127,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			if (Input::GetKeyTrigger(KEY_INPUT_SPACE) || Input::isJoyBottomTrigger(XINPUT_BUTTON_A))
 			{
 				sceneNum = GAME;
+				WaveManager::isBombHeal = false;
 				TowerHP::HP = TowerHP::MaxHP;
 				bulletUI.m_isAllShot = false;
 				WaveManager::WaveInit(0);

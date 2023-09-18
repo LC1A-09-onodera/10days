@@ -58,6 +58,7 @@ int WaveManager::s_shild;
 
 bool WaveManager::isBombHit = false;
 int WaveManager::bombTimer = 0;
+bool WaveManager::isBombHeal = false;
 
 void WaveManager::LoadFile()
 {
@@ -105,7 +106,7 @@ void WaveManager::WaveInit(int waveNum)
 		EnemyManager::AddEnemy(BaseEnemy::SpeedType::Bomb);
 	}
 
-	if (waveNum == 0)
+	if (waveNum == 5)
 	{
 		EnemyManager::AddEnemy(BaseEnemy::SpeedType::Boss);
 		EnemyManager::isBoss = true;
@@ -259,6 +260,7 @@ void WaveManager::Update()
 		}
 		else if (waveNumber == 5)
 		{
+			isBombHeal = false;
 			if (EnemyManager::enemys.size() <= 2 || rand() % 120 == 0)
 			{
 				for (int i = 0; i < 3; i++)
@@ -277,6 +279,11 @@ void WaveManager::Update()
 						EnemyManager::AddEnemy(BaseEnemy::SpeedType::Normal);
 					}
 				}
+			}
+			if (Player::GetBombCount() < 2 && rand() % 300 == 0 && !isBombHeal)
+			{
+				EnemyManager::AddEnemy(BaseEnemy::SpeedType::Bomb);
+				isBombHeal = true;
 			}
 		}
 		else if (waveNumber == 6)
