@@ -31,4 +31,6 @@ public:
 	static bool isJoyBottom(int JoyBottom);			//ジョイパッドボタンの押下情報を取得。
 	static bool isJoyBottomTrigger(int JoyBottom);	//ジョイパッドボタンのトリガー押下情報を取得。
 	static bool isJoyBottomRelease(int JoyBottom);	//ジョイパッドボタンのリリース押下情報を取得。
+
+	static bool isPadConnect();
 };
