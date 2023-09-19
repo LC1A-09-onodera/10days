@@ -42,9 +42,12 @@ bool TitleScene::isDec = true;
 float ResultScene::spaceAlpha = 255;
 bool ResultScene::isDec = true;
 
+int GameScene::m_s_bossSide;
+
 void GameScene::LoadFile()
 {
 	m_s_side = LoadGraph("Resources/EncanEncounter.png");
+	m_s_bossSide = LoadGraph("Resources/danger.png");
 	m_sideSize = { 1200.0f, 104.0f };
 }
 
@@ -83,17 +86,48 @@ void GameScene::Init()
 
 void GameScene::Draw()
 {
+	static int offset = 0;
+	static const int offsetMax = 110;
+	if (!EnemyManager::isBoss)
+	{
+		if (offset > 0)
+		{
+			offset -= 5;
+		}
+	}
+	else
+	{
+		if (offset < offsetMax)
+		{
+			offset += 5;
+		}
+	}
 	for (int i = static_cast<int>(Direction::Right1); i <= static_cast<int>(Direction::Right2); i++)
 	{
-		DrawRotaGraph(SceneSide::m_sidePosition[i].u + m_sideSize.v / 2.0f + Shake::GetShake().u, SceneSide::m_sidePosition[i].v + Shake::GetShake().v,
+		DrawRotaGraph(SceneSide::m_sidePosition[i].u + m_sideSize.v / 2.0f + Shake::GetShake().u - offset,
+			SceneSide::m_sidePosition[i].v + Shake::GetShake().v,
 			1.0f, 3.1415f / 2.0f,
 			m_s_side, true, false);
 	}
 	for (int i = static_cast<int>(Direction::Left1); i <= static_cast<int>(Direction::Left2); i++)
 	{
-		DrawRotaGraph(SceneSide::m_sidePosition[i].u + m_sideSize.v / 2.0f + Shake::GetShake().u, SceneSide::m_sidePosition[i].v + Shake::GetShake().v,
+		DrawRotaGraph(SceneSide::m_sidePosition[i].u + m_sideSize.v / 2.0f + Shake::GetShake().u + offset,
+			SceneSide::m_sidePosition[i].v + Shake::GetShake().v,
 			1.0f, 3.1415f / 2.0f * 3.0f,
 			m_s_side, true, false);
+	}
+	for (int i = static_cast<int>(Direction::Right1); i <= static_cast<int>(Direction::Right2); i++)
+	{
+		DrawRotaGraph(SceneSide::m_sidePosition[i].u + m_sideSize.v / 2.0f + Shake::GetShake().u - (offsetMax - offset),
+			SceneSide::m_sidePosition[i].v + Shake::GetShake().v,
+			1.0f, 3.1415f / 2.0f,
+			m_s_bossSide, true, false);
+	}
+	for (int i = static_cast<int>(Direction::Left1); i <= static_cast<int>(Direction::Left2); i++)
+	{
+		DrawRotaGraph(SceneSide::m_sidePosition[i].u + m_sideSize.v / 2.0f + Shake::GetShake().u + (offsetMax - offset), SceneSide::m_sidePosition[i].v + Shake::GetShake().v,
+			1.0f, 3.1415f / 2.0f * 3.0f,
+			m_s_bossSide, true, false);
 	}
 }
 

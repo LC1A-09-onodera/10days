@@ -53,7 +53,7 @@ void Player::Update()
 {
 	if (Shake::GetPower().u > 0.0f)
 	{
-		FLOAT2 l_shakePower = { -0.5f,-0.5f };
+		FLOAT2 l_shakePower = { -0.05f,-0.05f };
 		Shake::AddShakePower(l_shakePower);
 	}
 
@@ -365,6 +365,8 @@ void Player::Update()
 					Input::isJoyBottomTrigger(XINPUT_BUTTON_RIGHT_SHOULDER))
 				{
 					//WaveManager::isBombHit = true;
+					FLOAT2 l_addPower{ 7.0f,7.0f };
+					Shake::AddShakePower(l_addPower);
 					StopSoundMem(SoundManager::BombShot);
 					PlaySoundMem(SoundManager::BombShot, DX_PLAYTYPE_BACK);
 					m_isShotBomb = true;
@@ -375,8 +377,8 @@ void Player::Update()
 			//リフレクターヒット時
 			if (m_isReflectorHit)
 			{
-				FLOAT2 l_shakePower = { 10.0f,6.0f };
-				Shake::AddShakePower(l_shakePower);
+				FLOAT2 l_shakePower = { 3.0f,3.0f };
+				Shake::SetShakePower(l_shakePower);
 				m_isReflectorHit = false;
 			}
 
@@ -466,8 +468,6 @@ void Player::Update()
 	if (m_isShotBomb)
 	{
 		m_bombLength += C_ADD_BOMB_LENGTH;
-		FLOAT2 l_addPower{ 4.0f,4.0f };
-		Shake::AddShakePower(l_addPower);
 
 		if (m_bombLength > m_winSize.u)
 		{

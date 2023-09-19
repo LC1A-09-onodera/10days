@@ -54,20 +54,30 @@ bool WaveManager::isBombEnd;
 FLOAT2 WaveManager::nowBombSize;
 FLOAT2 WaveManager::MaxBombSize;
 
+int WaveManager::s_shild;
+
 bool WaveManager::isBombHit = false;
 int WaveManager::bombTimer = 0;
+bool WaveManager::isBombHeal = false;
 
 void WaveManager::LoadFile()
 {
-	for (int i = 1; i <= 10; i++)
+	/*for (int i = 1; i <= 10; i++)
 	{
 		std::string path = "Resources/wave_" + std::to_string(i) + ".png";
 		s_waves[i - 1] = LoadGraph(path.c_str());
+	}*/
+	s_waves[0] = LoadGraph("Resources/level_1.png");
+	for (int i = 1; i < 9; i++)
+	{
+		s_waves[i] = LoadGraph("Resources/level_up.png");
 	}
+	s_waves[9] = LoadGraph("Resources/level_max.png");
 	s_rule = LoadGraph("Resources/rule_guide.png");
 	s_change = LoadGraph("Resources/guide_a.png");
 	s_transe = LoadGraph("Resources/guide_b.png");
 	s_bomb = LoadGraph("Resources/guide_rb.png");
+
 }
 
 void WaveManager::WaveInit(int waveNum)
@@ -95,13 +105,11 @@ void WaveManager::WaveInit(int waveNum)
 	{
 		EnemyManager::AddEnemy(BaseEnemy::SpeedType::Bomb);
 	}
-	if (waveNum == 4 && Player::GetBombCount() < 2)
+
+	if (waveNum == 5)
 	{
-		EnemyManager::AddEnemy(BaseEnemy::SpeedType::Bomb);
-	}
-	if (waveNum == 6 && Player::GetBombCount() < 2)
-	{
-		EnemyManager::AddEnemy(BaseEnemy::SpeedType::Bomb);
+		EnemyManager::AddEnemy(BaseEnemy::SpeedType::Boss);
+		EnemyManager::isBoss = true;
 	}
 }
 
@@ -142,6 +150,10 @@ void WaveManager::Update()
 			TowerHP::isIncDec = true;
 		}
 	}
+	if (EnemyManager::isBoss)
+	{
+		Score::score = WaveBorader[waveNumber] - 1;
+	}
 
 	if (Score::score >= WaveBorader[waveNumber])
 	{
@@ -164,10 +176,14 @@ void WaveManager::Update()
 				if (ran == 0)
 				{
 					EnemyManager::AddEnemy(BaseEnemy::SpeedType::Midl);
+					//EnemyManager::AddEnemy(BaseEnemy::SpeedType::Shild);
+					//EnemyManager::AddEnemy(BaseEnemy::SpeedType::Troop);
 				}
 				else
 				{
 					EnemyManager::AddEnemy(BaseEnemy::SpeedType::Normal);
+					//EnemyManager::AddEnemy(BaseEnemy::SpeedType::Shild);
+					//EnemyManager::AddEnemy(BaseEnemy::SpeedType::Troop2);
 				}
 			}
 
@@ -212,6 +228,7 @@ void WaveManager::Update()
 					else
 					{
 						EnemyManager::AddEnemy(BaseEnemy::SpeedType::Normal);
+						//EnemyManager::AddEnemy(BaseEnemy::SpeedType::Troop);
 					}
 				}
 			}
@@ -240,12 +257,13 @@ void WaveManager::Update()
 		}
 		else if (waveNumber == 5)
 		{
-			if (EnemyManager::enemys.size() <= 3 || rand() % 180 == 0)
+			isBombHeal = false;
+			if (EnemyManager::enemys.size() <= 2 || rand() % 120 == 0)
 			{
 				for (int i = 0; i < 3; i++)
 				{
 					int ran = rand() % 10;
-					if (ran < 4)
+					if (ran < 2)
 					{
 						EnemyManager::AddEnemy(BaseEnemy::SpeedType::Hi);
 					}
@@ -258,6 +276,11 @@ void WaveManager::Update()
 						EnemyManager::AddEnemy(BaseEnemy::SpeedType::Normal);
 					}
 				}
+			}
+			if (Player::GetBombCount() < 2 && rand() % 300 == 0 && !isBombHeal)
+			{
+				EnemyManager::AddEnemy(BaseEnemy::SpeedType::Bomb);
+				isBombHeal = true;
 			}
 		}
 		else if (waveNumber == 6)
@@ -348,7 +371,7 @@ void WaveManager::Update()
 				}
 			}
 		}
-		/*else if (waveNumber == 9)
+		else if (waveNumber >= 10)
 		{
 			if (EnemyManager::enemys.size() <= 0 || rand() % 150 == 0)
 			{
@@ -369,7 +392,7 @@ void WaveManager::Update()
 					}
 				}
 			}
-		}*/
+		}
 	}
 }
 

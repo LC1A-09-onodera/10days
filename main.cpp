@@ -58,7 +58,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	float easeTime = 0;
 
 	int BackGraund = LoadGraph("Resources/back.png");
-	int vignette = LoadGraph("Resources/vignette.png");
+
+	int vignetteB = LoadGraph("Resources/vignette_brack.png");
+	int vignetteR = LoadGraph("Resources/vignette_red.png");
 
 	// ゲームループで使う変数の宣言
 	int mouse_x;
@@ -125,6 +127,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			if (Input::GetKeyTrigger(KEY_INPUT_SPACE) || Input::isJoyBottomTrigger(XINPUT_BUTTON_A))
 			{
 				sceneNum = GAME;
+				WaveManager::isBombHeal = false;
 				TowerHP::HP = TowerHP::MaxHP;
 				bulletUI.m_isAllShot = false;
 				WaveManager::WaveInit(0);
@@ -136,6 +139,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 				PlaySoundMem(SoundManager::BGM, DX_PLAYTYPE_BACK);
 				player.InGame(true);
 				TitleScene::SetRand();
+				//Score::score = 34999;
 			}
 		}
 
@@ -434,8 +438,31 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			}
 			ResultScene::Draw();
 		}
+		
+		
+		//255がそれを使う
+		static int alpha = 255;
+		if (TowerHP::HP > 1)
+		{
+			if (alpha < 255)
+			{
+				alpha++;
+			}
+		}
+		else
+		{
+			if (alpha > 0)
+			{
+				alpha--;
+			}
+		}
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
+		DrawExtendGraph(0, 0,WindowSize::Wid, WindowSize::Hi, vignetteB, TRUE);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-		DrawGraph(0, 0, vignette, true);
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, (255 - alpha));
+		DrawExtendGraph(0, 0,WindowSize::Wid, WindowSize::Hi, vignetteR, TRUE);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 		//---------  ここまでにプログラムを記述  ---------//
 		// (ダブルバッファ)裏面

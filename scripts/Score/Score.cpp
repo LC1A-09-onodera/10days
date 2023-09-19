@@ -2,7 +2,7 @@
 #include "../WindowsSize/WindowSize.h"
 #include "../Lib/Lib.h"
 
-int Score::score;
+int Score::score = 0;
 int TowerHP::HP = TowerHP::MaxHP;
 int TowerHP::s_HP;
 

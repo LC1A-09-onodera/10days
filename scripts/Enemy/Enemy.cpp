@@ -11,7 +11,9 @@
 #include "../Player/player.h"
 #include "../Wave/Wave.h"
 
-int BaseEnemy::m_sprite[4];
+bool EnemyManager::isBoss = false;
+
+int BaseEnemy::m_sprite[SpeedType::Bomb + 1];
 std::list<BaseEnemy*> EnemyManager::enemys;
 std::list<std::list<BaseEnemy*>::iterator> EnemyManager::deleteEnemys;
 
@@ -29,25 +31,39 @@ void BaseEnemy::LoadFile()
 	m_sprite[Normal] = LoadGraph("Resources/enemy_0.png");
 	m_sprite[Midl] = LoadGraph("Resources/enemy_1.png");
 	m_sprite[Hi] = LoadGraph("Resources/enemy_2.png");
+	m_sprite[Shild] = LoadGraph("Resources/enemy_guard.png");
+	m_sprite[Troop] = LoadGraph("Resources/troops_element_1.png");
+	m_sprite[Troop2] = LoadGraph("Resources/troops_element_2.png");
 	m_sprite[Bomb] = LoadGraph("Resources/bomb.png");
+	m_sprite[Boss] = LoadGraph("Resources/enemy_boss.png");
 }
 
-void BaseEnemy::Init(SpeedType type)
+void BaseEnemy::Init(SpeedType type, int f_troopCount)
 {
 	m_angle = (float)SpornAngle;
 	float cos = DxLibMath::Cos(m_angle);
 	float sin = DxLibMath::Sin(m_angle);
-
 	m_position.u = BaseEnemy::CiycleCenter.u + OutsideR * cos;
 	m_position.v = BaseEnemy::CiycleCenter.v + OutsideR * sin;
 	m_endPosition.u = BaseEnemy::CiycleCenter.u + CenterR * cos;
 	m_endPosition.v = BaseEnemy::CiycleCenter.v + CenterR * sin;
-	SpornAngle = SpornAngle + 120 + (rand() % 60);
+	if (type != SpeedType::Troop && type != SpeedType::Troop2)
+	{
+		SpornAngle = SpornAngle + 120 + (rand() % 60);
+	}
 	m_timer = MaxTimer;
 	m_easeTimer = 0.0f;
-	m_HP = MaxHP;
-	m_size = { 50 , 50 };
 	speedType = type;
+	if (speedType == SpeedType::Boss)
+	{ 
+		m_HP = 100;
+	}
+	else
+	{
+		m_HP = MaxHP;
+	}
+	m_size = { 50 , 50 };
+	
 	if (type == SpeedType::Normal)
 	{
 		m_ToCenterSpeed = 3.0f;
@@ -59,6 +75,38 @@ void BaseEnemy::Init(SpeedType type)
 	else if (type == SpeedType::Hi)
 	{
 		m_ToCenterSpeed = 6.0f;
+	}
+	else if (type == SpeedType::Troop)
+	{
+		m_HP = 1;
+		m_easeTimer = 0.2f - ((f_troopCount) * 0.04f);
+		m_angle = (float)SpornAngle - (f_troopCount * 7.0f);
+		m_timer = MaxHP + (f_troopCount * 30);
+		float l_cos = DxLibMath::Cos(m_angle);
+		float l_sin = DxLibMath::Sin(m_angle);
+		m_position.u = BaseEnemy::CiycleCenter.u + OutsideR * l_cos;
+		m_position.v = BaseEnemy::CiycleCenter.v + OutsideR * l_sin;
+		m_endPosition.u = BaseEnemy::CiycleCenter.u + CenterR * l_cos;
+		m_endPosition.v = BaseEnemy::CiycleCenter.v + CenterR * l_sin;
+		m_ToCenterSpeed = 2.8f;
+	}
+	else if (type == SpeedType::Troop2)
+	{
+		m_HP = 1;
+		m_easeTimer = 0.2f - ((f_troopCount) * 0.04f);
+		m_angle = (float)SpornAngle + (f_troopCount * 5.0f);
+		m_timer = MaxHP + (f_troopCount * 30);
+		float l_cos = DxLibMath::Cos(m_angle);
+		float l_sin = DxLibMath::Sin(m_angle);
+		m_position.u = BaseEnemy::CiycleCenter.u + OutsideR * l_cos;
+		m_position.v = BaseEnemy::CiycleCenter.v + OutsideR * l_sin;
+		m_endPosition.u = BaseEnemy::CiycleCenter.u + CenterR * l_cos;
+		m_endPosition.v = BaseEnemy::CiycleCenter.v + CenterR * l_sin;
+		m_ToCenterSpeed = 2.8f;
+	}
+	else if (type == SpeedType::Shild)
+	{
+		m_ToCenterSpeed = 3.0f;
 	}
 	else if (type == SpeedType::Bomb)
 	{
@@ -128,7 +176,14 @@ void BaseEnemy::Draw()
 	}
 	if (speedType != SpeedType::Bomb)
 	{
-		DrawRotaGraph(m_position.u + Shake::GetShake().u + shakePower.u, m_position.v + Shake::GetShake().v + shakePower.v, m_ext, angle, m_sprite[speedType], true);
+		if (speedType == SpeedType::Boss)
+		{
+			DrawRotaGraph(m_position.u + Shake::GetShake().u + shakePower.u, m_position.v + Shake::GetShake().v + shakePower.v, 0.25f, angle, m_sprite[speedType], true);
+		}
+		else
+		{
+			DrawRotaGraph(m_position.u + Shake::GetShake().u + shakePower.u, m_position.v + Shake::GetShake().v + shakePower.v, m_ext, angle, m_sprite[speedType], true);
+		}
 	}
 	else
 	{
@@ -146,6 +201,13 @@ void BaseEnemy::ToCiycleMove()
 		m_position.v = BaseEnemy::CiycleCenter.v + DxLibMath::Sin(m_angle) * CenterR;
 		m_state = OnCiycle;
 	}
+	if (speedType == SpeedType::Troop || speedType == SpeedType::Troop2)
+	{
+		if (m_easeTimer > 1.0f)
+		{
+			m_easeTimer = 1.0f;
+		}
+	}
 }
 
 void BaseEnemy::CiycleMove()
@@ -154,26 +216,32 @@ void BaseEnemy::CiycleMove()
 	m_position.u = BaseEnemy::CiycleCenter.u + DxLibMath::Cos(m_angle) * CenterR;
 	m_position.v = BaseEnemy::CiycleCenter.v + DxLibMath::Sin(m_angle) * CenterR;
 	m_timer--;
-	if (m_timer <= 0)
+	if (speedType != SpeedType::Boss)
 	{
-		m_state = ToCenter;
-		if (speedType == Bomb)
+		if (m_timer <= 0)
 		{
-			isBombErase = true;
+			m_state = ToCenter;
+			if (speedType == Bomb)
+			{
+				isBombErase = true;
+			}
 		}
-	}
-	int shake = ShakeStartTime;
-	if (speedType == SpeedType::Midl)
-	{
-		shake += 20;
-	}
-	else if (speedType == SpeedType::Hi)
-	{
-		shake += 60;
-	}
-	if (m_timer <= shake)
-	{
-		shakePower = { rand() % 6 - 2.0f, rand() % 6 - 2.0f };
+		int shake = ShakeStartTime;
+		if (speedType == SpeedType::Midl)
+		{
+			shake += 20;
+		}
+		else if (speedType == SpeedType::Hi)
+		{
+			shake += 60;
+		}
+		if (m_timer <= shake)
+		{
+			if (speedType != SpeedType::Troop || speedType == SpeedType::Troop2)
+			{
+				shakePower = { rand() % 6 - 2.0f, rand() % 6 - 2.0f };
+			}
+		}
 	}
 }
 
@@ -243,7 +311,14 @@ void BaseEnemy::HitShiled()
 {
 	if (m_state != ToCiycle)
 	{
-		m_HP = 0;
+		if (speedType == SpeedType::Boss)
+		{
+			m_HP -= 10;
+		}
+		else
+		{
+			m_HP = 0;
+		}
 		isDelete = true;
 		/*float addScore = 10;
 		Score::score += addScore;
@@ -277,7 +352,22 @@ void BaseEnemy::BulletCollision()
 		{
 			(*itr)->m_isHit = true;
 			ObjectManager::object1.m_deleteObject.push_back(itr);
-			m_HP--;
+			//‚±‚±‚É‚‚Æ“–‚½‚éˆ—‚ğ“ü‚ê‚é
+			if (speedType == SpeedType::Shild)
+			{
+				float enemyLeng, bulletLeng = 0.0f;
+				FLOAT2 center = { WindowSize::Wid / 2.0f, WindowSize::Hi / 2.0f };
+				enemyLeng = Collision::Lenght(m_position, center);
+				bulletLeng = Collision::Lenght((*itr)->m_position, center);
+				if (bulletLeng > enemyLeng)
+				{
+					m_HP--;
+				}
+			}
+			else
+			{
+				m_HP--;
+			}
 			if (speedType != SpeedType::Bomb)
 			{
 				m_timer = 0;
@@ -291,6 +381,11 @@ void BaseEnemy::BulletCollision()
 			{
 				m_type = Angel;
 				isDelete = true;
+				if (speedType == SpeedType::Boss)
+				{
+					EnemyManager::isBoss = false;
+					Score::score = WaveManager::WaveBorader[WaveManager::waveNumber] + 1;
+				}
 			}
 
 			if (speedType == BaseEnemy::SpeedType::Normal)
@@ -360,12 +455,38 @@ void EnemyManager::Init()
 
 void EnemyManager::AddEnemy(BaseEnemy::SpeedType f_speedType)
 {
-	BaseEnemy* enemy = new BaseEnemy();
+	//BaseEnemy* enemy = new BaseEnemy();
 	int a = rand() % 3;
-
-	enemy->Init(f_speedType);
-
-	EnemyManager::enemys.push_back(&(*enemy));
+	//‘à—ñ‚ğo‚·1
+	if (f_speedType == BaseEnemy::SpeedType::Troop)
+	{
+		//1‘à—ñ‚Ì“G‚Ì”
+		const int troopCount = 5;
+		for (int i = 0; i < troopCount; i++)
+		{
+			BaseEnemy* enemy = new BaseEnemy();
+			enemy->Init(f_speedType, i);
+			EnemyManager::enemys.push_back(&(*enemy));
+		}
+	}
+	else if (f_speedType == BaseEnemy::SpeedType::Troop2)
+	{
+		//1‘à—ñ‚Ì“G‚Ì”
+		const int troopCount = 5;
+		for (int i = 0; i < troopCount; i++)
+		{
+			BaseEnemy* enemy = new BaseEnemy();
+			enemy->Init(f_speedType, i);
+			EnemyManager::enemys.push_back(&(*enemy));
+		}
+	}
+	else
+	{
+		BaseEnemy* enemy = new BaseEnemy();
+		enemy->Init(f_speedType);
+		EnemyManager::enemys.push_back(&(*enemy));
+	}
+	//EnemyManager::enemys.push_back(&(*enemy));
 }
 
 void EnemyManager::Update()
@@ -384,13 +505,16 @@ void EnemyManager::Update()
 				else
 				{
 					//ƒ{ƒ€‘‚â‚·H
-					Player::AddBomb();
+					if (Player::GetBombCount() < 2)
+					{
+						Player::AddBomb();
+					}
 					deleteEnemys.push_back(itr);
 				}
 			}
 			else
 			{
-				int score;
+				int score = 0;
 				if ((*itr)->speedType == BaseEnemy::SpeedType::Normal)
 				{
 					score = NormalSpeedScore * powf(1.05f, WaveManager::waveNumber);
