@@ -101,6 +101,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	ScoreUI::LoadFile();
 	ScoreUI::Init();
 
+	int alpha = 255;
+	bool toRed = true;
+
 	// ゲームループ
 	while (1)
 	{
@@ -329,6 +332,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 				if (bulletUI.GetIsAllShot() && bulletUI.BulletNum() <= 0)
 				{
 					sceneNum = RESULT;
+					TowerHP::HP = 3;
 					player.Init();
 					bulletUI.m_isAllShot = false;
 					ParticleManager::AllClear();
@@ -424,7 +428,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		
 		
 		//255がそれを使う
-		static int alpha = 255;
+		
+		
 		if (TowerHP::HP > 1)
 		{
 			if (alpha < 255)
@@ -434,10 +439,23 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		}
 		else
 		{
-			if (alpha > 0)
+			if (!toRed)
 			{
-				alpha--;
+				alpha -= 3;
+				if (alpha < 1)
+				{
+					toRed = true;
+				}
 			}
+			else
+			{
+				alpha += 3;
+				if (alpha > 240)
+				{
+					toRed = false;
+				}
+			}
+			
 		}
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
 		DrawExtendGraph(0, 0,WindowSize::Wid, WindowSize::Hi, vignetteB, TRUE);
