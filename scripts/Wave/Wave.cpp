@@ -91,7 +91,15 @@ void WaveManager::WaveInit(int waveNum)
 	bombAlpha = 0;
 	changeAlpha = 0;
 	isRuleEnd = false;
-	if (waveNum == 2 && Player::GetBombCount() < 3)
+	if (waveNum == 2 && Player::GetBombCount() < 2)
+	{
+		EnemyManager::AddEnemy(BaseEnemy::SpeedType::Bomb);
+	}
+	if (waveNum == 4 && Player::GetBombCount() < 2)
+	{
+		EnemyManager::AddEnemy(BaseEnemy::SpeedType::Bomb);
+	}
+	if (waveNum == 6 && Player::GetBombCount() < 2)
 	{
 		EnemyManager::AddEnemy(BaseEnemy::SpeedType::Bomb);
 	}
