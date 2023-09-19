@@ -425,7 +425,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		
 		//255がそれを使う
 		static int alpha = 255;
-		/*if (!EnemyManager::isBoss)
+		if (TowerHP::HP > 1)
 		{
 			if (alpha < 255)
 			{
@@ -438,14 +438,14 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			{
 				alpha--;
 			}
-		}*/
+		}
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
 		DrawExtendGraph(0, 0,WindowSize::Wid, WindowSize::Hi, vignetteB, TRUE);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-		/*SetDrawBlendMode(DX_BLENDMODE_ALPHA, (255 - alpha));
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, (255 - alpha));
 		DrawExtendGraph(0, 0,WindowSize::Wid, WindowSize::Hi, vignetteR, TRUE);
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);*/
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 		//---------  ここまでにプログラムを記述  ---------//
 		// (ダブルバッファ)裏面

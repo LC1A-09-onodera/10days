@@ -384,7 +384,7 @@ void BaseEnemy::BulletCollision()
 				if (speedType == SpeedType::Boss)
 				{
 					EnemyManager::isBoss = false;
-					Score::score = 13500;
+					Score::score = WaveManager::WaveBorader[WaveManager::waveNumber] + 1;
 				}
 			}
 
