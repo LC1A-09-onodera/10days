@@ -106,7 +106,7 @@ void WaveManager::WaveInit(int waveNum)
 		EnemyManager::AddEnemy(BaseEnemy::SpeedType::Bomb);
 	}
 
-	if (waveNum == 1)
+	if (waveNum == 5)
 	{
 		EnemyManager::AddEnemy(BaseEnemy::SpeedType::Boss);
 		EnemyManager::isBoss = true;
@@ -255,7 +255,7 @@ void WaveManager::Update()
 		else if (waveNumber == 5)
 		{
 			isBombHeal = false;
-			if (EnemyManager::enemys.size() <= 2 || rand() % 120 == 0)
+			if (EnemyManager::enemys.size() <= 2 || rand() % 140 == 0)
 			{
 				for (int i = 0; i < 3; i++)
 				{
