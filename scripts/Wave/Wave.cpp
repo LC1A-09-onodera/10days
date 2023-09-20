@@ -397,8 +397,17 @@ void WaveManager::Update()
 void WaveManager::Draw()
 {
 	//DrawBox(0, WindowSize::Hi / 2 - m_backSize.v / 2, WindowSize::Wid, WindowSize::Hi / 2 + m_backSize.v / 2, GetColor(123, 204, 41), true);
-	DrawExtendGraph(m_position.u - m_size.u / 2, m_position.v - m_size.v / 2, m_position.u + m_size.u / 2, m_position.v + m_size.v / 2,
-		s_waves[waveNumber], true);
+	const int size = 30;
+	if (waveNumber >= 1 && waveNumber <= 8)
+	{
+		DrawExtendGraph(m_position.u - m_size.u / 2 + size, m_position.v - m_size.v / 2, m_position.u + m_size.u / 2 + size, m_position.v + m_size.v / 2,
+			s_waves[waveNumber], true);
+	}
+	else
+	{
+		DrawExtendGraph(m_position.u - m_size.u / 2, m_position.v - m_size.v / 2, m_position.u + m_size.u / 2 , m_position.v + m_size.v / 2,
+			s_waves[waveNumber], true);
+	}
 	if (waveNumber == 0)
 	{
 		if (!isRuleEnd)
