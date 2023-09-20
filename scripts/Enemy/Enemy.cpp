@@ -117,6 +117,11 @@ void BaseEnemy::Init(SpeedType type, int f_troopCount)
 
 void BaseEnemy::Update()
 {
+	rotAngle++;
+	if (rotAngle == 360)
+	{
+		rotAngle = 0;
+	}
 	if (m_state == ToCiycle)
 	{
 		ToCiycleMove();
@@ -178,7 +183,7 @@ void BaseEnemy::Draw()
 	{
 		if (speedType == SpeedType::Boss)
 		{
-			DrawRotaGraph(m_position.u + Shake::GetShake().u + shakePower.u, m_position.v + Shake::GetShake().v + shakePower.v, 0.25f, angle, m_sprite[speedType], true);
+			DrawRotaGraph(m_position.u + Shake::GetShake().u + shakePower.u, m_position.v + Shake::GetShake().v + shakePower.v, 0.25f, rotAngle * (3.1415f / 180.0f), m_sprite[speedType], true);
 		}
 		else
 		{
@@ -314,31 +319,61 @@ void BaseEnemy::HitShiled()
 		if (speedType == SpeedType::Boss)
 		{
 			m_HP -= 10;
+			if (m_HP <= 0)
+			{
+				if (speedType == SpeedType::Boss)
+				{
+					EnemyManager::isBoss = false;
+					Score::score = WaveManager::WaveBorader[WaveManager::waveNumber] + 1;
+				}
+				isDelete = true;
+				/*float addScore = 10;
+				Score::score += addScore;
+				FLOAT2 size = { 18.0f, 22.0f };
+				ParticleManager::scoreParitcle.AddScore(m_position, size, size, addScore, 60);*/
+				//ˆÈ‰º”½ŽË”Â‚É“–‚½‚Á‚½Žž
+				m_isReturn = true;
+				if (m_type == Angel)
+				{
+					m_returnNum++;
+				}
+				m_timer = MaxTimer;
+				m_state = ReturnCiycle;
+				float cos = DxLibMath::Cos(m_angle);
+				float sin = DxLibMath::Sin(m_angle);
+				m_endPosition = { BaseEnemy::CiycleCenter.u + CenterR * cos , BaseEnemy::CiycleCenter.v + CenterR * sin };
+				m_easeTimer = 0.0f;
+				m_ToCenterSpeed += 0.5f;
+				StopSoundMem(SoundManager::shotHitSound);
+				PlaySoundMem(SoundManager::shotHitSound, DX_PLAYTYPE_BACK);
+			}
 		}
 		else
 		{
 			m_HP = 0;
+			isDelete = true;
+			/*float addScore = 10;
+			Score::score += addScore;
+			FLOAT2 size = { 18.0f, 22.0f };
+			ParticleManager::scoreParitcle.AddScore(m_position, size, size, addScore, 60);*/
+			//ˆÈ‰º”½ŽË”Â‚É“–‚½‚Á‚½Žž
+			m_isReturn = true;
+			if (m_type == Angel)
+			{
+				m_returnNum++;
+			}
+			m_timer = MaxTimer;
+			m_state = ReturnCiycle;
+			float cos = DxLibMath::Cos(m_angle);
+			float sin = DxLibMath::Sin(m_angle);
+			m_endPosition = { BaseEnemy::CiycleCenter.u + CenterR * cos , BaseEnemy::CiycleCenter.v + CenterR * sin };
+			m_easeTimer = 0.0f;
+			m_ToCenterSpeed += 0.5f;
+			StopSoundMem(SoundManager::shotHitSound);
+			PlaySoundMem(SoundManager::shotHitSound, DX_PLAYTYPE_BACK);
 		}
-		isDelete = true;
-		/*float addScore = 10;
-		Score::score += addScore;
-		FLOAT2 size = { 18.0f, 22.0f };
-		ParticleManager::scoreParitcle.AddScore(m_position, size, size, addScore, 60);*/
-		//ˆÈ‰º”½ŽË”Â‚É“–‚½‚Á‚½Žž
-		m_isReturn = true;
-		if (m_type == Angel)
-		{
-			m_returnNum++;
-		}
-		m_timer = MaxTimer;
-		m_state = ReturnCiycle;
-		float cos = DxLibMath::Cos(m_angle);
-		float sin = DxLibMath::Sin(m_angle);
-		m_endPosition = { BaseEnemy::CiycleCenter.u + CenterR * cos , BaseEnemy::CiycleCenter.v + CenterR * sin };
-		m_easeTimer = 0.0f;
-		m_ToCenterSpeed += 0.5f;
-		StopSoundMem(SoundManager::shotHitSound);
-		PlaySoundMem(SoundManager::shotHitSound, DX_PLAYTYPE_BACK);
+		
+		
 	}
 }
 
@@ -412,6 +447,12 @@ void BaseEnemy::BulletCollision()
 				FLOAT2 start = { 40,40 };
 				FLOAT2 end = { 0, 0 };
 				ParticleManager::bombGet.ExprotionParticle(m_position, start, end, 10, 50);
+			}
+			else if (speedType == BaseEnemy::SpeedType::Boss)
+			{
+				FLOAT2 start = { 40,40 };
+				FLOAT2 end = { 0, 0 };
+				ParticleManager::bossParticle.ExprotionParticle(m_position, start, end, 10, 40);
 			}
 			StopSoundMem(SoundManager::shotHitSound);
 			PlaySoundMem(SoundManager::shotHitSound, DX_PLAYTYPE_BACK);

@@ -123,6 +123,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 		if (sceneNum == TITLE)
 		{
+			EnemyManager::isBoss = false;
 			FLOAT2 l_resetShakePower{ -50.0f,-50.0f };
 			Shake::AddShakePower(l_resetShakePower);
 			player.InGame(false);
