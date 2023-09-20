@@ -2,6 +2,7 @@
 #include "DxLib.h"
 #include "../Particle/Particle.h"
 #include "../WindowsSize/WindowSize.h"
+#include "../Input/Input.h"
 #include <vector>
 
 class Player
@@ -99,8 +100,16 @@ private:
 	int m_s_bomb_effect;
 	FLOAT2 m_stageSize;
 
-	//debug
-	//float a = 0;
+	//New
+	const int DushFrame = 8;
+	const int DushDelay = 20;
+	const float MaxAddSpeed = 8.0f;
+	const float AddSpeed = 1.0f;
+	const float SubSpeed = 0.01f;
+	bool m_isDash;
+	bool m_isDashVec;
+	int m_dushFrameCount;
+	float m_addSpeed;
 
 public:
 	void Init();
@@ -139,7 +148,13 @@ private:
 
 public:
 	void ReflectorHit(FLOAT2& hitPos);
-	static void AddBomb() { m_bomb++; }
+	static void AddBomb()
+	{
+		if (m_bomb < 2)
+		{
+			m_bomb++;
+		}
+	}
 	static bool IsShotBomb();
 	bool ShotBullet();
 	const FLOAT2& GetPos() { return m_position; }
@@ -147,7 +162,15 @@ public:
 	const FLOAT2& GetReflectorPos() { return m_reflector_pos; }
 	const FLOAT2& GetHalfWinSize() { return FLOAT2{ C_HALF_WID,C_HALF_HEI }; }
 	const float& GetReflectorRad() { return m_reflector_rad; }
-	const float& GetDeg() { return m_deg; }
+	const float& GetDeg()
+	{
+		if (!Input::isPadConnect())
+		{
+			float l_deg = m_deg + 180.0f;
+			return l_deg;
+		}
+		return m_deg;
+	}
 	const float& GetBombLength() { return m_bombLength; }
 	const int& GetBulletNum() { return m_bulletNum; }
 	const int& GetMaxBulletNum() { return m_maxBulletNum; }

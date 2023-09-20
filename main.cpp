@@ -184,7 +184,24 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 						if (isShot && !bulletUI.m_isAllShot)
 						{
 
-							ObjectManager::object1.Shot(winSizeHalf, spriteSize, player.GetDeg(), 18.0f, BaseObject::ObjectType::ORANGE);
+							ObjectManager::object1.Shot(
+								winSizeHalf,
+								spriteSize,
+								player.GetDeg() + 180.0f,
+								18.0f,
+								BaseObject::ObjectType::ORANGE);
+							ObjectManager::object1.Shot(
+								winSizeHalf,
+								spriteSize,
+								player.GetDeg() + 15.0f + 180.0f,
+								18.0f,
+								BaseObject::ObjectType::ORANGE);
+							ObjectManager::object1.Shot(
+								winSizeHalf,
+								spriteSize,
+								player.GetDeg() - 15.0f + 180.0f,
+								18.0f,
+								BaseObject::ObjectType::ORANGE);
 							StopSoundMem(SoundManager::shotBullet);
 							PlaySoundMem(SoundManager::shotBullet, DX_PLAYTYPE_BACK);
 						}

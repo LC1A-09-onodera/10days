@@ -191,3 +191,10 @@ bool Input::isJoyBottomTrigger(int JoyBottom) {
 bool Input::isJoyBottomRelease(int JoyBottom) {
 	return !joypad.Buttons[JoyBottom] && oldjoypad.Buttons[JoyBottom];
 }
+
+bool Input::isPadConnect()
+{
+	if (GetJoypadNum() > 0) { return true; }
+	return false;
+
+}
