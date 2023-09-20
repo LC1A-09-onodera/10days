@@ -110,6 +110,7 @@ private:
 	bool m_isDashVec;
 	int m_dushFrameCount;
 	float m_addSpeed;
+	FLOAT2 m_refRad2 = { 0,0 };
 
 public:
 	void Init();
@@ -164,11 +165,6 @@ public:
 	const float& GetReflectorRad() { return m_reflector_rad; }
 	const float& GetDeg()
 	{
-		if (!Input::isPadConnect())
-		{
-			float l_deg = m_deg + 180.0f;
-			return l_deg;
-		}
 		return m_deg;
 	}
 	const float& GetBombLength() { return m_bombLength; }

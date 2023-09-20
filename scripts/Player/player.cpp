@@ -247,6 +247,9 @@ void Player::Update()
 					m_position.u = l_nearVec.u * (C_STAGE_RAD - C_PLAYER_RAD) + C_HALF_WID;
 					m_position.v = l_nearVec.v * (C_STAGE_RAD - C_PLAYER_RAD) + C_HALF_HEI;
 
+					m_refRad2.u = -l_nearVec.u * C_STAGE_REFLECTOR_RAD + C_HALF_WID;
+					m_refRad2.v = -l_nearVec.v * C_STAGE_REFLECTOR_RAD + C_HALF_HEI;
+
 					//リフレクター
 					m_reflector_pos.u = l_nearVec.u * C_STAGE_REFLECTOR_RAD + C_HALF_WID;
 					m_reflector_pos.v = l_nearVec.v * C_STAGE_REFLECTOR_RAD + C_HALF_HEI;
@@ -288,6 +291,9 @@ void Player::Update()
 				m_position.v = l_nearVec.v * (C_STAGE_RAD - C_PLAYER_RAD) + C_HALF_HEI;
 
 				//リフレクター
+				m_refRad2.u = -l_nearVec.u * C_STAGE_REFLECTOR_RAD + C_HALF_WID;
+				m_refRad2.v = -l_nearVec.v * C_STAGE_REFLECTOR_RAD + C_HALF_HEI;
+
 				m_reflector_pos.u = l_nearVec.u * C_STAGE_REFLECTOR_RAD + C_HALF_WID;
 				m_reflector_pos.v = l_nearVec.v * C_STAGE_REFLECTOR_RAD + C_HALF_HEI;
 				m_reflector_rad = l_rad;
@@ -605,11 +611,17 @@ void Player::Draw()
 		const int l_reflector_len = 180;
 		const float l_len = rand() % l_reflector_len;
 		const float l_rand = l_len - l_reflector_len / 2.0f;
-		const float l_reflector_posX = m_reflector_pos.u + l_rand * cosf(m_reflector_rad);
-		const float l_reflector_posY = m_reflector_pos.v + l_rand * sinf(m_reflector_rad);
+		float l_reflector_posX = m_reflector_pos.u + l_rand * cosf(m_reflector_rad);
+		float l_reflector_posY = m_reflector_pos.v + l_rand * sinf(m_reflector_rad);
 		FLOAT2 l_pos = { l_reflector_posX,l_reflector_posY };
 		FLOAT2 startSize = { 20.0f, 20.0f };
 		FLOAT2 endSize = { 2.0f, 2.0f };
+		ParticleManager::smpParticle.StayParticle(l_pos, startSize, endSize, 2, 60);
+
+		//New
+		l_reflector_posX = m_refRad2.u + l_rand * cosf(m_reflector_rad);
+		l_reflector_posY = m_refRad2.v + l_rand * sinf(m_reflector_rad);
+		l_pos = { l_reflector_posX,l_reflector_posY };
 		ParticleManager::smpParticle.StayParticle(l_pos, startSize, endSize, 2, 60);
 	}
 
@@ -629,6 +641,16 @@ void Player::Draw()
 	DrawRotaGraph(
 		static_cast<int>(m_reflector_pos.u + Shake::GetShake().u),
 		static_cast<int>(m_reflector_pos.v + Shake::GetShake().v),
+		static_cast<double>(m_rad) * m_reflector_size * l_reflectorSize,
+		static_cast<double>(m_reflector_rad),
+		m_s_reflector,
+		true
+	);
+
+	//New
+	DrawRotaGraph(
+		static_cast<int>(m_refRad2.u + Shake::GetShake().u),
+		static_cast<int>(m_refRad2.v + Shake::GetShake().v),
 		static_cast<double>(m_rad) * m_reflector_size * l_reflectorSize,
 		static_cast<double>(m_reflector_rad),
 		m_s_reflector,
