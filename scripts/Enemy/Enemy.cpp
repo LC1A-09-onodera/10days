@@ -372,8 +372,6 @@ void BaseEnemy::HitShiled()
 			StopSoundMem(SoundManager::shotHitSound);
 			PlaySoundMem(SoundManager::shotHitSound, DX_PLAYTYPE_BACK);
 		}
-		
-		
 	}
 }
 
@@ -397,6 +395,11 @@ void BaseEnemy::BulletCollision()
 				if (bulletLeng > enemyLeng)
 				{
 					m_HP--;
+					FLOAT2 start = { 40,40 };
+					FLOAT2 end = { 0, 0 };
+					ParticleManager::speedType1.ExprotionParticle((*itr)->m_position, start, end, 10, 40);
+					StopSoundMem(SoundManager::shotHitSound);
+					PlaySoundMem(SoundManager::shotHitSound, DX_PLAYTYPE_BACK);
 				}
 			}
 			else
@@ -421,7 +424,6 @@ void BaseEnemy::BulletCollision()
 					EnemyManager::isBoss = false;
 					Score::score = WaveManager::WaveBorader[WaveManager::waveNumber] + 1;
 				}
-
 			}
 
 			if (speedType == BaseEnemy::SpeedType::Normal)
@@ -454,8 +456,11 @@ void BaseEnemy::BulletCollision()
 				FLOAT2 end = { 0, 0 };
 				ParticleManager::bossParticle.ExprotionParticle(m_position, start, end, 10, 40);
 			}
-			StopSoundMem(SoundManager::shotHitSound);
-			PlaySoundMem(SoundManager::shotHitSound, DX_PLAYTYPE_BACK);
+			if (speedType != SpeedType::Shild)
+			{
+				StopSoundMem(SoundManager::shotHitSound);
+				PlaySoundMem(SoundManager::shotHitSound, DX_PLAYTYPE_BACK);
+			}
 		}
 	}
 	for (auto itr = ObjectManager::object2.m_objects.begin(); itr != ObjectManager::object2.m_objects.end(); ++itr)
