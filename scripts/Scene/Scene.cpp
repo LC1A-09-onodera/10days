@@ -47,7 +47,7 @@ int GameScene::m_s_bossSide;
 void GameScene::LoadFile()
 {
 	m_s_side = LoadGraph("Resources/EncanEncounter.png");
-	m_s_bossSide = LoadGraph("Resources/danger.png");
+	m_s_bossSide = LoadGraph("Resources/danger_red.png");
 	m_sideSize = { 1200.0f, 104.0f };
 }
 
