@@ -19,6 +19,8 @@ public:
 	int m_timer;
 
 	int m_stopTimer;
+
+	float rotAngle = 0;
 	static const int StopTime = 30;
 	enum State
 	{

@@ -150,10 +150,7 @@ void WaveManager::Update()
 			TowerHP::isIncDec = true;
 		}
 	}
-	if (EnemyManager::isBoss)
-	{
-		Score::score = WaveBorader[waveNumber] - 1;
-	}
+	
 
 	if (Score::score >= WaveBorader[waveNumber])
 	{
@@ -258,14 +255,14 @@ void WaveManager::Update()
 		else if (waveNumber == 5)
 		{
 			isBombHeal = false;
-			if (EnemyManager::enemys.size() <= 2 || rand() % 120 == 0)
+			if (EnemyManager::enemys.size() <= 2 || rand() % 140 == 0)
 			{
 				for (int i = 0; i < 3; i++)
 				{
 					int ran = rand() % 10;
 					if (ran < 2)
 					{
-						EnemyManager::AddEnemy(BaseEnemy::SpeedType::Hi);
+						//EnemyManager::AddEnemy(BaseEnemy::SpeedType::Hi);
 					}
 					else if (ran < 8)
 					{

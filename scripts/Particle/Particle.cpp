@@ -17,6 +17,8 @@ Particle ParticleManager::speedType3;
 Particle ParticleManager::heart;
 Particle ParticleManager::bombGet;
 
+Particle ParticleManager::bossParticle;
+
 void Particle::AddParitcle(FLOAT2& f_pos, FLOAT2& f_vec, FLOAT2& f_acc, FLOAT2& f_startSize, FLOAT2& f_endSize, int f_life)
 {
 	ParticleEach* each = new ParticleEach();
@@ -153,6 +155,8 @@ void ParticleManager::LoadFile()
 	speedType2.LoadFile("Resources/enemy_particle_cr.png");
 	speedType3.LoadFile("Resources/enemy_particle_tri.png");
 
+	bossParticle.LoadFile("Resources/enemy_boss_p.png");
+
 	scoreParitcle.LoadFile();
 }
 
@@ -169,7 +173,7 @@ void ParticleManager::Update()
 	speedType3.Update();
 	heart.Update();
 	bombGet.Update();
-
+	bossParticle.Update();
 }
 
 void ParticleManager::Draw()
@@ -184,6 +188,7 @@ void ParticleManager::Draw()
 	speedType3.Draw();
 	heart.Draw();
 	bombGet.Draw();
+	bossParticle.Draw();
 }
 
 void ParticleManager::AllClear()
@@ -199,6 +204,7 @@ void ParticleManager::AllClear()
 	speedType3.Clear();
 	heart.Clear();
 	bombGet.Clear();
+	bossParticle.Clear();
 }
 
 void ScoreParticle::AddParitcle(FLOAT2& f_pos, FLOAT2& f_vec, FLOAT2& f_acc, FLOAT2& f_startSize, FLOAT2& f_endSize, int f_life)

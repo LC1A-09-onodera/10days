@@ -94,6 +94,7 @@ public:
 	static Particle speedType3;
 	static Particle heart;
 	static Particle bombGet;
+	static Particle bossParticle;
 	static void LoadFile();
 	static void Update();
 	static void Draw();
