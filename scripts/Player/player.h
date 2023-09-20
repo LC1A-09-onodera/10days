@@ -110,7 +110,8 @@ private:
 	bool m_isDashVec;
 	int m_dushFrameCount;
 	float m_addSpeed;
-	FLOAT2 m_refRad2 = { 0,0 };
+	FLOAT2 m_refPos2 = { 0,0 };
+	float m_refRad2 = 0.0f;
 
 public:
 	void Init();
@@ -163,6 +164,7 @@ public:
 	const FLOAT2& GetReflectorPos() { return m_reflector_pos; }
 	const FLOAT2& GetHalfWinSize() { return FLOAT2{ C_HALF_WID,C_HALF_HEI }; }
 	const float& GetReflectorRad() { return m_reflector_rad; }
+	const float& GetReflectorRad2() { return m_refRad2; }
 	const float& GetDeg()
 	{
 		return m_deg;
