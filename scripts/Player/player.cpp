@@ -258,6 +258,12 @@ void Player::Update()
 					{
 						m_reflector_rad += DX_PI_F * 2.0f;
 					}
+
+					m_refRad2 = m_reflector_rad + DX_PI_F;
+					if (m_refRad2 > DX_PI_F * 2.0f)
+					{
+						m_refRad2 -= DX_PI_F * 2.0f;
+					}
 				}
 			}
 
@@ -301,6 +307,7 @@ void Player::Update()
 				{
 					m_reflector_rad += DX_PI_F * 2.0f;
 				}
+
 				m_refRad2 = m_reflector_rad + DX_PI_F;
 				if (m_refRad2 > DX_PI_F * 2.0f)
 				{
