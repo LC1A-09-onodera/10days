@@ -262,7 +262,7 @@ void WaveManager::Update()
 					int ran = rand() % 10;
 					if (ran < 2)
 					{
-						EnemyManager::AddEnemy(BaseEnemy::SpeedType::Hi);
+						//EnemyManager::AddEnemy(BaseEnemy::SpeedType::Hi);
 					}
 					else if (ran < 8)
 					{
