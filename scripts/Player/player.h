@@ -110,8 +110,10 @@ private:
 	bool m_isDashVec;
 	int m_dushFrameCount;
 	float m_addSpeed;
-	FLOAT2 m_refPos2 = { 0,0 };
-	float m_refRad2 = 0.0f;
+	FLOAT2 m_refPos2;
+	float m_refRad2;
+	bool m_isWay = false;
+	bool m_isDashMode = false;
 
 public:
 	void Init();
@@ -121,6 +123,8 @@ public:
 	void OtherDraw();
 	void LoadFile();
 	bool GetIsMove();
+	bool IsWay() { return m_isWay; }
+	bool IsDash() { return m_isDashMode; }
 
 private:
 	void AddForce();

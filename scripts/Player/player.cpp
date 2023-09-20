@@ -51,6 +51,8 @@ void Player::Init()
 		C_HALF_WID,
 		C_HALF_HEI - C_STAGE_REFLECTOR_RAD };
 	m_refRad2 = m_reflector_rad + DX_PI_F;
+	//m_isWay = false;
+	//m_isDash = false;
 }
 
 void Player::Update()
@@ -97,7 +99,8 @@ void Player::Update()
 				if (m_dushFrameCount >= DushDelay)
 				{
 					if (Input::isJoyBottomTrigger(XINPUT_BUTTON_B) &&
-						m_mode == Mode::REFLECTION)
+						m_mode == Mode::REFLECTION &&
+						m_isDashMode)
 					{
 						float l_stAng = Input::GetJoyLeftStickAngle();
 						if (l_stAng < 0.0f)
@@ -105,17 +108,30 @@ void Player::Update()
 							l_stAng += DX_PI_F * 2.0f;
 						}
 						l_stAng = l_stAng * 180.0f / DX_PI_F;
-						if (l_stAng >= 300.0f || l_stAng <= 60.0f)
+
+						if (Input::isJoyLeftStickBottom())
 						{
-							m_isDashVec = true;
-						}
-						else if (l_stAng >= 120.0f && l_stAng <= 240.0f)
-						{
-							m_isDashVec = false;
+							if (l_stAng >= 300.0f || l_stAng <= 60.0f)
+							{
+								m_isDashVec = true;
+							}
+							else if (l_stAng >= 120.0f && l_stAng <= 240.0f)
+							{
+								m_isDashVec = false;
+							}
 						}
 						else
 						{
-							m_isDashVec = false;
+							if (Input::isJoyBottom(
+								XINPUT_BUTTON_DPAD_RIGHT))
+							{
+								m_isDashVec = true;
+							}
+							else if (Input::isJoyBottom(
+								XINPUT_BUTTON_DPAD_LEFT))
+							{
+								m_isDashVec = false;
+							}
 						}
 
 						m_dushFrameCount = 0;
@@ -127,7 +143,12 @@ void Player::Update()
 					m_dushFrameCount++;
 				}
 
-				if (Input::isJoyLeftStickBottom() || m_isDash)
+				if (Input::isJoyLeftStickBottom() ||
+					Input::isJoyBottom(
+						XINPUT_BUTTON_DPAD_RIGHT) ||
+					Input::isJoyBottom(
+						XINPUT_BUTTON_DPAD_LEFT) ||
+					m_isDash)
 				{
 					//自機の位置算出正規化
 					//m_vec = Input::GetJoyLeftStick();
@@ -222,13 +243,29 @@ void Player::Update()
 						}
 						l_stAng = l_stAng * 180.0f / DX_PI_F;
 
-						if (l_stAng >= 300.0f || l_stAng <= 60.0f)
+						if (Input::isJoyLeftStickBottom())
 						{
-							m_deg += 2.0f;
+							if (l_stAng >= 300.0f || l_stAng <= 60.0f)
+							{
+								m_deg += 2.0f;
+							}
+							else if (l_stAng >= 120.0f && l_stAng <= 240.0f)
+							{
+								m_deg -= 2.0f;
+							}
 						}
-						else if (l_stAng >= 120.0f && l_stAng <= 240.0f)
+						else
 						{
-							m_deg -= 2.0f;
+							if (Input::isJoyBottom(
+								XINPUT_BUTTON_DPAD_RIGHT))
+							{
+								m_deg += 2.0f;
+							}
+							else if (Input::isJoyBottom(
+								XINPUT_BUTTON_DPAD_LEFT))
+							{
+								m_deg -= 2.0f;
+							}
 						}
 					}
 
@@ -613,6 +650,42 @@ void Player::OtherUpdate()
 				m_refRad2 -= DX_PI_F * 2.0f;
 			}
 		}
+
+		//仮
+		if (Input::GetKeyTrigger(KEY_INPUT_1))
+		{
+			if (!m_isWay) {
+				m_isWay = true;
+				StopSoundMem(SoundManager::weponChange);
+				PlaySoundMem(
+					SoundManager::weponChange,
+					DX_PLAYTYPE_BACK);
+			}
+			else {
+				m_isWay = false;
+				StopSoundMem(SoundManager::damage);
+				PlaySoundMem(
+					SoundManager::damage,
+					DX_PLAYTYPE_BACK);
+			}
+		}
+		if (Input::GetKeyTrigger(KEY_INPUT_2))
+		{
+			if (!m_isDashMode) {
+				m_isDashMode = true;
+				StopSoundMem(SoundManager::weponChange);
+				PlaySoundMem(
+					SoundManager::weponChange,
+					DX_PLAYTYPE_BACK);
+			}
+			else {
+				m_isDashMode = false;
+				StopSoundMem(SoundManager::damage);
+				PlaySoundMem(
+					SoundManager::damage,
+					DX_PLAYTYPE_BACK);
+			}
+		}
 	}
 }
 
@@ -650,13 +723,47 @@ void Player::Draw()
 		FLOAT2 l_pos = { l_reflector_posX,l_reflector_posY };
 		FLOAT2 startSize = { 20.0f, 20.0f };
 		FLOAT2 endSize = { 2.0f, 2.0f };
-		ParticleManager::smpParticle.StayParticle(l_pos, startSize, endSize, 2, 60);
+		if (m_isDashMode)
+		{
+			if (m_dushFrameCount >= DushDelay ||
+				m_isDash)
+			{
+				ParticleManager::smpParticle.StayParticle(
+					l_pos,
+					startSize,
+					endSize, 2, 60);
+			}
+		}
+		else
+		{
+			ParticleManager::smpParticle.StayParticle(
+				l_pos,
+				startSize,
+				endSize, 2, 60);
+		}
 
 		//New
 		l_reflector_posX = m_refPos2.u + l_rand * cosf(m_reflector_rad);
 		l_reflector_posY = m_refPos2.v + l_rand * sinf(m_reflector_rad);
 		l_pos = { l_reflector_posX,l_reflector_posY };
-		ParticleManager::smpParticle.StayParticle(l_pos, startSize, endSize, 2, 60);
+		if (m_isDashMode)
+		{
+			if (m_dushFrameCount >= DushDelay ||
+				m_isDash)
+			{
+				ParticleManager::smpParticle.StayParticle(
+					l_pos,
+					startSize,
+					endSize, 2, 60);
+			}
+		}
+		else
+		{
+			ParticleManager::smpParticle.StayParticle(
+				l_pos,
+				startSize,
+				endSize, 2, 60);
+		}
 	}
 
 	//リフレクター(薄い)
