@@ -20,6 +20,7 @@ private:
 	static float m_maxPower;
 	static bool m_isAddPowerTrigger;
 public:
+	static void SetShakePower(FLOAT2 f_shakePower);
 	static void AddShakePower(FLOAT2 f_shakePower);
 	static FLOAT2 GetShake();
 	static FLOAT2 GetPower();

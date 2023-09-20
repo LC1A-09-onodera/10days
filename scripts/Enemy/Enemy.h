@@ -45,6 +45,11 @@ public:
 		Normal,
 		Midl,
 		Hi,
+		Shild,
+		//ë‡óÒ1
+		Troop,
+		Troop2,
+		Boss,
 		Bomb,
 	};
 	static const int BombLife = 600;
@@ -58,7 +63,7 @@ public:
 	int m_returnNum = 0;
 	bool m_isReturn = false;
 
-	static int m_sprite[4];
+	static int m_sprite[SpeedType::Bomb + 1];
 	int nowSpriteNum = NormalMode;
 	
 	static int SpornAngle;
@@ -68,7 +73,7 @@ public:
 	bool isStop = false;
 
 	//íÜêSÇ©ÇÁÇÃí‚é~ópãóó£
-	static const int CenterR = 470;
+	static const int CenterR = 460;
 	//èoåªéûÇÃ
 	static const int OutsideR = 1000;
 	//ç≈ëÂHP
@@ -93,7 +98,7 @@ public:
 
 
 	static void LoadFile();
-	void Init(SpeedType type = SpeedType::Normal);
+	void Init(SpeedType type = SpeedType::Normal, int f_troopCount = 0);
 	void Update();
 	void Draw();
 	void ToCiycleMove();
@@ -121,6 +126,8 @@ public:
 	static const int NormalSpeedScore = 100;
 	static const int MiddleSpeedScore = 125;
 	static const int HiSpeedScore = 150;
+
+	static bool isBoss;
 
 	//static int enemyCiycle;
 	static void Init();
