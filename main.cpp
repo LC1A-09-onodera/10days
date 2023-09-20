@@ -307,14 +307,17 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 							if (l_diff < l_checkDiff)
 							{
 								//中心から見た自機の角度を算出
-								float l_playerDeg = 180.0f / DX_PI_F * player.GetReflectorRad();
+								float l_rad = 180.0f / DX_PI_F;
+								float l_playerDeg = l_rad * player.GetReflectorRad();
+								float l_pDeg2 = l_rad * player.GetReflectorRad2();
 
 								//何度まで当たるか
 								const float l_hitDeg = 5.0f;
 								float l_degDiff = fabsf(l_playerDeg - l_enemyDeg);
+								float l_degDiff2 = fabsf(l_pDeg2 - l_enemyDeg);
 
 								//範囲内
-								if (l_degDiff < l_hitDeg)
+								if (l_degDiff < l_hitDeg || l_degDiff2 < l_hitDeg)
 								{
 									x->m_isReturn = true;
 									x->HitShiled();
@@ -323,14 +326,18 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 								//0~359度のケア
 								else
 								{
-									if (l_playerDeg < l_hitDeg || l_enemyDeg < l_hitDeg)
+									if (l_playerDeg < l_hitDeg ||
+										l_enemyDeg < l_hitDeg ||
+										l_pDeg2 < l_hitDeg)
 									{
 										if (l_playerDeg < l_hitDeg) { l_playerDeg += 359.9f; }
 										if (l_enemyDeg < l_hitDeg) { l_enemyDeg += 359.9f; }
+										if (l_pDeg2 < l_hitDeg) { l_pDeg2 += 359.9f; }
 										l_degDiff = fabsf(l_playerDeg - l_enemyDeg);
+										l_degDiff2 = fabsf(l_pDeg2 - l_enemyDeg);
 
 										//範囲内
-										if (l_degDiff < l_hitDeg)
+										if (l_degDiff < l_hitDeg || l_degDiff2 < l_hitDeg)
 										{
 											x->m_isReturn = true;
 											x->HitShiled();
@@ -443,11 +450,11 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			}
 			ResultScene::Draw();
 		}
-		
-		
+
+
 		//255がそれを使う
-		
-		
+
+
 		if (TowerHP::HP > 1)
 		{
 			if (alpha < 255)
@@ -473,14 +480,14 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 					toRed = false;
 				}
 			}
-			
+
 		}
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
-		DrawExtendGraph(0, 0,WindowSize::Wid, WindowSize::Hi, vignetteB, TRUE);
+		DrawExtendGraph(0, 0, WindowSize::Wid, WindowSize::Hi, vignetteB, TRUE);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, (255 - alpha));
-		DrawExtendGraph(0, 0,WindowSize::Wid, WindowSize::Hi, vignetteR, TRUE);
+		DrawExtendGraph(0, 0, WindowSize::Wid, WindowSize::Hi, vignetteR, TRUE);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 		//---------  ここまでにプログラムを記述  ---------//
