@@ -47,6 +47,10 @@ void Player::Init()
 	m_isDashVec = false;
 	m_dushFrameCount = 0;
 	m_addSpeed = 0.0f;
+	m_refPos2 = {
+		C_HALF_WID,
+		C_HALF_HEI - C_STAGE_REFLECTOR_RAD };
+	m_refRad2 = m_reflector_rad + DX_PI_F;
 }
 
 void Player::Update()
@@ -552,12 +556,21 @@ void Player::OtherUpdate()
 				m_position.v = l_nearVec.v * (C_STAGE_RAD - C_PLAYER_RAD) + C_HALF_HEI;
 
 				//リフレクター
+				m_refPos2.u = -l_nearVec.u * C_STAGE_REFLECTOR_RAD + C_HALF_WID;
+				m_refPos2.v = -l_nearVec.v * C_STAGE_REFLECTOR_RAD + C_HALF_HEI;
+
 				m_reflector_pos.u = l_nearVec.u * C_STAGE_REFLECTOR_RAD + C_HALF_WID;
 				m_reflector_pos.v = l_nearVec.v * C_STAGE_REFLECTOR_RAD + C_HALF_HEI;
 				m_reflector_rad = l_rad;
 				if (m_reflector_rad < 0.0f)
 				{
 					m_reflector_rad += DX_PI_F * 2.0f;
+				}
+
+				m_refRad2 = m_reflector_rad + DX_PI_F;
+				if (m_refRad2 > DX_PI_F * 2.0f)
+				{
+					m_refRad2 -= DX_PI_F * 2.0f;
 				}
 			}
 		}
@@ -583,12 +596,21 @@ void Player::OtherUpdate()
 			m_position.v = l_nearVec.v * (C_STAGE_RAD - C_PLAYER_RAD) + C_HALF_HEI;
 
 			//リフレクター
+			m_refPos2.u = -l_nearVec.u * C_STAGE_REFLECTOR_RAD + C_HALF_WID;
+			m_refPos2.v = -l_nearVec.v * C_STAGE_REFLECTOR_RAD + C_HALF_HEI;
+
 			m_reflector_pos.u = l_nearVec.u * C_STAGE_REFLECTOR_RAD + C_HALF_WID;
 			m_reflector_pos.v = l_nearVec.v * C_STAGE_REFLECTOR_RAD + C_HALF_HEI;
 			m_reflector_rad = l_rad;
 			if (m_reflector_rad < 0.0f)
 			{
 				m_reflector_rad += DX_PI_F * 2.0f;
+			}
+
+			m_refRad2 = m_reflector_rad + DX_PI_F;
+			if (m_refRad2 > DX_PI_F * 2.0f)
+			{
+				m_refRad2 -= DX_PI_F * 2.0f;
 			}
 		}
 	}
@@ -643,6 +665,15 @@ void Player::Draw()
 	DrawRotaGraph(
 		static_cast<int>(m_reflector_pos.u + Shake::GetShake().u),
 		static_cast<int>(m_reflector_pos.v + Shake::GetShake().v),
+		static_cast<double>(m_rad) * l_reflectorSize,
+		static_cast<double>(m_reflector_rad),
+		m_s_reflector_alpha,
+		true
+	);
+
+	DrawRotaGraph(
+		static_cast<int>(m_refPos2.u + Shake::GetShake().u),
+		static_cast<int>(m_refPos2.v + Shake::GetShake().v),
 		static_cast<double>(m_rad) * l_reflectorSize,
 		static_cast<double>(m_reflector_rad),
 		m_s_reflector_alpha,
