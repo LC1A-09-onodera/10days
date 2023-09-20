@@ -150,10 +150,7 @@ void WaveManager::Update()
 			TowerHP::isIncDec = true;
 		}
 	}
-	if (EnemyManager::isBoss)
-	{
-		Score::score = WaveBorader[waveNumber] - 1;
-	}
+	
 
 	if (Score::score >= WaveBorader[waveNumber])
 	{

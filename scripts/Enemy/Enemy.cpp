@@ -386,6 +386,7 @@ void BaseEnemy::BulletCollision()
 					EnemyManager::isBoss = false;
 					Score::score = WaveManager::WaveBorader[WaveManager::waveNumber] + 1;
 				}
+
 			}
 
 			if (speedType == BaseEnemy::SpeedType::Normal)
@@ -548,6 +549,13 @@ void EnemyManager::Update()
 		enemys.erase(*itr);
 	}
 	deleteEnemys.clear();
+	if (EnemyManager::isBoss)
+	{
+		if (Score::score > WaveManager::WaveBorader[WaveManager::waveNumber] - 1)
+		{
+			Score::score = WaveManager::WaveBorader[WaveManager::waveNumber] - 1;
+		}
+	}
 }
 
 void EnemyManager::Draw()
