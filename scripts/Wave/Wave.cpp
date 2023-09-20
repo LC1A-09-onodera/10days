@@ -400,7 +400,7 @@ void WaveManager::Draw()
 	const int size = 30;
 	if (waveNumber >= 1 && waveNumber <= 8)
 	{
-		DrawExtendGraph(m_position.u - m_size.u / 2 + size, m_position.v - m_size.v / 2, m_position.u + m_size.u / 2 + size, m_position.v + m_size.v / 2,
+		DrawExtendGraph(m_position.u - m_size.u / 2 - size, m_position.v - m_size.v / 2, m_position.u + m_size.u / 2 + size, m_position.v + m_size.v / 2,
 			s_waves[waveNumber], true);
 	}
 	else
