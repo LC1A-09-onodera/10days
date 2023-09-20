@@ -101,8 +101,8 @@ private:
 	FLOAT2 m_stageSize;
 
 	//New
-	const int DushFrame = 8;
-	const int DushDelay = 20;
+	const int DushFrame = 15;
+	const int DushDelay = 140;
 	const float MaxAddSpeed = 8.0f;
 	const float AddSpeed = 1.0f;
 	const float SubSpeed = 0.01f;
