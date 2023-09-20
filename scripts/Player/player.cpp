@@ -247,8 +247,8 @@ void Player::Update()
 					m_position.u = l_nearVec.u * (C_STAGE_RAD - C_PLAYER_RAD) + C_HALF_WID;
 					m_position.v = l_nearVec.v * (C_STAGE_RAD - C_PLAYER_RAD) + C_HALF_HEI;
 
-					m_refRad2.u = -l_nearVec.u * C_STAGE_REFLECTOR_RAD + C_HALF_WID;
-					m_refRad2.v = -l_nearVec.v * C_STAGE_REFLECTOR_RAD + C_HALF_HEI;
+					m_refPos2.u = -l_nearVec.u * C_STAGE_REFLECTOR_RAD + C_HALF_WID;
+					m_refPos2.v = -l_nearVec.v * C_STAGE_REFLECTOR_RAD + C_HALF_HEI;
 
 					//リフレクター
 					m_reflector_pos.u = l_nearVec.u * C_STAGE_REFLECTOR_RAD + C_HALF_WID;
@@ -291,8 +291,8 @@ void Player::Update()
 				m_position.v = l_nearVec.v * (C_STAGE_RAD - C_PLAYER_RAD) + C_HALF_HEI;
 
 				//リフレクター
-				m_refRad2.u = -l_nearVec.u * C_STAGE_REFLECTOR_RAD + C_HALF_WID;
-				m_refRad2.v = -l_nearVec.v * C_STAGE_REFLECTOR_RAD + C_HALF_HEI;
+				m_refPos2.u = -l_nearVec.u * C_STAGE_REFLECTOR_RAD + C_HALF_WID;
+				m_refPos2.v = -l_nearVec.v * C_STAGE_REFLECTOR_RAD + C_HALF_HEI;
 
 				m_reflector_pos.u = l_nearVec.u * C_STAGE_REFLECTOR_RAD + C_HALF_WID;
 				m_reflector_pos.v = l_nearVec.v * C_STAGE_REFLECTOR_RAD + C_HALF_HEI;
@@ -300,6 +300,11 @@ void Player::Update()
 				if (m_reflector_rad < 0.0f)
 				{
 					m_reflector_rad += DX_PI_F * 2.0f;
+				}
+				m_refRad2 = m_reflector_rad + DX_PI_F;
+				if (m_refRad2 > DX_PI_F * 2.0f)
+				{
+					m_refRad2 -= DX_PI_F * 2.0f;
 				}
 			}
 
@@ -619,8 +624,8 @@ void Player::Draw()
 		ParticleManager::smpParticle.StayParticle(l_pos, startSize, endSize, 2, 60);
 
 		//New
-		l_reflector_posX = m_refRad2.u + l_rand * cosf(m_reflector_rad);
-		l_reflector_posY = m_refRad2.v + l_rand * sinf(m_reflector_rad);
+		l_reflector_posX = m_refPos2.u + l_rand * cosf(m_reflector_rad);
+		l_reflector_posY = m_refPos2.v + l_rand * sinf(m_reflector_rad);
 		l_pos = { l_reflector_posX,l_reflector_posY };
 		ParticleManager::smpParticle.StayParticle(l_pos, startSize, endSize, 2, 60);
 	}
@@ -649,8 +654,8 @@ void Player::Draw()
 
 	//New
 	DrawRotaGraph(
-		static_cast<int>(m_refRad2.u + Shake::GetShake().u),
-		static_cast<int>(m_refRad2.v + Shake::GetShake().v),
+		static_cast<int>(m_refPos2.u + Shake::GetShake().u),
+		static_cast<int>(m_refPos2.v + Shake::GetShake().v),
 		static_cast<double>(m_rad) * m_reflector_size * l_reflectorSize,
 		static_cast<double>(m_reflector_rad),
 		m_s_reflector,
